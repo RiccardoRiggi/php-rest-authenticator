@@ -1,8 +1,5 @@
 <?php
 
-include './config.php';
-include './utils/logUtils.php';
-
 
 if (!function_exists('cifraStringa')) {
     function cifraStringa($stringaDaCifrare)
