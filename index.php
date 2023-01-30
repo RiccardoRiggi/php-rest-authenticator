@@ -1,26 +1,40 @@
 <?php
 
+include './config.php';
 include './utils/logUtils.php';
 include './utils/cifraturaUtils.php';
+include './database/database.php';
+include './utils/httpResponseCodeUtils.php';
 
-http_response_code(403);
+//http_response_code(403);
 //header('Content-Type: application/json; charset=utf-8');
 
-//generaLog(json_encode($_SERVER));
+//generaLog(json_encode($$_REQUEST));
 //echo json_encode($_SERVER);
 
-$original_string = "Welcome to JavaTpoint advance ggrtgtrhr \n";  
-// Print the original input string  
-echo "Original String: " .$original_string;  
-// Store the cipher method   
-// Store the encryption key  
-// Use openssl_encrypt() function   
-//$encryption_value = openssl_encrypt($original_string, $ciphering_value, $encryption_key, $options,$encryption_iv_value);  
-$encryption_value = cifraStringa($original_string);
-// Display the encrypted input string data  
-echo "<br><br> Encrypted Input String: " . $encryption_value  . "\n";  
-$decryption_key = "JavaTpoint";  
-// Use openssl_decrypt() function to decrypt the data  
-$decryption_value = decifraStringa($encryption_value);   
-// Display the decrypted string as an original data  
-echo "<br><br> Decrypted Input String: " .$decryption_value. "\n";  
+//generaLog(json_decode(file_get_contents('php://input'), true));
+
+//$data = json_decode(file_get_contents('php://input'), true);
+//echo "".$data[0]["nome"];
+
+//echo cifraStringa("AAAAAAA");
+
+//echo file_get_contents('php://input');
+
+
+//generaLogOperazioni("SESSIONE","MODIFICATO UTENTE");
+
+//httpAccessoNonAutorizzato();
+
+//Nome
+echo "Riccardo"." ".cifraStringa("Riccardo");
+echo "<br/>";
+//Cognome
+echo "Riggi"." ".cifraStringa("Riggi");
+echo "<br/>";
+//Email
+echo "info@riccardoriggi.it"." ".cifraStringa("info@riccardoriggi.it");
+echo "<br/>";
+//Password
+echo "123456"." ".md5(md5("123456"));
+echo "<br/>";

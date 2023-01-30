@@ -2,11 +2,16 @@
 if (!defined("HOST_DATABASE"))
     define("HOST_DATABASE", "localhost");
 if (!defined("NOME_DATABASE"))
-    define("NOME_DATABASE", "");
+    define("NOME_DATABASE", "php-rest-authenticator");
 if (!defined("USERNAME_DATABASE"))
     define("USERNAME_DATABASE", "root");
 if (!defined("PASSWORD_DATABASE"))
     define("PASSWORD_DATABASE", "");
+if (!defined("PREFISSO_TAVOLA"))
+    define("PREFISSO_TAVOLA", "au");
+
+if (!defined("NOME_APPLICAZIONE"))
+    define("NOME_APPLICAZIONE", "PHP Rest Authenticator");
 
 //Informazioni per la cifratura
 if (!defined("CIPHERING_VALUE"))

@@ -1,7 +1,5 @@
 <?php
 
-include '../config.php';
-
 if (!function_exists('apriConnessione')) {
     function apriConnessione()
     {
