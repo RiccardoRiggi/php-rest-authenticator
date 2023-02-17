@@ -35,10 +35,51 @@ try {
         if (!isset($jsonBody["email"]))
             throw new ErroreServerException("Il campo email è richiesto");
 
-        if (!isset($jsonBody["password"]))
-            throw new ErroreServerException("Il campo password è richiesto");
+        if (!isset($jsonBody["password"])) {
+            if (!isset($jsonBody["tipoAutenticazione"]) || str_contains($jsonBody["tipoAutenticazione"], "PSW",)) {
+                throw new ErroreServerException("Il campo password è richiesto");
+            }
+        }
 
-        $response = effettuaAutenticazione($jsonBody["email"], $jsonBody["password"], isset($jsonBody["tipoAutenticazione"]) ? $jsonBody["tipoAutenticazione"] : null);
+        $response = effettuaAutenticazione($jsonBody["email"], isset($jsonBody["password"]) ? $jsonBody["password"] : null, isset($jsonBody["tipoAutenticazione"]) ? $jsonBody["tipoAutenticazione"] : null);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "confermaAutenticazione") {
+
+
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new MetodoHttpErratoException();
+
+
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idLogin"]))
+            throw new ErroreServerException("Il campo idLogin è richiesto");
+
+        if (!isset($jsonBody["codice"]))
+            throw new ErroreServerException("Il campo codice è richiesto");
+
+
+        $response = confermaAutenticazione($jsonBody["idLogin"], $jsonBody["codice"]);
+        http_response_code(200);
+        //exit(json_encode($response)); //CANCELLARE IL COMMENTO
+    } else if ($_GET["nomeMetodo"] == "recuperaSessioneDaLogin") {
+
+
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new MetodoHttpErratoException();
+
+
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idLogin"]))
+            throw new ErroreServerException("Il campo idLogin è richiesto");
+
+
+
+        $response = recuperaSessioneDaLogin($jsonBody["idLogin"]);
         http_response_code(200);
         exit(json_encode($response));
     }
@@ -50,7 +91,7 @@ try {
     httpMetodoHttpErrato();
 } catch (ErroreServerException $e) {
     httpErroreServer($e->getMessage());
-}catch (Exception $e) {
-    generaLogSuFile("Errore nella funzione getIstruzioniSecondoFattore: " . $e->getMessage());
+} catch (Exception $e) {
+    generaLogSuFile("Errore sconosciuto: " . $e->getMessage());
     httpErroreServer("Errore sconosciuto");
 }

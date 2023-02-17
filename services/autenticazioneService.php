@@ -59,6 +59,27 @@ if (!function_exists('getUtente')) {
     }
 }
 
+if (!function_exists('getUtenteSenzaPassword')) {
+    function getUtenteSenzaPassword($emailCifrata)
+    {
+        generaLogSuFile($emailCifrata);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idUtente, nome, cognome FROM " . PREFISSO_TAVOLA . "_utenti WHERE email = :email AND dataEliminazione IS NULL AND dataBlocco is NULL");
+        $stmt->bindParam(':email', $emailCifrata);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) > 1)
+            throw new ErroreServerException("Errore durante il processo di autenticazione");
+
+        if (count($result) == 0)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return $result;
+    }
+}
+
 if (!function_exists('effettuaAutenticazione')) {
     function effettuaAutenticazione($email, $password, $tipoAutenticazione)
     {
@@ -90,7 +111,13 @@ if (!function_exists('effettuaAutenticazione')) {
 
             verificaEsistenzaMetodoSecondoFattorePerUtente($emailCifrata, $tipoAutenticazione);
 
-            $utente = getUtente($emailCifrata, $passwordCifrata);
+            if (str_contains($tipoAutenticazione, "PSW")) {
+                $utente = getUtente($emailCifrata, $passwordCifrata);
+            } else {
+                $utente = getUtenteSenzaPassword($emailCifrata);
+            }
+
+
             $idUtente = $utente[0]["idUtente"];
             $nome = decifraStringa($utente[0]["nome"]);
             $cognome = decifraStringa($utente[0]["cognome"]);
@@ -107,7 +134,6 @@ if (!function_exists('effettuaAutenticazione')) {
             $oggetto->idLogin = $idLogin;
             $oggetto->descrizione = substr($descrizione, strpos($descrizione, "#") + 2);
             return $oggetto;
-
         }
     }
 }
@@ -196,3 +222,136 @@ if (!function_exists('verificaEsistenzaMetodoSecondoFattorePerUtente')) {
             throw new AccessoNonAutorizzatoLoginException();
     }
 }
+
+// ---------------------------------------------------------
+
+if (!function_exists('confermaAutenticazione')) {
+    function confermaAutenticazione($idLogin, $codice)
+    {
+        $idUtente = getIdUtenteByIdLogin($idLogin);
+        confrontaConUltimoTentativoDiLogin($idLogin,$idUtente);
+        $idTwoFact = verificaCodiceSecondoFattore($idLogin, $codice);
+        aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
+        invalidoSessioniPrecedenti($idUtente);
+        $idSessione = registraSessione($idLogin,$idUtente);
+       /* aggiornoLoginConSessione($idSessione);
+
+        $impronta = null;
+        if (IMPRONTE_SESSIONE_ABILITATE) {
+            $impronta = registraImprontaSessione();
+        }
+
+
+        $oggetto = new stdClass();
+        $oggetto->idSessione = $idSessione;
+        if (IMPRONTE_SESSIONE_ABILITATE) {
+            $oggetto->impronta = $impronta;
+        }
+        return $oggetto;*/
+
+        header('ID_SESSIONE: '.$idSessione);
+
+    }
+}
+
+if (!function_exists('getIdUtenteByIdLogin')) {
+    function getIdUtenteByIdLogin($idLogin)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_login WHERE idLogin = :idLogin ");
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return $result[0]["idUtente"];
+    }
+}
+
+if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
+    function confrontaConUltimoTentativoDiLogin($idLogin,$idUtente)
+    {
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idLogin FROM " . PREFISSO_TAVOLA . "_login WHERE idUtente = :idUtente ORDER BY dataCreazione desc LIMIT 1");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        if($result[0]["idLogin"]!=$idLogin)
+            throw new AccessoNonAutorizzatoLoginException();    
+        
+    }
+}
+
+if (!function_exists('verificaCodiceSecondoFattore')) {
+    function verificaCodiceSecondoFattore($idLogin, $codice)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idTwoFact FROM " . PREFISSO_TAVOLA . "_two_fact WHERE idLogin = :idLogin AND codice = :codice AND dataUtilizzo IS NULL");
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->bindParam(':codice', $codice);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return $result[0]["idTwoFact"];
+
+    }
+}
+
+if (!function_exists('aggiornoDataUtilizzoCodiceSecondoFattore')) {
+    function aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_two_fact SET dataUtilizzo = current_timestamp WHERE idTwoFact = :idTwoFact ");
+        $stmt->bindParam(':idTwoFact', $idTwoFact);
+        $stmt->execute();
+
+    }
+}
+
+if (!function_exists('invalidoSessioniPrecedenti')) {
+    function invalidoSessioniPrecedenti($idUtente)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_sessioni SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente ");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->execute();
+
+    }
+}
+
+if (!function_exists('registraSessione')) {
+    function registraSessione($idLogin, $idUtente)
+    {
+        $idSessione = generaUUID();
+        $indirizzoIp = cifraStringa(getIndirizzoIp());
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_sessioni(idSessione, idLogin, idUtente, dataGenerazione, dataInizioValidita, indirizzoIp) VALUES (:idSessione, :idLogin, :idUtente, current_timestamp, current_timestamp, :indirizzoIp)");
+        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+        $stmt->execute();
+        
+        return $idSessione;
+    }
+}
+
+//------------------------------------------------------------------------
+
+if (!function_exists('recuperaSessioneDaLogin')) {
+    function recuperaSessioneDaLogin($idLogin)
+    {
+    }
+}
+

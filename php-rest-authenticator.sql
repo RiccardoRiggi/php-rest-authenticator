@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Gen 29, 2023 alle 22:02
+-- Creato il: Feb 17, 2023 alle 20:57
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -98,7 +98,7 @@ CREATE TABLE `au_log_chiamate` (
   `idLogChiamata` int(10) NOT NULL,
   `idSessione` varchar(255) NOT NULL,
   `indirizzoIp` varchar(255) NOT NULL,
-  `dataEvento` datetime NOT NULL,
+  `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
   `pathChiamato` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -126,7 +126,8 @@ CREATE TABLE `au_metodi_login` (
   `idTipoMetodoLogin` varchar(32) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
-  `dataFineValidita` datetime DEFAULT NULL
+  `dataFineValidita` datetime DEFAULT NULL,
+  `isPredefinito` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -217,7 +218,7 @@ CREATE TABLE `au_ruoli_risorse` (
 
 CREATE TABLE `au_sessioni` (
   `idSessione` varchar(512) NOT NULL,
-  `idLogin` int(10) NOT NULL,
+  `idLogin` varchar(512) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataGenerazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataInizioValidita` datetime DEFAULT NULL,
@@ -256,10 +257,10 @@ CREATE TABLE `au_two_fact` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_t_medoti_login`
+-- Struttura della tabella `au_t_metodi_login`
 --
 
-CREATE TABLE `au_t_medoti_login` (
+CREATE TABLE `au_t_metodi_login` (
   `idTipoMetodoLogin` varchar(32) NOT NULL,
   `descrizione` varchar(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -267,10 +268,10 @@ CREATE TABLE `au_t_medoti_login` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_t_medoti_rec_psw`
+-- Struttura della tabella `au_t_metodi_rec_psw`
 --
 
-CREATE TABLE `au_t_medoti_rec_psw` (
+CREATE TABLE `au_t_metodi_rec_psw` (
   `idTipoMetodoRecPsw` varchar(32) NOT NULL,
   `descrizione` varchar(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -411,15 +412,15 @@ ALTER TABLE `au_two_fact`
   ADD PRIMARY KEY (`idTwoFact`);
 
 --
--- Indici per le tabelle `au_t_medoti_login`
+-- Indici per le tabelle `au_t_metodi_login`
 --
-ALTER TABLE `au_t_medoti_login`
+ALTER TABLE `au_t_metodi_login`
   ADD PRIMARY KEY (`idTipoMetodoLogin`);
 
 --
--- Indici per le tabelle `au_t_medoti_rec_psw`
+-- Indici per le tabelle `au_t_metodi_rec_psw`
 --
-ALTER TABLE `au_t_medoti_rec_psw`
+ALTER TABLE `au_t_metodi_rec_psw`
   ADD PRIMARY KEY (`idTipoMetodoRecPsw`);
 
 --
@@ -432,7 +433,8 @@ ALTER TABLE `au_t_ruoli`
 -- Indici per le tabelle `au_utenti`
 --
 ALTER TABLE `au_utenti`
-  ADD PRIMARY KEY (`idUtente`);
+  ADD PRIMARY KEY (`idUtente`),
+  ADD UNIQUE KEY `email` (`email`) USING HASH;
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate

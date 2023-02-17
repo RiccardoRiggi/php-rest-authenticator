@@ -13,6 +13,9 @@ if (!defined("PREFISSO_TAVOLA"))
 if (!defined("NOME_APPLICAZIONE"))
     define("NOME_APPLICAZIONE", "PHP Rest Authenticator");
 
+if (!defined("IMPRONTE_SESSIONE_ABILITATE"))
+    define("IMPRONTE_SESSIONE_ABILITATE", true);
+
 //Informazioni per la cifratura
 if (!defined("CIPHERING_VALUE"))
     define("CIPHERING_VALUE", "AES-128-CTR");
