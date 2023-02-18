@@ -1,5 +1,10 @@
 <?php
 
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getMetodoAutenticazionePredefinito
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
 if (!function_exists('getMedotoAutenticazionePredefinito')) {
     function getMedotoAutenticazionePredefinito($email)
     {
@@ -79,6 +84,11 @@ if (!function_exists('getUtenteSenzaPassword')) {
         return $result;
     }
 }
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: effettuaAutenticazione
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
 
 if (!function_exists('effettuaAutenticazione')) {
     function effettuaAutenticazione($email, $password, $tipoAutenticazione)
@@ -223,33 +233,32 @@ if (!function_exists('verificaEsistenzaMetodoSecondoFattorePerUtente')) {
     }
 }
 
-// ---------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: confermaAutenticazione
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 if (!function_exists('confermaAutenticazione')) {
     function confermaAutenticazione($idLogin, $codice)
     {
         $idUtente = getIdUtenteByIdLogin($idLogin);
-        confrontaConUltimoTentativoDiLogin($idLogin,$idUtente);
+        confrontaConUltimoTentativoDiLogin($idLogin, $idUtente);
         $idTwoFact = verificaCodiceSecondoFattore($idLogin, $codice);
         aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
         invalidoSessioniPrecedenti($idUtente);
-        $idSessione = registraSessione($idLogin,$idUtente);
-       /* aggiornoLoginConSessione($idSessione);
+        $idSessione = registraSessione($idLogin, $idUtente);
+        aggiornoLoginConSessione($idLogin,$idSessione);
 
+        
         $impronta = null;
         if (IMPRONTE_SESSIONE_ABILITATE) {
-            $impronta = registraImprontaSessione();
+            $impronta = registraImprontaSessione($idSessione);
         }
 
-
-        $oggetto = new stdClass();
-        $oggetto->idSessione = $idSessione;
+        header('SESSIONE: ' . $idSessione);
         if (IMPRONTE_SESSIONE_ABILITATE) {
-            $oggetto->impronta = $impronta;
-        }
-        return $oggetto;*/
+            header('IMPRONTA: ' . $impronta);
 
-        header('ID_SESSIONE: '.$idSessione);
+        }
 
     }
 }
@@ -271,7 +280,7 @@ if (!function_exists('getIdUtenteByIdLogin')) {
 }
 
 if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
-    function confrontaConUltimoTentativoDiLogin($idLogin,$idUtente)
+    function confrontaConUltimoTentativoDiLogin($idLogin, $idUtente)
     {
 
         $conn = apriConnessione();
@@ -283,9 +292,8 @@ if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
 
-        if($result[0]["idLogin"]!=$idLogin)
-            throw new AccessoNonAutorizzatoLoginException();    
-        
+        if ($result[0]["idLogin"] != $idLogin)
+            throw new AccessoNonAutorizzatoLoginException();
     }
 }
 
@@ -293,7 +301,7 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
     function verificaCodiceSecondoFattore($idLogin, $codice)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idTwoFact FROM " . PREFISSO_TAVOLA . "_two_fact WHERE idLogin = :idLogin AND codice = :codice AND dataUtilizzo IS NULL");
+        $stmt = $conn->prepare("SELECT idTwoFact, tentativi FROM " . PREFISSO_TAVOLA . "_two_fact WHERE idLogin = :idLogin AND codice = :codice AND dataUtilizzo IS NULL");
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':codice', $codice);
         $stmt->execute();
@@ -302,8 +310,14 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
 
-        return $result[0]["idTwoFact"];
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_two_fact SET tentativi = tentativi + 1 WHERE idLogin = :idLogin ");
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->execute();
 
+        if ($result[0]["tentativi"]>5)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return $result[0]["idTwoFact"];
     }
 }
 
@@ -314,7 +328,6 @@ if (!function_exists('aggiornoDataUtilizzoCodiceSecondoFattore')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_two_fact SET dataUtilizzo = current_timestamp WHERE idTwoFact = :idTwoFact ");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
-
     }
 }
 
@@ -325,7 +338,6 @@ if (!function_exists('invalidoSessioniPrecedenti')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_sessioni SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente ");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
-
     }
 }
 
@@ -336,22 +348,106 @@ if (!function_exists('registraSessione')) {
         $indirizzoIp = cifraStringa(getIndirizzoIp());
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_sessioni(idSessione, idLogin, idUtente, dataGenerazione, dataInizioValidita, indirizzoIp) VALUES (:idSessione, :idLogin, :idUtente, current_timestamp, current_timestamp, :indirizzoIp)");
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_sessioni(idSessione, idLogin, idUtente, dataGenerazione, dataInizioValidita, indirizzoIp, userAgent) VALUES (:idSessione, :idLogin, :idUtente, current_timestamp, current_timestamp, :indirizzoIp, :userAgent)");
         $stmt->bindParam(':idSessione', $idSessione);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+        $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
-        
+
         return $idSessione;
     }
 }
 
-//------------------------------------------------------------------------
+if (!function_exists('aggiornoLoginConSessione')) {
+    function aggiornoLoginConSessione($idLogin,$idSessione)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_login SET idSessione = :idSessione WHERE idLogin = :idLogin ");
+        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->execute();
+    }
+}
+
+if (!function_exists('registraImprontaSessione')) {
+    function registraImprontaSessione($idSessione)
+    {
+        $idImpronta = generaUUID();
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_sessioni_impronte(idSessione, idImpronta, dataGenerazione) VALUES (:idSessione, :idImpronta, current_timestamp)");
+        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt->bindParam(':idImpronta', $idImpronta);
+        $stmt->execute();
+
+        return $idImpronta;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: recuperaSessioneDaLogin
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 if (!function_exists('recuperaSessioneDaLogin')) {
     function recuperaSessioneDaLogin($idLogin)
     {
+
+        $idSessione = recuperaSessioneDaIdLogin($idLogin);
+
+        $impronta = null;
+        if (IMPRONTE_SESSIONE_ABILITATE) {
+            $impronta = recuperaPrimaImprontaDaSessione($idSessione);
+        }
+
+        header('SESSIONE: ' . $idSessione);
+        if (IMPRONTE_SESSIONE_ABILITATE) {
+            header('IMPRONTA: ' . $impronta);
+
+        }
+
     }
 }
 
+if (!function_exists('recuperaSessioneDaIdLogin')) {
+    function recuperaSessioneDaIdLogin($idLogin)
+    {
+
+        $indirizzoIp = cifraStringa(getIndirizzoIp());
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idSessione FROM " . PREFISSO_TAVOLA . "_sessioni WHERE idLogin = :idLogin AND dataFineValidita IS NULL and indirizzoIp = :indirizzoIp AND userAgent = :userAgent ");
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+        $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return  $result[0]["idSessione"];   
+
+    
+    }
+}
+
+if (!function_exists('recuperaPrimaImprontaDaSessione')) {
+    function recuperaPrimaImprontaDaSessione($idSessione)
+    {
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idImpronta FROM " . PREFISSO_TAVOLA . "_sessioni_impronte WHERE idSessione = :idSessione ORDER BY dataGenerazione ASC LIMIT 1");
+        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return  $result[0]["idImpronta"];   
+
+    
+    }
+}

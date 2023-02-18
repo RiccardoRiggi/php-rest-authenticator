@@ -79,9 +79,10 @@ try {
 
 
 
-        $response = recuperaSessioneDaLogin($jsonBody["idLogin"]);
+        recuperaSessioneDaLogin($jsonBody["idLogin"]);
         http_response_code(200);
-        exit(json_encode($response));
+    }else{
+        throw new ErroreServerException("Metodo non implementato");
     }
 } catch (AccessoNonAutorizzatoLoginException $e) {
     httpAccessoNonAutorizzatoLogin();

@@ -7,10 +7,10 @@ include './database/database.php';
 include './utils/httpResponseCodeUtils.php';
 
 //http_response_code(403);
-//header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 
 //generaLog(json_encode($$_REQUEST));
-//echo json_encode($_SERVER);
+echo json_encode($_SERVER);
 
 //generaLog(json_decode(file_get_contents('php://input'), true));
 
@@ -26,6 +26,8 @@ include './utils/httpResponseCodeUtils.php';
 
 //httpAccessoNonAutorizzato();
 
+
+/*
 //Nome
 echo "Riccardo"." ".cifraStringa("Riccardo");
 echo "<br/>";
@@ -38,3 +40,4 @@ echo "<br/>";
 //Password
 echo "123456"." ".md5(md5("123456"));
 echo "<br/>";
+*/
