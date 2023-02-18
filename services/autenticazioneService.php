@@ -301,7 +301,7 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
     function verificaCodiceSecondoFattore($idLogin, $codice)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idTwoFact, tentativi FROM " . PREFISSO_TAVOLA . "_two_fact WHERE idLogin = :idLogin AND codice = :codice AND dataUtilizzo IS NULL");
+        $stmt = $conn->prepare("SELECT idTwoFact, tentativi FROM " . PREFISSO_TAVOLA . "_two_fact WHERE idLogin = :idLogin AND codice = :codice AND dataUtilizzo IS NULL AND TIMESTAMPDIFF(MINUTE,dataCreazione,NOW()) < 4 ");
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':codice', $codice);
         $stmt->execute();

@@ -2,6 +2,8 @@
 
 include './importManager.php';
 include '../services/dispositivoFisicoService.php';
+include '../services/autenticazioneService.php';
+
 
 try {
 
@@ -22,7 +24,15 @@ try {
         if ($_SERVER['REQUEST_METHOD'] != "PUT")
             throw new MetodoHttpErratoException();
 
-        $response = abilitaDispositivoFisico($idDispositivoFisico, $nomeDispositivo);
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idDispositivoFisico"]))
+            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+
+        if (!isset($jsonBody["nomeDispositivo"]))
+            throw new ErroreServerException("Il campo nomeDispositivo è richiesto");
+
+        $response = abilitaDispositivoFisico($jsonBody["idDispositivoFisico"], $jsonBody["nomeDispositivo"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "disabilitaDispositivoFisico") {
@@ -30,7 +40,12 @@ try {
         if ($_SERVER['REQUEST_METHOD'] != "PUT")
             throw new MetodoHttpErratoException();
 
-        $response = disabilitaDispositivoFisico($idDispositivoFisico, $nomeDispositivo);
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idDispositivoFisico"]))
+            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+
+        $response = disabilitaDispositivoFisico($jsonBody["idDispositivoFisico"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getDispositiviFisici") {
@@ -41,6 +56,34 @@ try {
         $response = getDispositiviFisici();
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getRichiesteDiAccessoPendenti") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new MetodoHttpErratoException();
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idDispositivoFisico"]))
+            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+
+        $response = getRichiesteDiAccessoPendenti($jsonBody["idDispositivoFisico"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "autorizzaAccesso") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new MetodoHttpErratoException();
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idDispositivoFisico"]))
+            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+
+        if (!isset($jsonBody["idTwoFact"]))
+            throw new ErroreServerException("Il campo idTwoFact è richiesto");
+
+        autorizzaAccesso($jsonBody["idDispositivoFisico"], $jsonBody["idTwoFact"]);
+        http_response_code(200);
     } else {
         throw new ErroreServerException("Metodo non implementato");
     }
