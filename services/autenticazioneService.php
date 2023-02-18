@@ -86,6 +86,36 @@ if (!function_exists('getUtenteSenzaPassword')) {
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getMetodiAutenticazioneSupportati
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+if (!function_exists('getMetodiAutenticazioneSupportati')) {
+    function getMetodiAutenticazioneSupportati($email)
+    {
+
+        $emailCifrata = cifraStringa($email);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT t.idTipoMetodoLogin as codice, t.descrizione as descrizione FROM " . PREFISSO_TAVOLA . "_utenti u, " . PREFISSO_TAVOLA . "_metodi_login m, " . PREFISSO_TAVOLA . "_t_metodi_login t WHERE u.email = :email AND u.idUtente = m.idUtente AND m.idTipoMetodoLogin = t.idTipoMetodoLogin AND m.dataFineValidita IS NULL AND dataEliminazione IS NULL AND dataBlocco is NULL");
+        $stmt->bindParam(':email', $emailCifrata);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) == 0) {
+            $tmp = "EMAIL_PSW_SIX_EMAIL";
+            $stmt = $conn->prepare("SELECT idTipoMetodoLogin as codice, descrizione FROM " . PREFISSO_TAVOLA . "_t_metodi_login WHERE idTipoMetodoLogin = :idTipoMetodoLogin ");
+            $stmt->bindParam(':idTipoMetodoLogin', $tmp);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        } else {
+            return $result;
+        }
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Funzione: effettuaAutenticazione
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 

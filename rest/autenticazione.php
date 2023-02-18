@@ -22,6 +22,19 @@ try {
         $response = getMedotoAutenticazionePredefinito($jsonBody["email"]);
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getMetodiAutenticazioneSupportati") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new MetodoHttpErratoException();
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["email"]))
+            throw new ErroreServerException("Il campo email è richiesto");
+
+        $response = getMetodiAutenticazioneSupportati($jsonBody["email"]);
+        http_response_code(200);
+        exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "effettuaAutenticazione") {
 
 
@@ -81,7 +94,7 @@ try {
 
         recuperaSessioneDaLogin($jsonBody["idLogin"]);
         http_response_code(200);
-    }else{
+    } else {
         throw new ErroreServerException("Metodo non implementato");
     }
 } catch (AccessoNonAutorizzatoLoginException $e) {
