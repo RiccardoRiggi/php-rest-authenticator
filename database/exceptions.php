@@ -38,3 +38,25 @@ class ErroreServerException extends Exception
         return $this->message;
     }
 }
+
+class OtterGuardianException extends Exception
+{
+    public $message = "";
+    public $status = 500;
+
+    public function __construct($status,$message)
+    {
+        $this->message = $message;
+        $this->status = $status;
+    }
+
+    public function getErrorMessage()
+    {
+        return $this->message;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+}

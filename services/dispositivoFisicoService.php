@@ -191,7 +191,7 @@ if (!function_exists('getIdUtenteByIdTwoFact')) {
     function getIdUtenteByIdTwoFact($idTwoFact)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND f.dataUtilizzo IS NULL AND l.idSessione IS NULL");
+        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND f.dataUtilizzo IS NULL AND l.idSessione IS NULL AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -207,7 +207,7 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
     function getIdLoginByIdTwoFact($idTwoFact)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT f.idLogin as idLogin FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact");
+        $stmt = $conn->prepare("SELECT f.idLogin as idLogin FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -216,5 +216,35 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
             throw new AccessoNonAutorizzatoLoginException();
 
         return $result[0]["idLogin"];
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: autorizzaQrCode
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('autorizzaQrCode')) {
+    function autorizzaQrCode($idDispositivoFisico, $idQrCode)
+    {
+
+        $idUtenteDaDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
+        $idLogin = $idQrCode;
+        invalidoSessioniPrecedenti($idUtenteDaDispositivo);
+        $idSessione = registraSessione($idLogin, $idUtenteDaDispositivo);
+        inserisciLoginDaQrCode($idLogin,$idUtenteDaDispositivo,$idSessione);
+    }
+}
+
+if (!function_exists('inserisciLoginDaQrCode')) {
+    function inserisciLoginDaQrCode($idLogin,$idUtente,$idSessione)
+    {
+        $idLogin = generaUUID();
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_login(idLogin, idUtente, idTipoLogin,idSessione) VALUES (:idLogin, :idUtente, 'QR_CODE' ,:idSessione)");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt->execute();
+        return $idLogin;
     }
 }

@@ -27,10 +27,10 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+            throw new OtterGuardianException(400,"Il campo idDispositivoFisico è richiesto");
 
         if (!isset($jsonBody["nomeDispositivo"]))
-            throw new ErroreServerException("Il campo nomeDispositivo è richiesto");
+            throw new OtterGuardianException(400,"Il campo nomeDispositivo è richiesto");
 
         $response = abilitaDispositivoFisico($jsonBody["idDispositivoFisico"], $jsonBody["nomeDispositivo"]);
         http_response_code(200);
@@ -43,7 +43,7 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+            throw new OtterGuardianException(400,"Il campo idDispositivoFisico è richiesto");
 
         $response = disabilitaDispositivoFisico($jsonBody["idDispositivoFisico"]);
         http_response_code(200);
@@ -64,7 +64,7 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+            throw new OtterGuardianException(400,"Il campo idDispositivoFisico è richiesto");
 
         $response = getRichiesteDiAccessoPendenti($jsonBody["idDispositivoFisico"]);
         http_response_code(200);
@@ -77,12 +77,27 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new ErroreServerException("Il campo idDispositivoFisico è richiesto");
+            throw new OtterGuardianException(400,"Il campo idDispositivoFisico è richiesto");
 
         if (!isset($jsonBody["idTwoFact"]))
-            throw new ErroreServerException("Il campo idTwoFact è richiesto");
+            throw new OtterGuardianException(400,"Il campo idTwoFact è richiesto");
 
         autorizzaAccesso($jsonBody["idDispositivoFisico"], $jsonBody["idTwoFact"]);
+        http_response_code(200);
+    } else if ($_GET["nomeMetodo"] == "autorizzaQrCode") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new MetodoHttpErratoException();
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idDispositivoFisico"]))
+            throw new OtterGuardianException(400,"Il campo idDispositivoFisico è richiesto");
+
+        if (!isset($jsonBody["idQrCode"]))
+            throw new OtterGuardianException(400,"Il campo idQrCode è richiesto");
+
+        autorizzaQrCode($jsonBody["idDispositivoFisico"], $jsonBody["idQrCode"]);
         http_response_code(200);
     } else {
         throw new ErroreServerException("Metodo non implementato");
@@ -95,6 +110,12 @@ try {
     httpMetodoHttpErrato();
 } catch (ErroreServerException $e) {
     httpErroreServer($e->getMessage());
+} catch (OtterGuardianException $e) {
+    http_response_code($e->getStatus());
+    $oggetto = new stdClass();
+    $oggetto->codice = $e->getStatus();
+    $oggetto->descrizione = $e->getMessage();
+    exit(json_encode($oggetto));
 } catch (Exception $e) {
     generaLogSuFile("Errore sconosciuto: " . $e->getMessage());
     httpErroreServer("Errore sconosciuto");

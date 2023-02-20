@@ -18,7 +18,7 @@ if (!function_exists('getMedotoAutenticazionePredefinito')) {
         $result = $stmt->fetchAll();
 
         if (count($result) > 1)
-            throw new ErroreServerException("Errore durante la ricerca del metodo di autenticazione predefinito");
+            throw new OtterGuardianException(500,"Errore di configurazione, hai impostato più di un metodo di autenticazione predefinito");
 
         if (count($result) == 0) {
             $tmp = "EMAIL_PSW_SIX_EMAIL";
@@ -211,7 +211,7 @@ if (!function_exists('getMedotoSecondoFattorePreferito')) {
         $result = $stmt->fetchAll();
 
         if (count($result) > 1)
-            throw new ErroreServerException("Errore durante il processo di generazione del codice per il secondo fattore");
+            throw new OtterGuardianException(500,"Errore di configurazione, hai selezionato più metodi predefiniti");
 
         return count($result) == 0 ? "EMAIL_PSW_SIX_EMAIL" : $result[0]["idTipoMetodoLogin"];
     }
@@ -271,14 +271,21 @@ if (!function_exists('confermaAutenticazione')) {
     function confermaAutenticazione($idLogin, $codice)
     {
         $idUtente = getIdUtenteByIdLogin($idLogin);
-        confrontaConUltimoTentativoDiLogin($idLogin, $idUtente);
-        $idTwoFact = verificaCodiceSecondoFattore($idLogin, $codice);
-        aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
+        $idTipoLogin = getIdTipoLoginByIdLogin($idLogin);
+        if ($idTipoLogin != "EMAIL_PSW_BACKUP_CODE") {
+            confrontaConUltimoTentativoDiLogin($idLogin, $idUtente);
+            $idTwoFact = verificaCodiceSecondoFattore($idLogin, $codice);
+            aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
+        } else {
+            verificaCodiceBackup($idUtente, $codice);
+            registraUtilizzoCodiceBackup($idUtente, $codice);
+        }
+
         invalidoSessioniPrecedenti($idUtente);
         $idSessione = registraSessione($idLogin, $idUtente);
-        aggiornoLoginConSessione($idLogin,$idSessione);
+        aggiornoLoginConSessione($idLogin, $idSessione);
 
-        
+
         $impronta = null;
         if (IMPRONTE_SESSIONE_ABILITATE) {
             $impronta = registraImprontaSessione($idSessione);
@@ -287,9 +294,51 @@ if (!function_exists('confermaAutenticazione')) {
         header('SESSIONE: ' . $idSessione);
         if (IMPRONTE_SESSIONE_ABILITATE) {
             header('IMPRONTA: ' . $impronta);
-
         }
+    }
+}
 
+if (!function_exists('registraUtilizzoCodiceBackup')) {
+    function registraUtilizzoCodiceBackup($idUtente,$codice)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_codici_backup SET dataUtilizzo = current_timestamp WHERE idUtente = :idUtente AND codice = :codice");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':codice', $codice);
+        $stmt->execute();
+    }
+}
+
+if (!function_exists('verificaCodiceBackup')) {
+    function verificaCodiceBackup($idUtente, $codice)
+    {
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_codici_backup WHERE idUtente = :idUtente AND :codice = :codice AND dataUtilizzo IS NULL");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':codice', $codice);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+    }
+}
+
+if (!function_exists('getIdTipoLoginByIdLogin')) {
+    function getIdTipoLoginByIdLogin($idLogin)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idTipoLogin FROM " . PREFISSO_TAVOLA . "_login WHERE idLogin = :idLogin AND TIMESTAMPDIFF(MINUTE,dataCreazione,NOW()) < 4");
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+        throw new OtterGuardianException(401,"Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
+
+        return $result[0]["idTipoLogin"];
     }
 }
 
@@ -297,13 +346,13 @@ if (!function_exists('getIdUtenteByIdLogin')) {
     function getIdUtenteByIdLogin($idLogin)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_login WHERE idLogin = :idLogin ");
+        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_login WHERE idLogin = :idLogin AND TIMESTAMPDIFF(MINUTE,dataCreazione,NOW()) < 4");
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
         $result = $stmt->fetchAll();
 
         if (count($result) != 1)
-            throw new AccessoNonAutorizzatoLoginException();
+            throw new OtterGuardianException(401,"Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
 
         return $result[0]["idUtente"];
     }
@@ -314,7 +363,7 @@ if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
     {
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idLogin FROM " . PREFISSO_TAVOLA . "_login WHERE idUtente = :idUtente ORDER BY dataCreazione desc LIMIT 1");
+        $stmt = $conn->prepare("SELECT idLogin FROM " . PREFISSO_TAVOLA . "_login WHERE idUtente = :idUtente AND TIMESTAMPDIFF(MINUTE,dataCreazione,NOW()) < 4 ORDER BY dataCreazione desc LIMIT 1");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -323,7 +372,7 @@ if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
             throw new AccessoNonAutorizzatoLoginException();
 
         if ($result[0]["idLogin"] != $idLogin)
-            throw new AccessoNonAutorizzatoLoginException();
+            throw new OtterGuardianException(401,"Verifica di stare autorizzando il tentativo di accesso più recente");
     }
 }
 
@@ -344,8 +393,8 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
 
-        if ($result[0]["tentativi"]>5)
-            throw new AccessoNonAutorizzatoLoginException();
+        if ($result[0]["tentativi"] > 5)
+            throw new OtterGuardianException(401,"Hai superato il numero massimo di tentativi");
 
         return $result[0]["idTwoFact"];
     }
@@ -391,7 +440,7 @@ if (!function_exists('registraSessione')) {
 }
 
 if (!function_exists('aggiornoLoginConSessione')) {
-    function aggiornoLoginConSessione($idLogin,$idSessione)
+    function aggiornoLoginConSessione($idLogin, $idSessione)
     {
         $conn = apriConnessione();
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_login SET idSessione = :idSessione WHERE idLogin = :idLogin ");
@@ -434,9 +483,7 @@ if (!function_exists('recuperaSessioneDaLogin')) {
         header('SESSIONE: ' . $idSessione);
         if (IMPRONTE_SESSIONE_ABILITATE) {
             header('IMPRONTA: ' . $impronta);
-
         }
-
     }
 }
 
@@ -457,9 +504,7 @@ if (!function_exists('recuperaSessioneDaIdLogin')) {
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
 
-        return  $result[0]["idSessione"];   
-
-    
+        return  $result[0]["idSessione"];
     }
 }
 
@@ -476,8 +521,45 @@ if (!function_exists('recuperaPrimaImprontaDaSessione')) {
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
 
-        return  $result[0]["idImpronta"];   
+        return  $result[0]["idImpronta"];
+    }
+}
 
-    
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: generaQrCode
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('generaQrCode')) {
+    function generaQrCode()
+    {
+        $idQrCode = generaUUID();
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_qr_code (idQrCode, dataInizioValidita) VALUES (:idQrCode, current_timestamp)");
+        $stmt->bindParam(':idQrCode', $idQrCode);
+        $stmt->execute();
+
+        return $idQrCode;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: recuperaSessioneDaQrCode
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('recuperaSessioneDaQrCode')) {
+    function recuperaSessioneDaQrCode($idLogin)
+    {
+
+        $idSessione = recuperaSessioneDaIdLogin($idLogin);
+        $impronta = null;
+        if (IMPRONTE_SESSIONE_ABILITATE) {
+            $impronta = recuperaPrimaImprontaDaSessione($idSessione);
+        }
+
+        header('SESSIONE: ' . $idSessione);
+        if (IMPRONTE_SESSIONE_ABILITATE) {
+            header('IMPRONTA: ' . $impronta);
+        }
     }
 }
