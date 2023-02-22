@@ -220,12 +220,14 @@ if (!function_exists('getMedotoSecondoFattorePreferito')) {
 if (!function_exists('inserisciLogin')) {
     function inserisciLogin($idUtente, $idTipoLogin)
     {
+        $indirizzoIp = cifraStringa(getIndirizzoIp());
         $idLogin = generaUUID();
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_login(idLogin, idUtente, idTipoLogin) VALUES (:idLogin, :idUtente, :idTipoLogin)");
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_login(idLogin, idUtente, idTipoLogin, indirizzoIp) VALUES (:idLogin, :idUtente, :idTipoLogin, :indirizzoIp)");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':idTipoLogin', $idTipoLogin);
+        $stmt->bindParam(':indirizzoIp',$indirizzoIp);
         $stmt->execute();
         return $idLogin;
     }
@@ -234,13 +236,15 @@ if (!function_exists('inserisciLogin')) {
 if (!function_exists('inserisciCodiceSecondoFattore')) {
     function inserisciCodiceSecondoFattore($idLogin)
     {
+        $indirizzoIp = cifraStringa(getIndirizzoIp());
         $idTwoFact = generaUUID();
         $codice = generaCodiceSeiCifre();
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_two_fact(idTwoFact, idLogin, codice) VALUES (:idTwoFact, :idLogin, :codice)");
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_two_fact(idTwoFact, idLogin, codice, indirizzoIp) VALUES (:idTwoFact, :idLogin, :codice, :indirizzoIp)");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':codice', $codice);
+        $stmt->bindParam(':indirizzoIp',$indirizzoIp);
         $stmt->execute();
         return $codice;
     }

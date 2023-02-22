@@ -157,11 +157,18 @@ if (!function_exists('getAccessiPendenti')) {
 
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND f.dataUtilizzo IS NULL AND l.idSessione IS NULL AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1");
+        $stmt = $conn->prepare("SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND f.dataUtilizzo IS NULL AND l.idSessione IS NULL AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
-        return $result;
+        $array = [];
+        foreach ($result as $value) {
+            $tmp = $value;
+            $tmp["indirizzoIp"] = decifraStringa($value["indirizzoIp"]);
+            $tmp["5"] = decifraStringa($value["5"]);
+            array_push($array,$tmp);
+          }
+        return $array;
     }
 }
 
@@ -246,5 +253,21 @@ if (!function_exists('inserisciLoginDaQrCode')) {
         $stmt->bindParam(':idSessione', $idSessione);
         $stmt->execute();
         return $idLogin;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: isDispositivoAbilitato
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('isDispositivoAbilitato')) {
+    function isDispositivoAbilitato($idDispositivoFisico)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idDispositivoFisico FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idDispositivoFisico = :idDispositivoFisico AND dataAbilitazione IS NOT NULL and dataDisabilitazione IS NULL ORDER BY dataAbilitazione DESC");
+        $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return count($result) == 1;
     }
 }

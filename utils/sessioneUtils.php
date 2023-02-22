@@ -27,6 +27,7 @@ if (!function_exists('verificaValiditaSessione')) {
         }
 
         verificaValiditaUtente($idUtente);
+        aggiornaDataUltimoUtilizzo($idSessione);
 
         header('SESSIONE: ' . $idSessione);
        
@@ -128,5 +129,15 @@ if (!function_exists('registraImprontaSessione')) {
         $stmt->execute();
 
         return $idImpronta;
+    }
+}
+
+if (!function_exists('aggiornaDataUltimoUtilizzo')) {
+    function aggiornaDataUltimoUtilizzo($idSessione)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_sessioni SET dataUltimoUtilizzo = current_timestamp WHERE idSessione = :idSessione ");
+        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt->execute();
     }
 }

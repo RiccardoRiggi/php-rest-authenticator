@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 17, 2023 alle 20:57
+-- Creato il: Feb 22, 2023 alle 20:50
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -45,8 +45,8 @@ CREATE TABLE `au_codici_backup` (
 CREATE TABLE `au_dispositivi_fisici` (
   `idDispositivoFisico` varchar(512) NOT NULL,
   `idUtente` int(10) NOT NULL,
-  `nomeDispositivo` varchar(512) NOT NULL,
-  `dataAbilitazione` datetime NOT NULL DEFAULT current_timestamp(),
+  `nomeDispositivo` varchar(512) DEFAULT NULL,
+  `dataAbilitazione` datetime DEFAULT current_timestamp(),
   `dataDisabilitazione` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -73,7 +73,8 @@ CREATE TABLE `au_login` (
   `idUtente` int(10) NOT NULL,
   `idTipoLogin` varchar(32) NOT NULL,
   `idSessione` varchar(512) DEFAULT NULL,
-  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
+  `indirizzoIp` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -223,7 +224,9 @@ CREATE TABLE `au_sessioni` (
   `dataGenerazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataInizioValidita` datetime DEFAULT NULL,
   `dataFineValidita` datetime DEFAULT NULL,
-  `indirizzoIp` varchar(512) NOT NULL
+  `indirizzoIp` varchar(512) NOT NULL,
+  `userAgent` varchar(512) NOT NULL,
+  `dataUltimoUtilizzo` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -251,7 +254,9 @@ CREATE TABLE `au_two_fact` (
   `idRecPsw` varchar(512) NOT NULL,
   `codice` varchar(32) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `dataUtilizzo` datetime DEFAULT NULL
+  `dataUtilizzo` datetime DEFAULT NULL,
+  `tentativi` int(11) NOT NULL,
+  `indirizzoIp` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
