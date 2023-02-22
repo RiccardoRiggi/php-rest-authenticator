@@ -4,6 +4,13 @@ include './importManager.php';
 include '../services/autenticazioneService.php';
 
 try {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: X-Requested-With,Authorization,Content-Type');
+    header('Access-Control-Max-Age: 86400');
+    if (strtolower($_SERVER['REQUEST_METHOD']) == 'options')
+        exit();
+
 
     if (!isset($_GET["nomeMetodo"]))
         throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
@@ -17,7 +24,7 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400,"Il campo email è richiesto");
+            throw new OtterGuardianException(400, "Il campo email è richiesto");
 
         $response = getMedotoAutenticazionePredefinito($jsonBody["email"]);
         http_response_code(200);
@@ -30,7 +37,7 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400,"Il campo email è richiesto");
+            throw new OtterGuardianException(400, "Il campo email è richiesto");
 
         $response = getMetodiAutenticazioneSupportati($jsonBody["email"]);
         http_response_code(200);
@@ -46,11 +53,11 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400,"Il campo email è richiesto");
+            throw new OtterGuardianException(400, "Il campo email è richiesto");
 
         if (!isset($jsonBody["password"])) {
             if (!isset($jsonBody["tipoAutenticazione"]) || str_contains($jsonBody["tipoAutenticazione"], "PSW",)) {
-                throw new OtterGuardianException(400,"Il campo password è richiesto");
+                throw new OtterGuardianException(400, "Il campo password è richiesto");
             }
         }
 
@@ -68,10 +75,10 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["idLogin"]))
-            throw new OtterGuardianException(400,"Il campo idLogin è richiesto");
+            throw new OtterGuardianException(400, "Il campo idLogin è richiesto");
 
         if (!isset($jsonBody["codice"]))
-            throw new OtterGuardianException(400,"Il campo codice è richiesto");
+            throw new OtterGuardianException(400, "Il campo codice è richiesto");
 
 
         confermaAutenticazione($jsonBody["idLogin"], $jsonBody["codice"]);
@@ -87,7 +94,7 @@ try {
         $jsonBody = json_decode(file_get_contents('php://input'), true);
 
         if (!isset($jsonBody["idLogin"]))
-            throw new OtterGuardianException(400,"Il campo idLogin è richiesto");
+            throw new OtterGuardianException(400, "Il campo idLogin è richiesto");
 
 
 
@@ -111,12 +118,12 @@ try {
             throw new MetodoHttpErratoException();
 
         if (!isset($_GET["idQrCode"]))
-            throw new OtterGuardianException(400,"Il campo idQrCode è richiesto");
+            throw new OtterGuardianException(400, "Il campo idQrCode è richiesto");
 
         recuperaSessioneDaQrCode($_GET["idQrCode"]);
         http_response_code(200);
     } else {
-        throw new OtterGuardianException(500,"Metodo non implementato");
+        throw new OtterGuardianException(500, "Metodo non implementato");
     }
 } catch (AccessoNonAutorizzatoLoginException $e) {
     httpAccessoNonAutorizzatoLogin();

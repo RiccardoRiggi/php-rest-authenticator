@@ -6,6 +6,13 @@ include '../services/autenticazioneService.php';
 
 
 try {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: X-Requested-With,Authorization,Content-Type');
+    header('Access-Control-Max-Age: 86400');
+    if (strtolower($_SERVER['REQUEST_METHOD']) == 'options')
+        exit();
+
 
     if (!isset($_GET["nomeMetodo"]))
         throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
