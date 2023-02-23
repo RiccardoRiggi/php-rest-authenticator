@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 22, 2023 alle 20:50
+-- Creato il: Feb 23, 2023 alle 23:08
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -74,7 +74,8 @@ CREATE TABLE `au_login` (
   `idTipoLogin` varchar(32) NOT NULL,
   `idSessione` varchar(512) DEFAULT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `indirizzoIp` varchar(512) NOT NULL
+  `indirizzoIp` varchar(512) NOT NULL,
+  `userAgent` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
