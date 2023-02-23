@@ -6,7 +6,8 @@ include '../services/autenticazioneService.php';
 try {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: X-Requested-With,Authorization,Content-Type');
+    header('Access-Control-Allow-Headers: *');
+    header('Access-Control-Expose-Headers: *');
     header('Access-Control-Max-Age: 86400');
     if (strtolower($_SERVER['REQUEST_METHOD']) == 'options')
         exit();
@@ -86,19 +87,15 @@ try {
     } else if ($_GET["nomeMetodo"] == "recuperaSessioneDaLogin") {
 
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
             throw new MetodoHttpErratoException();
 
-
-
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
-
-        if (!isset($jsonBody["idLogin"]))
+        if (!isset($_GET["idLogin"]))
             throw new OtterGuardianException(400, "Il campo idLogin è richiesto");
 
 
 
-        recuperaSessioneDaLogin($jsonBody["idLogin"]);
+        recuperaSessioneDaLogin($_GET["idLogin"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "generaQrCode") {
 

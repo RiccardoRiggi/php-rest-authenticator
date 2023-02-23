@@ -186,11 +186,11 @@ if (!function_exists('autorizzaAccesso')) {
         if ($idUtenteDaDispositivo != $idUtenteTwoFact)
             throw new AccessoNonAutorizzatoLoginException();
 
-        $idLogin = getIdLoginByIdTwoFact($idTwoFact);
+        $login = getIdLoginByIdTwoFact($idTwoFact);
         aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
         invalidoSessioniPrecedenti($idUtenteDaDispositivo);
-        $idSessione = registraSessione($idLogin, $idUtenteDaDispositivo);
-        aggiornoLoginConSessione($idLogin, $idSessione);
+        $idSessione = registraSessione($login["idLogin"], $idUtenteDaDispositivo,$login["userAgent"]);
+        aggiornoLoginConSessione($login["idLogin"], $idSessione);
     }
 }
 
@@ -214,7 +214,7 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
     function getIdLoginByIdTwoFact($idTwoFact)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT f.idLogin as idLogin FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
+        $stmt = $conn->prepare("SELECT f.idLogin as idLogin, l.userAgent as userAgent FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -222,7 +222,7 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
 
-        return $result[0]["idLogin"];
+        return $result[0];
     }
 }
 
@@ -237,7 +237,7 @@ if (!function_exists('autorizzaQrCode')) {
         $idUtenteDaDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
         $idLogin = $idQrCode;
         invalidoSessioniPrecedenti($idUtenteDaDispositivo);
-        $idSessione = registraSessione($idLogin, $idUtenteDaDispositivo);
+        $idSessione = registraSessione($idLogin, $idUtenteDaDispositivo,"QR_CODE");
         inserisciLoginDaQrCode($idLogin,$idUtenteDaDispositivo,$idSessione);
     }
 }

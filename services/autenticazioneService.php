@@ -223,11 +223,12 @@ if (!function_exists('inserisciLogin')) {
         $indirizzoIp = cifraStringa(getIndirizzoIp());
         $idLogin = generaUUID();
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_login(idLogin, idUtente, idTipoLogin, indirizzoIp) VALUES (:idLogin, :idUtente, :idTipoLogin, :indirizzoIp)");
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_login(idLogin, idUtente, idTipoLogin, indirizzoIp, userAgent) VALUES (:idLogin, :idUtente, :idTipoLogin, :indirizzoIp, :userAgent)");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':idTipoLogin', $idTipoLogin);
         $stmt->bindParam(':indirizzoIp',$indirizzoIp);
+        $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
         return $idLogin;
     }
@@ -286,7 +287,7 @@ if (!function_exists('confermaAutenticazione')) {
         }
 
         invalidoSessioniPrecedenti($idUtente);
-        $idSessione = registraSessione($idLogin, $idUtente);
+        $idSessione = registraSessione($idLogin, $idUtente,$_SERVER["HTTP_USER_AGENT"]);
         aggiornoLoginConSessione($idLogin, $idSessione);
 
 
@@ -425,7 +426,7 @@ if (!function_exists('invalidoSessioniPrecedenti')) {
 }
 
 if (!function_exists('registraSessione')) {
-    function registraSessione($idLogin, $idUtente)
+    function registraSessione($idLogin, $idUtente,$userAgent)
     {
         $idSessione = generaUUID();
         $indirizzoIp = cifraStringa(getIndirizzoIp());
@@ -436,7 +437,7 @@ if (!function_exists('registraSessione')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
-        $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
+        $stmt->bindParam(':userAgent', $userAgent);
         $stmt->execute();
 
         return $idSessione;
@@ -512,6 +513,24 @@ if (!function_exists('recuperaSessioneDaIdLogin')) {
     }
 }
 
+if (!function_exists('recuperaSessioneDaIdQrCode')) {
+    function recuperaSessioneDaIdQrCode($idLogin)
+    {
+
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idSessione FROM " . PREFISSO_TAVOLA . "_sessioni WHERE idLogin = :idLogin AND dataFineValidita IS NULL ");
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return  $result[0]["idSessione"];
+    }
+}
+
 if (!function_exists('recuperaPrimaImprontaDaSessione')) {
     function recuperaPrimaImprontaDaSessione($idSessione)
     {
@@ -555,7 +574,7 @@ if (!function_exists('recuperaSessioneDaQrCode')) {
     function recuperaSessioneDaQrCode($idLogin)
     {
 
-        $idSessione = recuperaSessioneDaIdLogin($idLogin);
+        $idSessione = recuperaSessioneDaIdQrCode($idLogin);
         $impronta = null;
         if (IMPRONTE_SESSIONE_ABILITATE) {
             $impronta = recuperaPrimaImprontaDaSessione($idSessione);
