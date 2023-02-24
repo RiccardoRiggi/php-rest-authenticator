@@ -12,9 +12,7 @@ if (!defined("PREFISSO_TAVOLA"))
 
 if (!defined("NOME_APPLICAZIONE"))
     define("NOME_APPLICAZIONE", "PHP Rest Authenticator");
-
-if (!defined("IMPRONTE_SESSIONE_ABILITATE"))
-    define("IMPRONTE_SESSIONE_ABILITATE", false);
+    
 
 //Informazioni per la cifratura
 if (!defined("CIPHERING_VALUE"))

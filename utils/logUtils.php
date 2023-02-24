@@ -43,13 +43,13 @@ if (!function_exists('generaLogAccessi')) {
 }
 
 if (!function_exists('generaLogChiamate')) {
-    function generaLogChiamate($idSessione,$pathChiamato)
+    function generaLogChiamate($token,$pathChiamato)
     {
         $indirizzoIp = cifraStringa(getIndirizzoIp());
         try {
             $conn = apriConnessione();
-            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_chiamate (idSessione,indirizzoIp,pathChiamato) VALUES (:idSessione,:indirizzoIp,:pathChiamato)");
-            $stmt->bindParam(':idSessione', $idSessione);
+            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_chiamate (token,indirizzoIp,pathChiamato) VALUES (:token,:indirizzoIp,:pathChiamato)");
+            $stmt->bindParam(':token', $token);
             $stmt->bindParam(':indirizzoIp', $indirizzoIp);
             $stmt->bindParam(':pathChiamato', $pathChiamato);
             $stmt->execute();
@@ -60,13 +60,13 @@ if (!function_exists('generaLogChiamate')) {
 }
 
 if (!function_exists('generaLogOperazioni')) {
-    function generaLogOperazioni($idSessione,$operazione)
+    function generaLogOperazioni($token,$operazione)
     {
         $indirizzoIp = cifraStringa(getIndirizzoIp());
         try {
             $conn = apriConnessione();
-            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_operazioni (idSessione,indirizzoIp,operazione) VALUES (:idSessione,:indirizzoIp,:operazione)");
-            $stmt->bindParam(':idSessione', $idSessione);
+            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_operazioni (token,indirizzoIp,operazione) VALUES (:token,:indirizzoIp,:operazione)");
+            $stmt->bindParam(':token', $token);
             $stmt->bindParam(':indirizzoIp', $indirizzoIp);
             $stmt->bindParam(':operazione', $operazione);
             $stmt->execute();

@@ -286,20 +286,11 @@ if (!function_exists('confermaAutenticazione')) {
             registraUtilizzoCodiceBackup($idUtente, $codice);
         }
 
-        invalidoSessioniPrecedenti($idUtente);
-        $idSessione = registraSessione($idLogin, $idUtente,$_SERVER["HTTP_USER_AGENT"]);
-        aggiornoLoginConSessione($idLogin, $idSessione);
-
-
-        $impronta = null;
-        if (IMPRONTE_SESSIONE_ABILITATE) {
-            $impronta = registraImprontaSessione($idSessione);
-        }
-
-        header('SESSIONE: ' . $idSessione);
-        if (IMPRONTE_SESSIONE_ABILITATE) {
-            header('IMPRONTA: ' . $impronta);
-        }
+        invalidoTokenPrecedenti($idUtente);
+        $token = registraToken($idLogin, $idUtente,$_SERVER["HTTP_USER_AGENT"]);
+        aggiornoLoginConToken($idLogin, $token);
+        header('TOKEN: ' . $token);
+        
     }
 }
 
@@ -415,91 +406,84 @@ if (!function_exists('aggiornoDataUtilizzoCodiceSecondoFattore')) {
     }
 }
 
-if (!function_exists('invalidoSessioniPrecedenti')) {
-    function invalidoSessioniPrecedenti($idUtente)
+if (!function_exists('invalidoTokenPrecedenti')) {
+    function invalidoTokenPrecedenti($idUtente)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_sessioni SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente ");
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_token SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente ");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
     }
 }
 
-if (!function_exists('registraSessione')) {
-    function registraSessione($idLogin, $idUtente,$userAgent)
+if (!function_exists('registraToken')) {
+    function registraToken($idLogin, $idUtente,$userAgent)
     {
-        $idSessione = generaUUID();
+        $token = generaUUID();
         $indirizzoIp = cifraStringa(getIndirizzoIp());
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_sessioni(idSessione, idLogin, idUtente, dataGenerazione, dataInizioValidita, indirizzoIp, userAgent) VALUES (:idSessione, :idLogin, :idUtente, current_timestamp, current_timestamp, :indirizzoIp, :userAgent)");
-        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_token(token, idLogin, idUtente, dataGenerazione, dataInizioValidita, indirizzoIp, userAgent) VALUES (:token, :idLogin, :idUtente, current_timestamp, current_timestamp, :indirizzoIp, :userAgent)");
+        $stmt->bindParam(':token', $token);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->bindParam(':userAgent', $userAgent);
         $stmt->execute();
 
-        return $idSessione;
+        return $token;
     }
 }
 
-if (!function_exists('aggiornoLoginConSessione')) {
-    function aggiornoLoginConSessione($idLogin, $idSessione)
+if (!function_exists('registraTokenQrCode')) {
+    function registraTokenQrCode($idLogin, $idUtente,$userAgent,$indirizzoIp)
+    {
+        $token = generaUUID();
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_token(token, idLogin, idUtente, dataGenerazione, dataInizioValidita, indirizzoIp, userAgent) VALUES (:token, :idLogin, :idUtente, current_timestamp, current_timestamp, :indirizzoIp, :userAgent)");
+        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+        $stmt->bindParam(':userAgent', $userAgent);
+        $stmt->execute();
+
+        return $token;
+    }
+}
+
+if (!function_exists('aggiornoLoginConToken')) {
+    function aggiornoLoginConToken($idLogin, $token)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_login SET idSessione = :idSessione WHERE idLogin = :idLogin ");
-        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_login SET token = :token WHERE idLogin = :idLogin ");
+        $stmt->bindParam(':token', $token);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
     }
 }
 
-if (!function_exists('registraImprontaSessione')) {
-    function registraImprontaSessione($idSessione)
-    {
-        $idImpronta = generaUUID();
-
-        $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_sessioni_impronte(idSessione, idImpronta, dataGenerazione) VALUES (:idSessione, :idImpronta, current_timestamp)");
-        $stmt->bindParam(':idSessione', $idSessione);
-        $stmt->bindParam(':idImpronta', $idImpronta);
-        $stmt->execute();
-
-        return $idImpronta;
-    }
-}
-
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Funzione: recuperaSessioneDaLogin
+Funzione: recuperaTokenDaLogin
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-if (!function_exists('recuperaSessioneDaLogin')) {
-    function recuperaSessioneDaLogin($idLogin)
+if (!function_exists('recuperaTokenDaLogin')) {
+    function recuperaTokenDaLogin($idLogin)
     {
-
-        $idSessione = recuperaSessioneDaIdLogin($idLogin);
-
-        $impronta = null;
-        if (IMPRONTE_SESSIONE_ABILITATE) {
-            $impronta = recuperaPrimaImprontaDaSessione($idSessione);
-        }
-
-        header('SESSIONE: ' . $idSessione);
-        if (IMPRONTE_SESSIONE_ABILITATE) {
-            header('IMPRONTA: ' . $impronta);
-        }
+        $token = recuperaTokenDaIdLogin($idLogin);
+        header('TOKEN: ' . $token);
     }
 }
 
-if (!function_exists('recuperaSessioneDaIdLogin')) {
-    function recuperaSessioneDaIdLogin($idLogin)
+if (!function_exists('recuperaTokenDaIdLogin')) {
+    function recuperaTokenDaIdLogin($idLogin)
     {
 
         $indirizzoIp = cifraStringa(getIndirizzoIp());
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idSessione FROM " . PREFISSO_TAVOLA . "_sessioni WHERE idLogin = :idLogin AND dataFineValidita IS NULL and indirizzoIp = :indirizzoIp AND userAgent = :userAgent ");
+        $stmt = $conn->prepare("SELECT token FROM " . PREFISSO_TAVOLA . "_token WHERE idLogin = :idLogin AND dataFineValidita IS NULL and indirizzoIp = :indirizzoIp AND userAgent = :userAgent ");
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
@@ -509,42 +493,27 @@ if (!function_exists('recuperaSessioneDaIdLogin')) {
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
 
-        return  $result[0]["idSessione"];
+        return  $result[0]["token"];
     }
 }
 
-if (!function_exists('recuperaSessioneDaIdQrCode')) {
-    function recuperaSessioneDaIdQrCode($idLogin)
+if (!function_exists('recuperaTokenDaIdQrCode')) {
+    function recuperaTokenDaIdQrCode($idLogin)
     {
 
-
+        $indirizzoIp = cifraStringa(getIndirizzoIp());
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idSessione FROM " . PREFISSO_TAVOLA . "_sessioni WHERE idLogin = :idLogin AND dataFineValidita IS NULL ");
+        $stmt = $conn->prepare("SELECT token FROM " . PREFISSO_TAVOLA . "_token WHERE idLogin = :idLogin AND dataFineValidita IS NULL and indirizzoIp = :indirizzoIp AND userAgent = :userAgent");
         $stmt->bindParam(':idLogin', $idLogin);
+        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+        $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
         $result = $stmt->fetchAll();
 
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
 
-        return  $result[0]["idSessione"];
-    }
-}
-
-if (!function_exists('recuperaPrimaImprontaDaSessione')) {
-    function recuperaPrimaImprontaDaSessione($idSessione)
-    {
-
-        $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idImpronta FROM " . PREFISSO_TAVOLA . "_sessioni_impronte WHERE idSessione = :idSessione ORDER BY dataGenerazione ASC LIMIT 1");
-        $stmt->bindParam(':idSessione', $idSessione);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-
-        if (count($result) != 1)
-            throw new AccessoNonAutorizzatoLoginException();
-
-        return  $result[0]["idImpronta"];
+        return  $result[0]["token"];
     }
 }
 
@@ -556,10 +525,13 @@ if (!function_exists('generaQrCode')) {
     function generaQrCode()
     {
         $idQrCode = generaUUID();
+        $indirizzoIp = cifraStringa(getIndirizzoIp());
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_qr_code (idQrCode, dataInizioValidita) VALUES (:idQrCode, current_timestamp)");
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_qr_code (idQrCode, dataInizioValidita, indirizzoIp, userAgent) VALUES (:idQrCode, current_timestamp, :indirizzoIp, :userAgent)");
         $stmt->bindParam(':idQrCode', $idQrCode);
+        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+        $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
 
         return $idQrCode;
@@ -567,22 +539,14 @@ if (!function_exists('generaQrCode')) {
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Funzione: recuperaSessioneDaQrCode
+Funzione: recuperaTokenDaQrCode
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-if (!function_exists('recuperaSessioneDaQrCode')) {
-    function recuperaSessioneDaQrCode($idLogin)
+if (!function_exists('recuperaTokenDaQrCode')) {
+    function recuperaTokenDaQrCode($idLogin)
     {
-
-        $idSessione = recuperaSessioneDaIdQrCode($idLogin);
-        $impronta = null;
-        if (IMPRONTE_SESSIONE_ABILITATE) {
-            $impronta = recuperaPrimaImprontaDaSessione($idSessione);
-        }
-
-        header('SESSIONE: ' . $idSessione);
-        if (IMPRONTE_SESSIONE_ABILITATE) {
-            header('IMPRONTA: ' . $impronta);
-        }
+        $token = recuperaTokenDaIdQrCode($idLogin);
+        header('TOKEN: ' . $token);
+       
     }
 }

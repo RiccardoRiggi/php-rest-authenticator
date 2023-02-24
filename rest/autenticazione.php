@@ -84,7 +84,7 @@ try {
 
         confermaAutenticazione($jsonBody["idLogin"], $jsonBody["codice"]);
         http_response_code(200);
-    } else if ($_GET["nomeMetodo"] == "recuperaSessioneDaLogin") {
+    } else if ($_GET["nomeMetodo"] == "recuperaTokenDaLogin") {
 
 
         if ($_SERVER['REQUEST_METHOD'] != "GET")
@@ -95,7 +95,7 @@ try {
 
 
 
-        recuperaSessioneDaLogin($_GET["idLogin"]);
+        recuperaTokenDaLogin($_GET["idLogin"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "generaQrCode") {
 
@@ -108,7 +108,7 @@ try {
         $oggetto = new stdClass();
         $oggetto->idQrCode = $response;
         exit(json_encode($oggetto));
-    } else if ($_GET["nomeMetodo"] == "recuperaSessioneDaQrCode") {
+    } else if ($_GET["nomeMetodo"] == "recuperaTokenDaQrCode") {
 
 
         if ($_SERVER['REQUEST_METHOD'] != "GET")
@@ -117,7 +117,7 @@ try {
         if (!isset($_GET["idQrCode"]))
             throw new OtterGuardianException(400, "Il campo idQrCode è richiesto");
 
-        recuperaSessioneDaQrCode($_GET["idQrCode"]);
+            recuperaTokenDaQrCode($_GET["idQrCode"]);
         http_response_code(200);
     } else {
         throw new OtterGuardianException(500, "Metodo non implementato");

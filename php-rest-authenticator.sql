@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 23, 2023 alle 23:08
+-- Creato il: Feb 24, 2023 alle 21:15
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -72,7 +72,7 @@ CREATE TABLE `au_login` (
   `idLogin` varchar(512) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `idTipoLogin` varchar(32) NOT NULL,
-  `idSessione` varchar(512) DEFAULT NULL,
+  `token` varchar(512) DEFAULT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `indirizzoIp` varchar(512) NOT NULL,
   `userAgent` varchar(512) NOT NULL
@@ -155,7 +155,9 @@ CREATE TABLE `au_qr_code` (
   `idQrCode` varchar(512) NOT NULL,
   `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
   `dataFineValidita` datetime DEFAULT NULL,
-  `idUtente` int(10) DEFAULT NULL
+  `idUtente` int(10) DEFAULT NULL,
+  `indirizzoIp` varchar(512) NOT NULL,
+  `userAgent` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -215,11 +217,11 @@ CREATE TABLE `au_ruoli_risorse` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_sessioni`
+-- Struttura della tabella `au_token`
 --
 
-CREATE TABLE `au_sessioni` (
-  `idSessione` varchar(512) NOT NULL,
+CREATE TABLE `au_token` (
+  `token` varchar(512) NOT NULL,
   `idLogin` varchar(512) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataGenerazione` datetime NOT NULL DEFAULT current_timestamp(),
@@ -228,19 +230,6 @@ CREATE TABLE `au_sessioni` (
   `indirizzoIp` varchar(512) NOT NULL,
   `userAgent` varchar(512) NOT NULL,
   `dataUltimoUtilizzo` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `au_sessioni_impronte`
---
-
-CREATE TABLE `au_sessioni_impronte` (
-  `idSessione` varchar(256) NOT NULL,
-  `idImpronta` varchar(256) NOT NULL,
-  `dataGenerazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `dataUtilizzo` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -400,16 +389,10 @@ ALTER TABLE `au_ruoli_risorse`
   ADD PRIMARY KEY (`idRuolo`,`idRisorsa`,`dataInizioValidita`);
 
 --
--- Indici per le tabelle `au_sessioni`
+-- Indici per le tabelle `au_token`
 --
-ALTER TABLE `au_sessioni`
-  ADD PRIMARY KEY (`idSessione`);
-
---
--- Indici per le tabelle `au_sessioni_impronte`
---
-ALTER TABLE `au_sessioni_impronte`
-  ADD PRIMARY KEY (`idSessione`,`idImpronta`);
+ALTER TABLE `au_token`
+  ADD PRIMARY KEY (`token`);
 
 --
 -- Indici per le tabelle `au_two_fact`

@@ -8,8 +8,8 @@ Funzione: getMetodoAutenticazionePredefinito
 if (!function_exists('generaIdentificativoDispositivoFisico')) {
     function generaIdentificativoDispositivoFisico()
     {
-        verificaValiditaSessione();
-        $idUtente = getIdUtenteDaSessione($_SERVER["HTTP_SESSIONE"]);
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
 
         $idDispositivoFisico = generaUUID();
 
@@ -97,14 +97,14 @@ Funzione: disabilitaDispositivoFisico
 if (!function_exists('disabilitaDispositivoFisico')) {
     function disabilitaDispositivoFisico($idDispositivoFisico)
     {
-        verificaValiditaSessione();
-        $idUtenteSessione = getIdUtenteDaSessione($_SERVER["HTTP_SESSIONE"]);
+        verificaValiditaToken();
+        $idUtenteToken = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
         $idUtenteDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
 
-        if ($idUtenteSessione != $idUtenteDispositivo)
+        if ($idUtenteToken != $idUtenteDispositivo)
             throw new AccessoNonAutorizzatoException();
 
-        disabilitaDispositivo($idUtenteSessione, $idDispositivoFisico);
+        disabilitaDispositivo($idUtenteToken, $idDispositivoFisico);
     }
 }
 
@@ -126,8 +126,8 @@ Funzione: getDispositiviFisici
 if (!function_exists('getDispositiviFisici')) {
     function getDispositiviFisici()
     {
-        verificaValiditaSessione();
-        $idUtente = getIdUtenteDaSessione($_SERVER["HTTP_SESSIONE"]);
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
 
         $conn = apriConnessione();
         $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente ORDER BY dataAbilitazione DESC");
@@ -157,7 +157,7 @@ if (!function_exists('getAccessiPendenti')) {
 
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND f.dataUtilizzo IS NULL AND l.idSessione IS NULL AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1");
+        $stmt = $conn->prepare("SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, l.token, f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -166,8 +166,8 @@ if (!function_exists('getAccessiPendenti')) {
             $tmp = $value;
             $tmp["indirizzoIp"] = decifraStringa($value["indirizzoIp"]);
             $tmp["5"] = decifraStringa($value["5"]);
-            array_push($array,$tmp);
-          }
+            array_push($array, $tmp);
+        }
         return $array;
     }
 }
@@ -188,9 +188,9 @@ if (!function_exists('autorizzaAccesso')) {
 
         $login = getIdLoginByIdTwoFact($idTwoFact);
         aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
-        invalidoSessioniPrecedenti($idUtenteDaDispositivo);
-        $idSessione = registraSessione($login["idLogin"], $idUtenteDaDispositivo,$login["userAgent"]);
-        aggiornoLoginConSessione($login["idLogin"], $idSessione);
+        invalidoTokenPrecedenti($idUtenteDaDispositivo);
+        $token = registraTokenQrCode($login["idLogin"], $idUtenteDaDispositivo, $login["userAgent"], $login["indirizzoIp"]);
+        aggiornoLoginConToken($login["idLogin"], $token);
     }
 }
 
@@ -198,7 +198,7 @@ if (!function_exists('getIdUtenteByIdTwoFact')) {
     function getIdUtenteByIdTwoFact($idTwoFact)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND f.dataUtilizzo IS NULL AND l.idSessione IS NULL AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
+        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND f.dataUtilizzo IS NULL AND l.token IS NULL AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -214,7 +214,7 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
     function getIdLoginByIdTwoFact($idTwoFact)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT f.idLogin as idLogin, l.userAgent as userAgent FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
+        $stmt = $conn->prepare("SELECT f.idLogin as idLogin, l.userAgent as userAgent, l.indirizzoIp as indirizzoIp FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE f.idLogin = l.idLogin AND f.idTwoFact = :idTwoFact AND TIMESTAMPDIFF(MINUTE,l.dataCreazione,NOW()) < 4");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -233,26 +233,43 @@ Funzione: autorizzaQrCode
 if (!function_exists('autorizzaQrCode')) {
     function autorizzaQrCode($idDispositivoFisico, $idQrCode)
     {
-
         $idUtenteDaDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
-        $idLogin = $idQrCode;
-        invalidoSessioniPrecedenti($idUtenteDaDispositivo);
-        $idSessione = registraSessione($idLogin, $idUtenteDaDispositivo,"QR_CODE");
-        inserisciLoginDaQrCode($idLogin,$idUtenteDaDispositivo,$idSessione);
+        $datiChiamante = getDatiChiamanteByQrCode($idQrCode);
+        invalidoTokenPrecedenti($idUtenteDaDispositivo);
+        $token = registraTokenQrCode($idQrCode, $idUtenteDaDispositivo, $datiChiamante["userAgent"], $datiChiamante["indirizzoIp"]);
+        inserisciLoginDaQrCode($idQrCode, $idUtenteDaDispositivo, $token);
     }
 }
 
 if (!function_exists('inserisciLoginDaQrCode')) {
-    function inserisciLoginDaQrCode($idLogin,$idUtente,$idSessione)
+    function inserisciLoginDaQrCode($idLogin, $idUtente, $token)
     {
         $idLogin = generaUUID();
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_login(idLogin, idUtente, idTipoLogin,idSessione) VALUES (:idLogin, :idUtente, 'QR_CODE' ,:idSessione)");
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_login(idLogin, idUtente, idTipoLogin,token) VALUES (:idLogin, :idUtente, 'QR_CODE' ,:token)");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idLogin', $idLogin);
-        $stmt->bindParam(':idSessione', $idSessione);
+        $stmt->bindParam(':token', $token);
         $stmt->execute();
         return $idLogin;
+    }
+}
+
+
+
+if (!function_exists('getDatiChiamanteByQrCode')) {
+    function getDatiChiamanteByQrCode($idQrCode)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT indirizzoIp, userAgent FROM " . PREFISSO_TAVOLA . "_qr_code WHERE idQrCode = :idQrCode ");
+        $stmt->bindParam(':idQrCode', $idQrCode);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) != 1)
+            throw new AccessoNonAutorizzatoLoginException();
+
+        return $result[0];
     }
 }
 
