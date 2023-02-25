@@ -10,8 +10,8 @@ include './utils/httpResponseCodeUtils.php';
 header('Content-Type: application/json; charset=utf-8');
 
 //generaLog(json_encode($$_REQUEST));
-//echo json_encode($_SERVER);
-
+echo json_encode($_SERVER);
+//generaLogSuBaseDati("ERROR","Prova");
 //generaLog(json_decode(file_get_contents('php://input'), true));
 
 //$data = json_decode(file_get_contents('php://input'), true);
@@ -26,7 +26,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 //httpAccessoNonAutorizzato();
 
-echo decifraStringa("KPdGdi8NuO+90xZN");
+//echo decifraStringa("KPdGdi8NuO+90xZN");
 
 /*
 //Nome

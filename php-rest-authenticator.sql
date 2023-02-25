@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 24, 2023 alle 21:15
+-- Creato il: Feb 25, 2023 alle 22:17
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -65,6 +65,22 @@ CREATE TABLE `au_indirizzi_ip` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `au_log`
+--
+
+CREATE TABLE `au_log` (
+  `idLog` int(11) NOT NULL,
+  `dataEvento` date NOT NULL DEFAULT current_timestamp(),
+  `logLevel` varchar(32) NOT NULL,
+  `testo` varchar(1024) NOT NULL,
+  `path` varchar(1024) NOT NULL,
+  `indirizzoIp` varchar(512) NOT NULL,
+  `metodoHttp` varchar(512) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `au_login`
 --
 
@@ -76,46 +92,6 @@ CREATE TABLE `au_login` (
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `indirizzoIp` varchar(512) NOT NULL,
   `userAgent` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `au_log_accessi`
---
-
-CREATE TABLE `au_log_accessi` (
-  `idLogAccesso` int(10) NOT NULL,
-  `indirizzoIp` varchar(255) NOT NULL,
-  `dataEvento` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `au_log_chiamate`
---
-
-CREATE TABLE `au_log_chiamate` (
-  `idLogChiamata` int(10) NOT NULL,
-  `idSessione` varchar(255) NOT NULL,
-  `indirizzoIp` varchar(255) NOT NULL,
-  `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
-  `pathChiamato` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Struttura della tabella `au_log_operazioni`
---
-
-CREATE TABLE `au_log_operazioni` (
-  `idLogOperazione` int(10) NOT NULL,
-  `idSessione` varchar(255) NOT NULL,
-  `indirizzoIp` varchar(255) NOT NULL,
-  `operazione` varchar(255) NOT NULL,
-  `dataEvento` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -180,7 +156,7 @@ CREATE TABLE `au_rec_psw` (
 --
 
 CREATE TABLE `au_risorse` (
-  `idRisorsa` int(10) NOT NULL,
+  `idRisorsa` varchar(255) NOT NULL,
   `nomeMetodo` varchar(255) NOT NULL,
   `descrizione` varchar(1024) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
@@ -194,11 +170,11 @@ CREATE TABLE `au_risorse` (
 --
 
 CREATE TABLE `au_ruoli` (
+  `idRuolo` int(10) NOT NULL,
   `idTipoRuolo` varchar(32) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `dataEliminazione` datetime NOT NULL,
-  `idRuolo` int(11) NOT NULL
+  `dataEliminazione` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -323,28 +299,16 @@ ALTER TABLE `au_indirizzi_ip`
   ADD PRIMARY KEY (`indirizzoIp`);
 
 --
+-- Indici per le tabelle `au_log`
+--
+ALTER TABLE `au_log`
+  ADD PRIMARY KEY (`idLog`);
+
+--
 -- Indici per le tabelle `au_login`
 --
 ALTER TABLE `au_login`
   ADD PRIMARY KEY (`idLogin`);
-
---
--- Indici per le tabelle `au_log_accessi`
---
-ALTER TABLE `au_log_accessi`
-  ADD PRIMARY KEY (`idLogAccesso`);
-
---
--- Indici per le tabelle `au_log_chiamate`
---
-ALTER TABLE `au_log_chiamate`
-  ADD PRIMARY KEY (`idLogChiamata`);
-
---
--- Indici per le tabelle `au_log_operazioni`
---
-ALTER TABLE `au_log_operazioni`
-  ADD PRIMARY KEY (`idLogOperazione`);
 
 --
 -- Indici per le tabelle `au_metodi_login`
@@ -430,28 +394,16 @@ ALTER TABLE `au_utenti`
 --
 
 --
--- AUTO_INCREMENT per la tabella `au_log_accessi`
+-- AUTO_INCREMENT per la tabella `au_log`
 --
-ALTER TABLE `au_log_accessi`
-  MODIFY `idLogAccesso` int(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `au_log`
+  MODIFY `idLog` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT per la tabella `au_log_chiamate`
+-- AUTO_INCREMENT per la tabella `au_ruoli`
 --
-ALTER TABLE `au_log_chiamate`
-  MODIFY `idLogChiamata` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `au_log_operazioni`
---
-ALTER TABLE `au_log_operazioni`
-  MODIFY `idLogOperazione` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `au_risorse`
---
-ALTER TABLE `au_risorse`
-  MODIFY `idRisorsa` int(10) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `au_ruoli`
+  MODIFY `idRuolo` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `au_utenti`

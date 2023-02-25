@@ -27,51 +27,25 @@ if (!function_exists('generaLogSuFile')) {
     }
 }
 
-if (!function_exists('generaLogAccessi')) {
-    function generaLogAccessi()
+if (!function_exists('generaLogSuBaseDati')) {
+    function generaLogSuBaseDati($logLevel,$testo)
     {
         $indirizzoIp = cifraStringa(getIndirizzoIp());
+        $path = $_SERVER["REQUEST_URI"];
+
         try {
             $conn = apriConnessione();
-            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_accessi (indirizzoIp) VALUES (:indirizzoIp)");
+            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log (logLevel, testo, path, indirizzoIp, metodoHttp) VALUES (:logLevel, :testo, :path, :indirizzoIp, :metodoHttp)");
+            $stmt->bindParam(':logLevel', $logLevel);
+            $stmt->bindParam(':testo', $testo);
+            $stmt->bindParam(':path', $path);
             $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+            $stmt->bindParam(':metodoHttp', $_SERVER['REQUEST_METHOD']);
+
             $stmt->execute();
         } catch (Exception $e) {
-            generaLogSuFile( "Errore nella funzione generaLogAccessi: " . $e->getMessage());
+            generaLogSuFile( "Errore nella funzione generaLogSuBaseDati: " . $e->getMessage());
         }
     }
 }
 
-if (!function_exists('generaLogChiamate')) {
-    function generaLogChiamate($token,$pathChiamato)
-    {
-        $indirizzoIp = cifraStringa(getIndirizzoIp());
-        try {
-            $conn = apriConnessione();
-            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_chiamate (token,indirizzoIp,pathChiamato) VALUES (:token,:indirizzoIp,:pathChiamato)");
-            $stmt->bindParam(':token', $token);
-            $stmt->bindParam(':indirizzoIp', $indirizzoIp);
-            $stmt->bindParam(':pathChiamato', $pathChiamato);
-            $stmt->execute();
-        } catch (Exception $e) {
-            generaLogSuFile( "Errore nella funzione generaLogAccessi: " . $e->getMessage());
-        }
-    }
-}
-
-if (!function_exists('generaLogOperazioni')) {
-    function generaLogOperazioni($token,$operazione)
-    {
-        $indirizzoIp = cifraStringa(getIndirizzoIp());
-        try {
-            $conn = apriConnessione();
-            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_operazioni (token,indirizzoIp,operazione) VALUES (:token,:indirizzoIp,:operazione)");
-            $stmt->bindParam(':token', $token);
-            $stmt->bindParam(':indirizzoIp', $indirizzoIp);
-            $stmt->bindParam(':operazione', $operazione);
-            $stmt->execute();
-        } catch (Exception $e) {
-            generaLogSuFile( "Errore nella funzione generaLogAccessi: " . $e->getMessage());
-        }
-    }
-}
