@@ -18,7 +18,7 @@ if (!function_exists('getMedotoAutenticazionePredefinito')) {
         $result = $stmt->fetchAll();
 
         if (count($result) > 1)
-            throw new OtterGuardianException(500,"Errore di configurazione, hai impostato più di un metodo di autenticazione predefinito");
+            throw new OtterGuardianException(500, "Errore di configurazione, hai impostato più di un metodo di autenticazione predefinito");
 
         if (count($result) == 0) {
             $tmp = "EMAIL_PSW_SIX_EMAIL";
@@ -211,7 +211,7 @@ if (!function_exists('getMedotoSecondoFattorePreferito')) {
         $result = $stmt->fetchAll();
 
         if (count($result) > 1)
-            throw new OtterGuardianException(500,"Errore di configurazione, hai selezionato più metodi predefiniti");
+            throw new OtterGuardianException(500, "Errore di configurazione, hai selezionato più metodi predefiniti");
 
         return count($result) == 0 ? "EMAIL_PSW_SIX_EMAIL" : $result[0]["idTipoMetodoLogin"];
     }
@@ -227,7 +227,7 @@ if (!function_exists('inserisciLogin')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':idTipoLogin', $idTipoLogin);
-        $stmt->bindParam(':indirizzoIp',$indirizzoIp);
+        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
         return $idLogin;
@@ -245,7 +245,7 @@ if (!function_exists('inserisciCodiceSecondoFattore')) {
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':codice', $codice);
-        $stmt->bindParam(':indirizzoIp',$indirizzoIp);
+        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
         return $codice;
     }
@@ -287,15 +287,14 @@ if (!function_exists('confermaAutenticazione')) {
         }
 
         invalidoTokenPrecedenti($idUtente);
-        $token = registraToken($idLogin, $idUtente,$_SERVER["HTTP_USER_AGENT"]);
+        $token = registraToken($idLogin, $idUtente, $_SERVER["HTTP_USER_AGENT"]);
         aggiornoLoginConToken($idLogin, $token);
         header('TOKEN: ' . $token);
-        
     }
 }
 
 if (!function_exists('registraUtilizzoCodiceBackup')) {
-    function registraUtilizzoCodiceBackup($idUtente,$codice)
+    function registraUtilizzoCodiceBackup($idUtente, $codice)
     {
         $conn = apriConnessione();
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_codici_backup SET dataUtilizzo = current_timestamp WHERE idUtente = :idUtente AND codice = :codice");
@@ -318,7 +317,6 @@ if (!function_exists('verificaCodiceBackup')) {
 
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
-
     }
 }
 
@@ -332,7 +330,7 @@ if (!function_exists('getIdTipoLoginByIdLogin')) {
         $result = $stmt->fetchAll();
 
         if (count($result) != 1)
-        throw new OtterGuardianException(401,"Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
+            throw new OtterGuardianException(401, "Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
 
         return $result[0]["idTipoLogin"];
     }
@@ -348,7 +346,7 @@ if (!function_exists('getIdUtenteByIdLogin')) {
         $result = $stmt->fetchAll();
 
         if (count($result) != 1)
-            throw new OtterGuardianException(401,"Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
+            throw new OtterGuardianException(401, "Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
 
         return $result[0]["idUtente"];
     }
@@ -368,7 +366,7 @@ if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
             throw new AccessoNonAutorizzatoLoginException();
 
         if ($result[0]["idLogin"] != $idLogin)
-            throw new OtterGuardianException(401,"Verifica di stare autorizzando il tentativo di accesso più recente");
+            throw new OtterGuardianException(401, "Verifica di stare autorizzando il tentativo di accesso più recente");
     }
 }
 
@@ -376,9 +374,8 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
     function verificaCodiceSecondoFattore($idLogin, $codice)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idTwoFact, tentativi FROM " . PREFISSO_TAVOLA . "_two_fact WHERE idLogin = :idLogin AND codice = :codice AND dataUtilizzo IS NULL AND TIMESTAMPDIFF(MINUTE,dataCreazione,NOW()) < 4 ");
+        $stmt = $conn->prepare("SELECT idTwoFact, tentativi, codice FROM " . PREFISSO_TAVOLA . "_two_fact WHERE idLogin = :idLogin AND dataUtilizzo IS NULL AND TIMESTAMPDIFF(MINUTE,dataCreazione,NOW()) < 4 ");
         $stmt->bindParam(':idLogin', $idLogin);
-        $stmt->bindParam(':codice', $codice);
         $stmt->execute();
         $result = $stmt->fetchAll();
 
@@ -390,7 +387,10 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
         $stmt->execute();
 
         if ($result[0]["tentativi"] > 5)
-            throw new OtterGuardianException(401,"Hai superato il numero massimo di tentativi");
+            throw new OtterGuardianException(401, "Hai superato il numero massimo di tentativi");
+
+        if ($result[0]["codice"] != $codice)
+            throw new AccessoNonAutorizzatoLoginException();
 
         return $result[0]["idTwoFact"];
     }
@@ -417,7 +417,7 @@ if (!function_exists('invalidoTokenPrecedenti')) {
 }
 
 if (!function_exists('registraToken')) {
-    function registraToken($idLogin, $idUtente,$userAgent)
+    function registraToken($idLogin, $idUtente, $userAgent)
     {
         $token = generaUUID();
         $indirizzoIp = cifraStringa(getIndirizzoIp());
@@ -436,7 +436,7 @@ if (!function_exists('registraToken')) {
 }
 
 if (!function_exists('registraTokenQrCode')) {
-    function registraTokenQrCode($idLogin, $idUtente,$userAgent,$indirizzoIp)
+    function registraTokenQrCode($idLogin, $idUtente, $userAgent, $indirizzoIp)
     {
         $token = generaUUID();
 
@@ -547,6 +547,5 @@ if (!function_exists('recuperaTokenDaQrCode')) {
     {
         $token = recuperaTokenDaIdQrCode($idLogin);
         header('TOKEN: ' . $token);
-       
     }
 }

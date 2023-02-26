@@ -70,10 +70,10 @@ try {
         if (!isset($jsonBody["nuovaPassowrd"]))
             throw new OtterGuardianException(400, "Il campo nuovaPassowrd è richiesto");
 
-        if (!isset($jsonBody["confermaNuovaPassowrd"]))
-            throw new OtterGuardianException(400, "Il campo confermaNuovaPassowrd è richiesto");
+        if (!isset($jsonBody["confermaNuovaPassword"]))
+            throw new OtterGuardianException(400, "Il campo confermaNuovaPassword è richiesto");
 
-        if ($jsonBody["nuovaPassowrd"] != $jsonBody["confermaNuovaPassowrd"])
+        if ($jsonBody["nuovaPassowrd"] != $jsonBody["confermaNuovaPassword"])
             throw new OtterGuardianException(400, "Le password non corrispondono");
 
 
