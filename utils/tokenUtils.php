@@ -8,7 +8,9 @@ Funzione: verificaValiditaToken
 if (!function_exists('verificaValiditaToken')) {
     function verificaValiditaToken()
     {
-
+        if (!isset($_SERVER["HTTP_TOKEN"])) {
+            throw new AccessoNonAutorizzatoLoginException();
+        }
         $token = $_SERVER["HTTP_TOKEN"];
         $idUtente = getIdUtenteDaToken($token);
         verificaValiditaUtente($idUtente);

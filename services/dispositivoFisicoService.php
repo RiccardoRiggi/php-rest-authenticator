@@ -130,7 +130,7 @@ if (!function_exists('getDispositiviFisici')) {
         $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente ORDER BY dataAbilitazione DESC");
+        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ORDER BY dataAbilitazione DESC");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -157,7 +157,8 @@ if (!function_exists('getAccessiPendenti')) {
 
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, l.token, f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1");
+        $stmt = $conn->prepare("( SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, l.token, f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1) UNION ( SELECT f.idTwoFact, l.idTipoRecPsw, f.codice, f.dataCreazione, '', f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_rec_psw l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = 1 AND f.idRecPsw = l.idRecPsw AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1 )");
+        $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
