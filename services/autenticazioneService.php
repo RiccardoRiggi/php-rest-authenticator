@@ -165,7 +165,7 @@ if (!function_exists('effettuaAutenticazione')) {
             $codice = inserisciCodiceSecondoFattore($idLogin);
 
             if ($tipoAutenticazione == "EMAIL_PSW_SIX_EMAIL") {
-                inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
+                //inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
             }
 
             $descrizione = getIstruzioniSecondoFattore($tipoAutenticazione);
@@ -277,6 +277,7 @@ if (!function_exists('confermaAutenticazione')) {
     {
         $idUtente = getIdUtenteByIdLogin($idLogin);
         $idTipoLogin = getIdTipoLoginByIdLogin($idLogin);
+        getUtenteDecifrato($idUtente);
         if ($idTipoLogin != "EMAIL_PSW_BACKUP_CODE") {
             confrontaConUltimoTentativoDiLogin($idLogin, $idUtente);
             $idTwoFact = verificaCodiceSecondoFattore($idLogin, $codice);
@@ -293,11 +294,31 @@ if (!function_exists('confermaAutenticazione')) {
     }
 }
 
+if (!function_exists('getUtenteDecifrato')) {
+    function getUtenteDecifrato($idUtente)
+    {
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idUtente, nome, cognome, email, dataCreazione, dataUltimaModifica FROM " . PREFISSO_TAVOLA . "_utenti WHERE idUtente = :idUtente AND dataEliminazione IS NULL AND dataBlocco is NULL");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        if (count($result) > 1)
+            throw new ErroreServerException("Errore durante il processo di autenticazione");
+
+        if (count($result) == 0)
+            throw new OtterGuardianException(404, "Utente non trovato");
+
+        return $result;
+    }
+}
+
 if (!function_exists('registraUtilizzoCodiceBackup')) {
     function registraUtilizzoCodiceBackup($idUtente, $codice)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_codici_backup SET dataUtilizzo = current_timestamp WHERE idUtente = :idUtente AND codice = :codice");
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_codici_backup SET dataUtilizzo = current_timestamp WHERE idUtente = :idUtente AND codice = :codice AND dataUtilizzo IS NULL and dataEliminazione IS NULL");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':codice', $codice);
         $stmt->execute();
@@ -307,18 +328,38 @@ if (!function_exists('registraUtilizzoCodiceBackup')) {
 if (!function_exists('verificaCodiceBackup')) {
     function verificaCodiceBackup($idUtente, $codice)
     {
+        $sql = "SELECT codice FROM " . PREFISSO_TAVOLA . "_codici_backup WHERE idUtente = :idUtente AND codice = :codice AND dataUtilizzo IS NULL AND dataEliminazione IS NULL";
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_codici_backup WHERE idUtente = :idUtente AND :codice = :codice AND dataUtilizzo IS NULL");
+        $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':codice', $codice);
         $stmt->execute();
-        $result = $stmt->fetchAll();
+        $resultUno = $stmt->fetchAll();
+        
 
-        if (count($result) != 1)
+        if (count($resultUno) != 1) {
+            $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_utenti SET tentativiCodiciBackup = tentativiCodiciBackup + 1 WHERE idUtente = :idUtente ");
+            $stmt->bindParam(':idUtente', $idUtente);
+            $stmt->execute();
+
+            $stmt = $conn->prepare("SELECT tentativiCodiciBackup FROM " . PREFISSO_TAVOLA . "_utenti WHERE idUtente = :idUtente AND dataEliminazione IS NULL AND dataBlocco is NULL");
+            $stmt->bindParam(':idUtente', $idUtente);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+
+            if ($result[0]["tentativiCodiciBackup"] > 5) {
+                $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_utenti SET dataBlocco = current_timestamp WHERE idUtente = :idUtente ");
+                $stmt->bindParam(':idUtente', $idUtente);
+                $stmt->execute();
+            }
+
             throw new AccessoNonAutorizzatoLoginException();
+        }
     }
 }
+
+
 
 if (!function_exists('getIdTipoLoginByIdLogin')) {
     function getIdTipoLoginByIdLogin($idLogin)
@@ -410,7 +451,7 @@ if (!function_exists('invalidoTokenPrecedenti')) {
     function invalidoTokenPrecedenti($idUtente)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_token SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente ");
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_token SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente AND dataFineValidita IS NULL");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
     }

@@ -26,7 +26,16 @@ try {
         $response = getUtenteLoggato();
         http_response_code(200);
         exit(json_encode($response));
-    } elseif ($_GET["nomeMetodo"] == "verificaAutenticazione") {
+    } else if ($_GET["nomeMetodo"] == "generaCodiciBackup") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = generaCodiciBackup();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "verificaAutenticazione") {
 
         if ($_SERVER['REQUEST_METHOD'] != "GET")
             throw new MetodoHttpErratoException();
@@ -41,6 +50,17 @@ try {
 
 
         invalidaTokenSpecifico();
+        http_response_code(200);
+        exit(json_encode($response));
+    } elseif ($_GET["nomeMetodo"] == "getStoricoAccessi") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["pagina"]))
+            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+
+        $response = getStoricoAccessi($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 25, 2023 alle 22:17
+-- Creato il: Feb 27, 2023 alle 22:15
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -33,7 +33,8 @@ CREATE TABLE `au_codici_backup` (
   `idUtente` int(10) NOT NULL,
   `codice` varchar(255) NOT NULL,
   `dataGenerazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `dataUtilizzo` datetime DEFAULT NULL
+  `dataUtilizzo` datetime DEFAULT NULL,
+  `dataEliminazione` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -115,7 +116,7 @@ CREATE TABLE `au_metodi_login` (
 --
 
 CREATE TABLE `au_metodi_rec_psw` (
-  `idTipoMetodoLogin` varchar(32) NOT NULL,
+  `idTipoMetodoRecPsw` varchar(32) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
   `dataFineValidita` int(11) DEFAULT NULL
@@ -146,7 +147,9 @@ CREATE TABLE `au_rec_psw` (
   `idRecPsw` varchar(512) NOT NULL,
   `idTipoRecPsw` varchar(512) NOT NULL,
   `idUtente` int(10) NOT NULL,
-  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
+  `indirizzoIp` varchar(512) NOT NULL,
+  `userAgent` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -205,7 +208,7 @@ CREATE TABLE `au_token` (
   `dataFineValidita` datetime DEFAULT NULL,
   `indirizzoIp` varchar(512) NOT NULL,
   `userAgent` varchar(512) NOT NULL,
-  `dataUltimoUtilizzo` date DEFAULT NULL
+  `dataUltimoUtilizzo` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -273,7 +276,8 @@ CREATE TABLE `au_utenti` (
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataUltimaModifica` datetime DEFAULT NULL,
   `dataEliminazione` datetime DEFAULT NULL,
-  `dataBlocco` datetime DEFAULT NULL
+  `dataBlocco` datetime DEFAULT NULL,
+  `tentativiCodiciBackup` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -320,7 +324,7 @@ ALTER TABLE `au_metodi_login`
 -- Indici per le tabelle `au_metodi_rec_psw`
 --
 ALTER TABLE `au_metodi_rec_psw`
-  ADD PRIMARY KEY (`idTipoMetodoLogin`,`idUtente`,`dataInizioValidita`);
+  ADD PRIMARY KEY (`idTipoMetodoRecPsw`,`idUtente`,`dataInizioValidita`);
 
 --
 -- Indici per le tabelle `au_qr_code`

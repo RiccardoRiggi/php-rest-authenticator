@@ -12,7 +12,10 @@ if (!defined("PREFISSO_TAVOLA"))
 
 if (!defined("NOME_APPLICAZIONE"))
     define("NOME_APPLICAZIONE", "PHP Rest Authenticator");
-    
+
+if (!defined("ELEMENTI_PER_PAGINA"))
+    define("ELEMENTI_PER_PAGINA", 10);
+
 
 //Informazioni per la cifratura
 if (!defined("CIPHERING_VALUE"))

@@ -48,8 +48,9 @@ if (!function_exists('isDispositivoDaAbilitare')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
             throw new AccessoNonAutorizzatoLoginException();
+        }
     }
 }
 
@@ -57,7 +58,7 @@ if (!function_exists('getIdUtenteByDispositivo')) {
     function getIdUtenteByDispositivo($idDispositivoFisico)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idDispositivoFisico = :idDispositivoFisico ");
+        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idDispositivoFisico = :idDispositivoFisico AND dataDisabilitazione IS NULL");
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->execute();
         $result = $stmt->fetchAll();
@@ -124,14 +125,18 @@ Funzione: getDispositiviFisici
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 if (!function_exists('getDispositiviFisici')) {
-    function getDispositiviFisici()
+    function getDispositiviFisici($pagina)
     {
         verificaValiditaToken();
         $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
 
+        $paginaDaEstrarre = ($pagina-1)*ELEMENTI_PER_PAGINA;
+
+
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ORDER BY dataAbilitazione DESC");
+        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ORDER BY dataAbilitazione DESC LIMIT :pagina, ".ELEMENTI_PER_PAGINA);
         $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
         return $result;

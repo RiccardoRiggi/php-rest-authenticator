@@ -72,7 +72,10 @@ try {
         if ($_SERVER['REQUEST_METHOD'] != "GET")
             throw new MetodoHttpErratoException();
 
-        $response = getDispositiviFisici();
+        if (!isset($_GET["pagina"]))
+            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+
+        $response = getDispositiviFisici($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getRichiesteDiAccessoPendenti") {
