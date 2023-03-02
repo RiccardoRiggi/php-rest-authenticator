@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Feb 27, 2023 alle 22:15
+-- Creato il: Mar 02, 2023 alle 21:33
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -71,7 +71,7 @@ CREATE TABLE `au_indirizzi_ip` (
 
 CREATE TABLE `au_log` (
   `idLog` int(11) NOT NULL,
-  `dataEvento` date NOT NULL DEFAULT current_timestamp(),
+  `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
   `logLevel` varchar(32) NOT NULL,
   `testo` varchar(1024) NOT NULL,
   `path` varchar(1024) NOT NULL,
@@ -280,6 +280,24 @@ CREATE TABLE `au_utenti` (
   `tentativiCodiciBackup` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `au_voci_menu`
+--
+
+CREATE TABLE `au_voci_menu` (
+  `idVoceMenu` int(10) NOT NULL,
+  `idVoceMenuPadre` int(10) DEFAULT NULL,
+  `descrizione` varchar(1024) NOT NULL,
+  `path` varchar(1024) NOT NULL,
+  `icona` varchar(1024) NOT NULL,
+  `ordine` int(10) NOT NULL DEFAULT 1,
+  `visibile` tinyint(4) NOT NULL,
+  `dataCreazione` datetime NOT NULL,
+  `dataEliminazione` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Indici per le tabelle scaricate
 --
@@ -394,6 +412,12 @@ ALTER TABLE `au_utenti`
   ADD UNIQUE KEY `email` (`email`) USING HASH;
 
 --
+-- Indici per le tabelle `au_voci_menu`
+--
+ALTER TABLE `au_voci_menu`
+  ADD PRIMARY KEY (`idVoceMenu`);
+
+--
 -- AUTO_INCREMENT per le tabelle scaricate
 --
 
@@ -414,6 +438,12 @@ ALTER TABLE `au_ruoli`
 --
 ALTER TABLE `au_utenti`
   MODIFY `idUtente` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `au_voci_menu`
+--
+ALTER TABLE `au_voci_menu`
+  MODIFY `idVoceMenu` int(10) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

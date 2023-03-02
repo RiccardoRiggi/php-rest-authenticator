@@ -15,6 +15,7 @@ if (!function_exists('verificaValiditaToken')) {
         $idUtente = getIdUtenteDaToken($token);
         verificaValiditaUtente($idUtente);
         aggiornaDataUltimoUtilizzo($token);
+        
     }
 }
 
