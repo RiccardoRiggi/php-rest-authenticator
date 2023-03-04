@@ -29,6 +29,66 @@ try {
         $response = getVociMenu($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "inserisciVoceMenu") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "POST")
+            throw new MetodoHttpErratoException();
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["descrizione"]))
+            throw new OtterGuardianException(400, "Il campo descrizione è richiesto");
+
+        if (!isset($jsonBody["path"]))
+            throw new OtterGuardianException(400, "Il campo path è richiesto");
+
+        if (!isset($jsonBody["icona"]))
+            throw new OtterGuardianException(400, "Il campo icona è richiesto");
+
+        if (!isset($jsonBody["ordine"]))
+            throw new OtterGuardianException(400, "Il campo ordine è richiesto");
+
+
+        $response = inserisciVoceMenu($jsonBody["idVoceMenuPadre"], $jsonBody["descrizione"], $jsonBody["path"], $jsonBody["icona"], $jsonBody["ordine"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "modificaVoceMenu") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "PUT")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idVoceMenu"]))
+            throw new OtterGuardianException(400, "Il campo idVoceMenu è richiesto");
+
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["descrizione"]))
+            throw new OtterGuardianException(400, "Il campo descrizione è richiesto");
+
+        if (!isset($jsonBody["path"]))
+            throw new OtterGuardianException(400, "Il campo path è richiesto");
+
+        if (!isset($jsonBody["icona"]))
+            throw new OtterGuardianException(400, "Il campo icona è richiesto");
+
+        if (!isset($jsonBody["ordine"]))
+            throw new OtterGuardianException(400, "Il campo ordine è richiesto");
+
+
+        $response = modificaVoceMenu($jsonBody["idVoceMenuPadre"], $jsonBody["descrizione"], $jsonBody["path"], $jsonBody["icona"], $jsonBody["ordine"], $_GET["idVoceMenu"]);
+        http_response_code(200);
+    } else if ($_GET["nomeMetodo"] == "eliminaVoceMenu") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "DELETE")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idVoceMenu"]))
+            throw new OtterGuardianException(400, "Il campo idVoceMenu è richiesto");
+
+
+        $response = eliminaVoceMenu($_GET["idVoceMenu"]);
+        http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getVociMenuPerUtente") {
 
         if ($_SERVER['REQUEST_METHOD'] != "GET")
@@ -36,6 +96,18 @@ try {
 
 
         $response = getVociMenuPerUtente();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getVoceMenu") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idVoceMenu"]))
+            throw new OtterGuardianException(400, "Il campo idVoceMenu è richiesto");
+
+
+        $response = getVoceMenu($_GET["idVoceMenu"]);
         http_response_code(200);
         exit(json_encode($response));
     } else {
