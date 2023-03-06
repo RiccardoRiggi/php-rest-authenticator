@@ -10,14 +10,14 @@ include './utils/httpResponseCodeUtils.php';
 header('Content-Type: application/json; charset=utf-8');
 
 //generaLog(json_encode($$_REQUEST));
-echo json_encode($_SERVER);
+//echo json_encode($_SERVER);
 //generaLogSuBaseDati("ERROR","Prova");
 //generaLog(json_decode(file_get_contents('php://input'), true));
 
 //$data = json_decode(file_get_contents('php://input'), true);
 //echo "".$data[0]["nome"];
 
-//echo cifraStringa("AAAAAAA");
+echo cifraStringa("prova@prova.provaA");
 
 //echo file_get_contents('php://input');
 

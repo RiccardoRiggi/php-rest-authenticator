@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 02, 2023 alle 21:33
+-- Creato il: Mar 06, 2023 alle 20:40
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -169,28 +169,37 @@ CREATE TABLE `au_risorse` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_ruoli`
+-- Struttura della tabella `au_ruoli_risorse`
 --
 
-CREATE TABLE `au_ruoli` (
-  `idRuolo` int(10) NOT NULL,
+CREATE TABLE `au_ruoli_risorse` (
   `idTipoRuolo` varchar(32) NOT NULL,
-  `idUtente` int(10) NOT NULL,
-  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `dataEliminazione` datetime NOT NULL
+  `idRisorsa` int(10) NOT NULL,
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_ruoli_risorse`
+-- Struttura della tabella `au_ruoli_utenti`
 --
 
-CREATE TABLE `au_ruoli_risorse` (
-  `idRuolo` int(10) NOT NULL,
-  `idRisorsa` int(10) NOT NULL,
-  `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
-  `dataFineValidita` datetime DEFAULT NULL
+CREATE TABLE `au_ruoli_utenti` (
+  `idTipoRuolo` varchar(32) NOT NULL,
+  `idUtente` int(10) NOT NULL,
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `au_ruoli_voci_menu`
+--
+
+CREATE TABLE `au_ruoli_voci_menu` (
+  `idTipoRuolo` varchar(32) NOT NULL,
+  `idVoceMenu` int(10) NOT NULL,
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -363,16 +372,22 @@ ALTER TABLE `au_risorse`
   ADD PRIMARY KEY (`idRisorsa`);
 
 --
--- Indici per le tabelle `au_ruoli`
---
-ALTER TABLE `au_ruoli`
-  ADD PRIMARY KEY (`idRuolo`);
-
---
 -- Indici per le tabelle `au_ruoli_risorse`
 --
 ALTER TABLE `au_ruoli_risorse`
-  ADD PRIMARY KEY (`idRuolo`,`idRisorsa`,`dataInizioValidita`);
+  ADD PRIMARY KEY (`idTipoRuolo`,`idRisorsa`);
+
+--
+-- Indici per le tabelle `au_ruoli_utenti`
+--
+ALTER TABLE `au_ruoli_utenti`
+  ADD PRIMARY KEY (`idTipoRuolo`,`idUtente`);
+
+--
+-- Indici per le tabelle `au_ruoli_voci_menu`
+--
+ALTER TABLE `au_ruoli_voci_menu`
+  ADD PRIMARY KEY (`idTipoRuolo`,`idVoceMenu`);
 
 --
 -- Indici per le tabelle `au_token`
@@ -426,12 +441,6 @@ ALTER TABLE `au_voci_menu`
 --
 ALTER TABLE `au_log`
   MODIFY `idLog` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT per la tabella `au_ruoli`
---
-ALTER TABLE `au_ruoli`
-  MODIFY `idRuolo` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `au_utenti`
