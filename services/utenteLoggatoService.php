@@ -146,3 +146,132 @@ if (!function_exists('inserisciCodiceBackup')) {
         $stmt->execute();
     }
 }
+
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getMetodiAutenticazionePerUtenteLoggato
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+if (!function_exists('getMetodiAutenticazionePerUtenteLoggato')) {
+    function getMetodiAutenticazionePerUtenteLoggato()
+    {
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+
+        $sql = "SELECT tml.idTipoMetodoLogin, tml.descrizione, ml.idUtente  FROM " . PREFISSO_TAVOLA . "_t_metodi_login tml LEFT JOIN " . PREFISSO_TAVOLA . "_metodi_login ml ON tml.idTipoMetodoLogin = ml.idTipoMetodoLogin AND (ml.idUtente=:idUtente OR ml.idUtente IS NULL) AND ml.dataFineValidita IS NULL WHERE ml.dataFineValidita IS NULL AND tml.idTipoMetodoLogin != 'QR_CODE' AND tml.idTipoMetodoLogin != 'EMAIL_PSW_SIX_EMAIL' ORDER BY tml.idTipoMetodoLogin";
+        generaLogSuFile($sql);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        return $result;
+    }
+}
+
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: abilitaTipoMetodoLogin
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('abilitaTipoMetodoLogin')) {
+    function abilitaTipoMetodoLogin($idTipoMetodoLogin)
+    {
+
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_metodi_login (idUtente, idTipoMetodoLogin, dataInizioValidita) VALUES (:idUtente, :idTipoMetodoLogin, current_timestamp)");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':idTipoMetodoLogin', $idTipoMetodoLogin);
+        $stmt->execute();
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: abilitaTipoMetodoLogin
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('disabilitaTipoMetodoLogin')) {
+    function disabilitaTipoMetodoLogin($idTipoMetodoLogin)
+    {
+
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_metodi_login SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente AND idTipoMetodoLogin = :idTipoMetodoLogin AND dataFineValidita IS NULL ");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':idTipoMetodoLogin', $idTipoMetodoLogin);
+        $stmt->execute();
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getMetodiRecuperoPasswordPerUtenteLoggato
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+if (!function_exists('getMetodiRecuperoPasswordPerUtenteLoggato')) {
+    function getMetodiRecuperoPasswordPerUtenteLoggato()
+    {
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+
+        $sql = "SELECT tml.idTipoMetodoRecPsw, tml.descrizione, ml.idUtente  FROM " . PREFISSO_TAVOLA . "_t_metodi_rec_psw tml LEFT JOIN " . PREFISSO_TAVOLA . "_metodi_rec_psw ml ON tml.idTipoMetodoRecPsw = ml.idTipoMetodoRecPsw AND (ml.idUtente=:idUtente OR ml.idUtente IS NULL) AND ml.dataFineValidita IS NULL WHERE ml.dataFineValidita IS NULL AND tml.idTipoMetodoRecPsw != 'REC_PSW_EMAIL_SIX_EMAIL' ORDER BY tml.idTipoMetodoRecPsw";
+        generaLogSuFile($sql);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        return $result;
+    }
+}
+
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: abilitaTipoRecuperoPassword
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('abilitaTipoRecuperoPassword')) {
+    function abilitaTipoRecuperoPassword($idTipoMetodoRecPsw)
+    {
+
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_metodi_rec_psw (idUtente, idTipoMetodoRecPsw, dataInizioValidita) VALUES (:idUtente, :idTipoMetodoRecPsw, current_timestamp)");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':idTipoMetodoRecPsw', $idTipoMetodoRecPsw);
+        $stmt->execute();
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: disabilitaTipoRecuperoPassword
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('disabilitaTipoRecuperoPassword')) {
+    function disabilitaTipoRecuperoPassword($idTipoMetodoRecPsw)
+    {
+
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_metodi_rec_psw SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente AND idTipoMetodoRecPsw = :idTipoMetodoRecPsw AND dataFineValidita IS NULL ");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':idTipoMetodoRecPsw', $idTipoMetodoRecPsw);
+        $stmt->execute();
+    }
+}

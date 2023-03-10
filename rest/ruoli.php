@@ -46,6 +46,9 @@ try {
             throw new OtterGuardianException(400, "Non puoi inserire il ruolo AMM");
         }
 
+        if (str_starts_with($jsonBody["idTipoRuolo"], "USER")) {
+            throw new OtterGuardianException(400, "Non puoi inserire il ruolo USER");
+        }
 
         inserisciRuolo($jsonBody["idTipoRuolo"], $jsonBody["descrizione"]);
         http_response_code(200);
@@ -69,6 +72,10 @@ try {
             throw new OtterGuardianException(400, "Non puoi modificare il ruolo AMM");
         }
 
+        if (str_starts_with($_GET["idTipoRuolo"], "USER")) {
+            throw new OtterGuardianException(400, "Non puoi modificare il ruolo USER");
+        }
+
 
         $response = modificaRuolo($jsonBody["descrizione"], $_GET["idTipoRuolo"]);
         http_response_code(200);
@@ -84,6 +91,9 @@ try {
             throw new OtterGuardianException(400, "Non puoi eliminare il ruolo AMM");
         }
 
+        if (str_starts_with($_GET["idTipoRuolo"], "USER")) {
+            throw new OtterGuardianException(400, "Non puoi eliminare il ruolo USER");
+        }
 
         eliminaRuolo($_GET["idTipoRuolo"]);
         http_response_code(200);
@@ -211,7 +221,7 @@ try {
             throw new OtterGuardianException(400, "Il campo idVoceMenu è richiesto");
 
 
-            dissociaRuoloVoceMenu($_GET["idTipoRuolo"], $_GET["idVoceMenu"]);
+        dissociaRuoloVoceMenu($_GET["idTipoRuolo"], $_GET["idVoceMenu"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getVociMenuPerRuolo") {
 

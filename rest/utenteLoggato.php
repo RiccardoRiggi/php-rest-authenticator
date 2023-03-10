@@ -63,6 +63,72 @@ try {
         $response = getStoricoAccessi($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getMetodiAutenticazionePerUtenteLoggato") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getMetodiAutenticazionePerUtenteLoggato();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "abilitaTipoMetodoLogin") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "PUT")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idTipoMetodoLogin"]))
+            throw new OtterGuardianException(400, "Il campo idTipoMetodoLogin è richiesto");
+
+
+        $response = abilitaTipoMetodoLogin($_GET["idTipoMetodoLogin"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "disabilitaTipoMetodoLogin") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "PUT")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idTipoMetodoLogin"]))
+            throw new OtterGuardianException(400, "Il campo idTipoMetodoLogin è richiesto");
+
+
+        $response = disabilitaTipoMetodoLogin($_GET["idTipoMetodoLogin"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getMetodiRecuperoPasswordPerUtenteLoggato") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getMetodiRecuperoPasswordPerUtenteLoggato();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "abilitaTipoRecuperoPassword") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "PUT")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idTipoMetodoRecPsw"]))
+            throw new OtterGuardianException(400, "Il campo idTipoMetodoRecPsw è richiesto");
+
+
+        $response = abilitaTipoRecuperoPassword($_GET["idTipoMetodoRecPsw"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "disabilitaTipoRecuperoPassword") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "PUT")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idTipoMetodoRecPsw"]))
+            throw new OtterGuardianException(400, "Il campo idTipoMetodoRecPsw è richiesto");
+
+
+        $response = disabilitaTipoRecuperoPassword($_GET["idTipoMetodoRecPsw"]);
+        http_response_code(200);
+        exit(json_encode($response));
     } else {
         throw new OtterGuardianException(500, "Metodo non implementato");
     }

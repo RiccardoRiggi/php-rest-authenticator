@@ -49,6 +49,10 @@ try {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la creazione di nuove risorse");
         }
 
+        if (str_starts_with($jsonBody["idRisorsa"], "USER_")) {
+            throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la creazione di nuove risorse");
+        }
+
 
         inserisciRisorsa($jsonBody["idRisorsa"], $jsonBody["nomeMetodo"], $jsonBody["descrizione"]);
         http_response_code(200);
@@ -73,6 +77,10 @@ try {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la modifica di una risorsa");
         }
 
+        if (str_starts_with($_GET["idRisorsa"], "USER_")) {
+            throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la modifica di una risorsa");
+        }
+
 
         $response = modificaRisorsa($jsonBody["nomeMetodo"], $jsonBody["descrizione"], $_GET["idRisorsa"]);
         http_response_code(200);
@@ -85,6 +93,10 @@ try {
             throw new OtterGuardianException(400, "Il campo idRisorsa è richiesto");
 
         if (str_starts_with($_GET["idRisorsa"], "AMM_")) {
+            throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per l'eliminazione di una risorsa");
+        }
+
+        if (str_starts_with($_GET["idRisorsa"], "USER_")) {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per l'eliminazione di una risorsa");
         }
 

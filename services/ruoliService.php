@@ -7,7 +7,7 @@ Funzione: getRuoli
 if (!function_exists('getRuoli')) {
     function getRuoli($pagina)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
         $sql = "SELECT idTipoRuolo, descrizione FROM " . PREFISSO_TAVOLA . "_t_ruoli ORDER BY idTipoRuolo LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
@@ -29,7 +29,7 @@ Funzione: inserisciRuolo
 if (!function_exists('inserisciRuolo')) {
     function inserisciRuolo($idTipoRuolo, $descrizione)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_t_ruoli (idTipoRuolo, descrizione) VALUES (:idTipoRuolo, :descrizione )";
 
@@ -52,7 +52,7 @@ Funzione: modificaRuolo
 if (!function_exists('modificaRuolo')) {
     function modificaRuolo($descrizione, $idTipoRuolo)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "UPDATE " . PREFISSO_TAVOLA . "_t_ruoli SET descrizione= :descrizione WHERE idTipoRuolo = :idTipoRuolo ";
 
@@ -75,7 +75,7 @@ Funzione: eliminaRuolo
 if (!function_exists('eliminaRuolo')) {
     function eliminaRuolo($idTipoRuolo)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "DELETE FROM " . PREFISSO_TAVOLA . "_t_ruoli WHERE idTipoRuolo = :idTipoRuolo ";
 
@@ -103,7 +103,7 @@ Funzione: getRisorsa
 if (!function_exists('getRuolo')) {
     function getRuolo($idTipoRuolo)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "SELECT idTipoRuolo, descrizione FROM " . PREFISSO_TAVOLA . "_t_ruoli WHERE idTipoRuolo = :idTipoRuolo ";
 
@@ -124,7 +124,7 @@ Funzione: associaRuoloUtente
 if (!function_exists('associaRuoloUtente')) {
     function associaRuoloUtente($idTipoRuolo, $idUtente)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_ruoli_utenti (idTipoRuolo, idUtente, dataCreazione) VALUES (:idTipoRuolo, :idUtente, current_timestamp )";
 
@@ -148,7 +148,7 @@ Funzione: eliminaRuolo
 if (!function_exists('dissociaRuoloUtente')) {
     function dissociaRuoloUtente($idTipoRuolo, $idUtente)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "DELETE FROM " . PREFISSO_TAVOLA . "_ruoli_utenti WHERE idTipoRuolo = :idTipoRuolo AND  idUtente = :idUtente";
 
@@ -179,12 +179,12 @@ if (!function_exists('getUtentiPerRuolo')) {
     function getUtentiPerRuolo($idTipoRuolo, $pagina)
     {
 
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
 
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
-        $sql = "SELECT u.idUtente, u.nome, u.cognome, u.email, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_utenti u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_utenti r ON u.idUtente = r.idUtente WHERE u.dataEliminazione IS NULL AND u.dataBlocco IS NULL AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL) ORDER BY r.dataCreazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        $sql = "SELECT u.idUtente, u.nome, u.cognome, u.email, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_utenti u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_utenti r ON u.idUtente = r.idUtente AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL) WHERE u.dataEliminazione IS NULL AND u.dataBlocco IS NULL ORDER BY u.idUtente LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
 
         generaLogSuFile($sql);
 
@@ -219,7 +219,7 @@ Funzione: associaRuoloRisorsa
 if (!function_exists('associaRuoloRisorsa')) {
     function associaRuoloRisorsa($idTipoRuolo, $idRisorsa)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_ruoli_risorse (idTipoRuolo, idRisorsa, dataCreazione) VALUES (:idTipoRuolo, :idRisorsa, current_timestamp )";
 
@@ -243,7 +243,7 @@ Funzione: dissociaRuoloRisorsa
 if (!function_exists('dissociaRuoloRisorsa')) {
     function dissociaRuoloRisorsa($idTipoRuolo, $idRisorsa)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "DELETE FROM " . PREFISSO_TAVOLA . "_ruoli_risorse WHERE idTipoRuolo = :idTipoRuolo AND  idRisorsa = :idRisorsa";
 
@@ -274,12 +274,12 @@ if (!function_exists('getRisorsePerRuolo')) {
     function getRisorsePerRuolo($idTipoRuolo, $pagina)
     {
 
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
 
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
-        $sql = "SELECT u.nomeMetodo, u.descrizione, u.idRisorsa, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_risorse u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_risorse r ON u.idRisorsa = r.idRisorsa WHERE u.dataEliminazione IS NULL AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL) ORDER BY r.dataCreazione DESC, u.descrizione ASC LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        $sql = "SELECT u.nomeMetodo, u.descrizione, u.idRisorsa, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_risorse u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_risorse r ON u.idRisorsa = r.idRisorsa AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL)  WHERE u.dataEliminazione IS NULL ORDER BY u.idRisorsa LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
 
         generaLogSuFile($sql);
 
@@ -300,7 +300,7 @@ Funzione: associaRuoloVoceMenu
 if (!function_exists('associaRuoloVoceMenu')) {
     function associaRuoloVoceMenu($idTipoRuolo, $idVoceMenu)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_ruoli_voci_menu (idTipoRuolo, idVoceMenu, dataCreazione) VALUES (:idTipoRuolo, :idVoceMenu, current_timestamp )";
 
@@ -324,7 +324,7 @@ Funzione: dissociaRuoloVoceMenu
 if (!function_exists('dissociaRuoloVoceMenu')) {
     function dissociaRuoloVoceMenu($idTipoRuolo, $idVoceMenu)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "DELETE FROM " . PREFISSO_TAVOLA . "_ruoli_voci_menu WHERE idTipoRuolo = :idTipoRuolo AND  idVoceMenu = :idVoceMenu";
 
@@ -355,12 +355,12 @@ if (!function_exists('getVociMenuPerRuolo')) {
     function getVociMenuPerRuolo($idTipoRuolo, $pagina)
     {
 
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
 
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
-        $sql = "SELECT u.idVoceMenu, u.descrizione, u.path, u.icona, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_voci_menu u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_voci_menu r ON u.idVoceMenu = r.idVoceMenu WHERE u.dataEliminazione IS NULL AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL) ORDER BY r.dataCreazione DESC, u.descrizione ASC LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        $sql = "SELECT u.idVoceMenu, u.descrizione, u.path, u.icona, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_voci_menu u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_voci_menu r ON u.idVoceMenu = r.idVoceMenu AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL) WHERE u.dataEliminazione IS NULL ORDER BY r.dataCreazione DESC, u.descrizione ASC LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
 
         generaLogSuFile($sql);
 
