@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 06, 2023 alle 20:40
+-- Creato il: Mar 13, 2023 alle 22:06
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -174,7 +174,7 @@ CREATE TABLE `au_risorse` (
 
 CREATE TABLE `au_ruoli_risorse` (
   `idTipoRuolo` varchar(32) NOT NULL,
-  `idRisorsa` int(10) NOT NULL,
+  `idRisorsa` varchar(255) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
