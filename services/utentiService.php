@@ -75,7 +75,7 @@ if (!function_exists('abilitaTipoRecuperoPasswordDefault')) {
     {
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_metodi_rec_psw (idUtente, idTipoMetodoRecPsw, dataInizioValidita) VALUES (:idUtente, 'REC_PSW_EMAIL_SIX_APP', current_timestamp)");
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_metodi_rec_psw (idUtente, idTipoMetodoRecPsw, dataInizioValidita) VALUES (:idUtente, 'REC_PSW_EMAIL_SIX_EMAIL', current_timestamp)");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
     }
@@ -138,7 +138,7 @@ if (!function_exists('getUtente')) {
 
             array_push($array, $tmp);
         }
-        return $array;
+        return $array[0];
     }
 }
 

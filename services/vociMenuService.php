@@ -92,7 +92,7 @@ if (!function_exists('inserisciVoceMenu')) {
     {
         //verificaValiditaToken();
 
-        $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_voci_menu(idVoceMenuPadre, descrizione, path, icona, ordine, dataCreazione) VALUES (:idVoceMenuPadre, :descrizione , :path, :icona, :ordine ,current_timestamp)";
+        $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_voci_menu(idVoceMenuPadre, descrizione, path, icona, ordine, dataCreazione, visibile) VALUES (:idVoceMenuPadre, :descrizione , :path, :icona, :ordine ,current_timestamp, true)";
 
 
         $conn = apriConnessione();
