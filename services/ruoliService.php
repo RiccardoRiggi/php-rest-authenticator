@@ -201,7 +201,7 @@ if (!function_exists('getUtentiPerRuolo')) {
             $tmp["cognome"] = decifraStringa($value["cognome"]);
             $tmp["email"] = decifraStringa($value["email"]);
 
-            
+
             $tmp["1"] = decifraStringa($value["1"]);
             $tmp["2"] = decifraStringa($value["2"]);
             $tmp["3"] = decifraStringa($value["3"]);
@@ -276,10 +276,20 @@ if (!function_exists('getRisorsePerRuolo')) {
 
         verificaValiditaToken();
 
+        if (str_starts_with($idTipoRuolo, "AMM_")) {
+        }
+
 
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
-        $sql = "SELECT u.nomeMetodo, u.descrizione, u.idRisorsa, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_risorse u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_risorse r ON u.idRisorsa = r.idRisorsa AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL)  WHERE u.dataEliminazione IS NULL ORDER BY u.idRisorsa LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        if (str_starts_with($idTipoRuolo, "AMM")) {
+            $sql = "SELECT u.nomeMetodo, u.descrizione, u.idRisorsa, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_risorse u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_risorse r ON u.idRisorsa = r.idRisorsa AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL)  WHERE u.dataEliminazione IS NULL AND u.idRisorsa LIKE CONCAT('AMM', '%') ORDER BY u.idRisorsa LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        } else if (str_starts_with($idTipoRuolo, "USER")) {
+            $sql = "SELECT u.nomeMetodo, u.descrizione, u.idRisorsa, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_risorse u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_risorse r ON u.idRisorsa = r.idRisorsa AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL)  WHERE u.dataEliminazione IS NULL AND u.idRisorsa LIKE CONCAT('USER', '%') ORDER BY u.idRisorsa LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        } else {
+            $sql = "SELECT u.nomeMetodo, u.descrizione, u.idRisorsa, r.dataCreazione, r.idTipoRuolo  FROM " . PREFISSO_TAVOLA . "_risorse u LEFT JOIN " . PREFISSO_TAVOLA . "_ruoli_risorse r ON u.idRisorsa = r.idRisorsa AND (idTipoRuolo=:idTipoRuolo OR idTipoRuolo IS NULL)  WHERE u.dataEliminazione IS NULL ORDER BY u.idRisorsa LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        }
+
 
         generaLogSuFile($sql);
 

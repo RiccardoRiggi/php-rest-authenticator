@@ -7,7 +7,7 @@ Funzione: getVociMenu
 if (!function_exists('getVociMenu')) {
     function getVociMenu($pagina)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
         $sql = "SELECT f.idVoceMenu, f.idVoceMenuPadre, f.descrizione, (SELECT p.descrizione FROM " . PREFISSO_TAVOLA . "_voci_menu p WHERE p.idVoceMenu = f.idVoceMenuPadre and p.dataEliminazione IS NULL) as descrizionePadre, f.path, f.icona, f.ordine  FROM " . PREFISSO_TAVOLA . "_voci_menu f WHERE f.dataEliminazione IS NULL ORDER BY f.idVoceMenuPadre, f.idVoceMenu LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
@@ -35,7 +35,7 @@ if (!function_exists('getVociMenuPerUtente')) {
 
         //AGGIUNGERE IL FILTRO PER RUOLO
 
-        $result = getVociMenuRadice(null);
+        $result = getVociMenuRadice();
         return getVociMenuDatoPadre($result);
     }
 }
@@ -44,11 +44,14 @@ if (!function_exists('getVociMenuRadice')) {
     function getVociMenuRadice()
     {
 
-        $sql = "SELECT idVoceMenu, idVoceMenuPadre, descrizione, path, icona, ordine, visibile  FROM " . PREFISSO_TAVOLA . "_voci_menu WHERE idVoceMenuPadre IS NULL AND dataEliminazione IS NULL ORDER BY ORDINE ";
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+        $sql = "SELECT DISTINCT vm.idVoceMenu, vm.idVoceMenuPadre, vm.descrizione, vm.path, vm.icona, vm.ordine, vm.visibile  FROM " . PREFISSO_TAVOLA . "_voci_menu vm JOIN " . PREFISSO_TAVOLA . "_ruoli_voci_menu rvm ON vm.idVoceMenu = rvm.idVoceMenu JOIN " . PREFISSO_TAVOLA . "_ruoli_utenti ru ON rvm.idTipoRuolo = ru.idTipoRuolo WHERE vm.idVoceMenuPadre IS NULL AND ru.idUtente = :idUtente AND vm.dataEliminazione IS NULL ORDER BY ORDINE ";
 
 
         $conn = apriConnessione();
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
         return $result;
@@ -60,15 +63,17 @@ if (!function_exists('getVociMenuDatoPadre')) {
     function getVociMenuDatoPadre($result)
     {
 
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+
         $array = [];
         foreach ($result as $value) {
-
-            $sql = "SELECT idVoceMenu, idVoceMenuPadre, descrizione, path, icona, ordine, visibile  FROM " . PREFISSO_TAVOLA . "_voci_menu WHERE idVoceMenuPadre = :idVoceMenuPadre AND dataEliminazione IS NULL ORDER BY ORDINE ";
-
-
+            $sql = "SELECT DISTINCT vm.idVoceMenu, vm.idVoceMenuPadre, vm.descrizione, vm.path, vm.icona, vm.ordine, vm.visibile  FROM " . PREFISSO_TAVOLA . "_voci_menu vm JOIN " . PREFISSO_TAVOLA . "_ruoli_voci_menu rvm ON vm.idvocemenu = rvm.idvocemenu JOIN " . PREFISSO_TAVOLA . "_ruoli_utenti ru ON rvm.idTipoRuolo = ru.idTipoRuolo WHERE ru.idUtente = :idUtente AND idVoceMenuPadre = :idVoceMenuPadre AND vm.dataEliminazione IS NULL ORDER BY ORDINE ";
             $conn = apriConnessione();
             $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':idUtente', $idUtente);
             $stmt->bindParam(':idVoceMenuPadre', $value["idVoceMenu"]);
+
             $stmt->execute();
             $result = $stmt->fetchAll();
             $tmp = $value;
@@ -90,7 +95,7 @@ Funzione: inserisciVoceMenu
 if (!function_exists('inserisciVoceMenu')) {
     function inserisciVoceMenu($idVoceMenuPadre, $descrizione, $path, $icona, $ordine)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_voci_menu(idVoceMenuPadre, descrizione, path, icona, ordine, dataCreazione, visibile) VALUES (:idVoceMenuPadre, :descrizione , :path, :icona, :ordine ,current_timestamp, true)";
 
@@ -118,7 +123,7 @@ Funzione: modificaVoceMenu
 if (!function_exists('modificaVoceMenu')) {
     function modificaVoceMenu($idVoceMenuPadre, $descrizione, $path, $icona, $ordine, $idVoceMenu)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "UPDATE " . PREFISSO_TAVOLA . "_voci_menu SET idVoceMenuPadre= :idVoceMenuPadre ,descrizione= :descrizione, path= :path, icona= :icona ,ordine= :ordine WHERE idVoceMenu = :idVoceMenu AND dataEliminazione IS NULL";
 
@@ -145,7 +150,7 @@ Funzione: eliminaVoceMenu
 if (!function_exists('eliminaVoceMenu')) {
     function eliminaVoceMenu($idVoceMenu)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "UPDATE " . PREFISSO_TAVOLA . "_voci_menu SET dataEliminazione = current_timestamp WHERE idVoceMenu = :idVoceMenu AND dataEliminazione IS NULL";
 
@@ -157,9 +162,9 @@ if (!function_exists('eliminaVoceMenu')) {
 
         $numeroRecordModificati = $stmt->rowCount();
 
-        if($numeroRecordModificati!=1){
+        if ($numeroRecordModificati != 1) {
             generaLogSuBaseDati("ERROR", "Tentativo di eliminazione di una voce di menu non esistente. Identificativo inserito: " . $idVoceMenu);
-            throw new OtterGuardianException(500,"Non esiste un record con l'identificativo indicato");
+            throw new OtterGuardianException(500, "Non esiste un record con l'identificativo indicato");
         }
 
         generaLogSuBaseDati("DEBUG", "Eliminazione della voce di menu con identificativo " . $idVoceMenu);
@@ -173,7 +178,7 @@ Funzione: getVoceMenu
 if (!function_exists('getVoceMenu')) {
     function getVoceMenu($idVoceMenu)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "SELECT f.idVoceMenu, f.idVoceMenuPadre, f.descrizione, (SELECT p.descrizione FROM " . PREFISSO_TAVOLA . "_voci_menu p WHERE p.idVoceMenu = f.idVoceMenuPadre and p.dataEliminazione IS NULL) as descrizionePadre, f.path, f.icona, f.ordine  FROM " . PREFISSO_TAVOLA . "_voci_menu f WHERE f.dataEliminazione IS NULL AND f.idVoceMenu = :idVoceMenu ";
 

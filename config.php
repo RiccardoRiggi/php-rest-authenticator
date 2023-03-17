@@ -16,6 +16,11 @@ if (!defined("NOME_APPLICAZIONE"))
 if (!defined("ELEMENTI_PER_PAGINA"))
     define("ELEMENTI_PER_PAGINA", 10);
 
+if (!defined("ABILITA_VERIFICA_TOKEN"))
+    define("ABILITA_VERIFICA_TOKEN", true);
+
+
+
 
 //Informazioni per la cifratura
 if (!defined("CIPHERING_VALUE"))

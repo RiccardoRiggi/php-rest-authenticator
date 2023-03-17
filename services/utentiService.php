@@ -7,7 +7,7 @@ Funzione: getListaUtenti
 if (!function_exists('getListaUtenti')) {
     function getListaUtenti($pagina)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
         $sql = "SELECT idUtente, nome, cognome, email, dataBlocco FROM " . PREFISSO_TAVOLA . "_utenti WHERE dataEliminazione IS NULL ORDER BY idUtente LIMIT :pagina, " . ELEMENTI_PER_PAGINA;

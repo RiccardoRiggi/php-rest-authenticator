@@ -7,8 +7,9 @@ Funzione: getRisorse
 if (!function_exists('getRisorse')) {
     function getRisorse($pagina)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
+        
 
         $sql = "SELECT idRisorsa, nomeMetodo, descrizione FROM " . PREFISSO_TAVOLA . "_risorse WHERE dataEliminazione IS NULL ORDER BY idRisorsa LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
 
@@ -29,7 +30,7 @@ Funzione: inserisciRisorsa
 if (!function_exists('inserisciRisorsa')) {
     function inserisciRisorsa($idRisorsa, $nomeMetodo, $descrizione)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_risorse (idRisorsa, nomeMetodo, descrizione, dataCreazione) VALUES (:idRisorsa, :nomeMetodo , :descrizione ,current_timestamp)";
 
@@ -53,7 +54,7 @@ Funzione: modificaRisorsa
 if (!function_exists('modificaRisorsa')) {
     function modificaRisorsa($nomeMetodo, $descrizione, $idRisorsa)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "UPDATE " . PREFISSO_TAVOLA . "_risorse SET nomeMetodo= :nomeMetodo ,descrizione= :descrizione WHERE idRisorsa = :idRisorsa AND dataEliminazione IS NULL";
 
@@ -77,7 +78,7 @@ Funzione: eliminaRisorsa
 if (!function_exists('eliminaRisorsa')) {
     function eliminaRisorsa($idRisorsa)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "UPDATE " . PREFISSO_TAVOLA . "_risorse SET dataEliminazione = current_timestamp WHERE idRisorsa = :idRisorsa AND dataEliminazione IS NULL";
 
@@ -105,7 +106,7 @@ Funzione: getRisorsa
 if (!function_exists('getRisorsa')) {
     function getRisorsa($idRisorsa)
     {
-        //verificaValiditaToken();
+        verificaValiditaToken();
 
         $sql = "SELECT idRisorsa, nomeMetodo, descrizione FROM " . PREFISSO_TAVOLA . "_risorse WHERE dataEliminazione IS NULL AND idRisorsa = :idRisorsa ";
 

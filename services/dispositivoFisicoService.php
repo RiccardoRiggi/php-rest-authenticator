@@ -152,6 +152,7 @@ if (!function_exists('getRichiesteDiAccessoPendenti')) {
     {
 
         $idUtente = getIdUtenteByDispositivo($idDispositivoFisico);
+        generaLogSuFile("ID UTENTE: ".$idUtente);
         return getAccessiPendenti($idUtente);
     }
 }
@@ -162,8 +163,9 @@ if (!function_exists('getAccessiPendenti')) {
 
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("( SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, l.token, f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1) UNION ( SELECT f.idTwoFact, l.idTipoRecPsw, f.codice, f.dataCreazione, '', f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_rec_psw l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = 1 AND f.idRecPsw = l.idRecPsw AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 ORDER BY f.dataCreazione DESC LIMIT 1 )");
-        $stmt->bindParam(':idUtente', $idUtente);
+        $sql = "( SELECT f.idTwoFact, l.idTipoLogin, f.codice, f.dataCreazione, l.token, f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_login l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idLogin = l.idLogin AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 AND f.dataUtilizzo IS NULL ORDER BY f.dataCreazione DESC LIMIT 1) UNION ( SELECT f.idTwoFact, l.idTipoRecPsw, f.codice, f.dataCreazione, '', f.dataUtilizzo, TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW())  as tempoPassato, f.indirizzoIp  FROM " . PREFISSO_TAVOLA . "_rec_psw l, " . PREFISSO_TAVOLA . "_two_fact f WHERE l.idUtente = :idUtente AND f.idRecPsw = l.idRecPsw AND TIMESTAMPDIFF(MINUTE,f.dataCreazione,NOW()) < 4 AND f.dataUtilizzo IS NULL ORDER BY f.dataCreazione DESC LIMIT 1 )";
+        generaLogSuFile($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
