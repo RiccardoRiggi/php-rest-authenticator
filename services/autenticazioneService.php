@@ -552,7 +552,6 @@ if (!function_exists('recuperaTokenDaIdLogin')) {
         $result = $stmt->fetchAll();
 
         if (count($result) != 1){
-            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
 
