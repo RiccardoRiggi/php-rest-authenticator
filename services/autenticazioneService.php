@@ -57,9 +57,10 @@ if (!function_exists('getUtente')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0)
+        if (count($result) == 0){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
-
+        }
         return $result;
     }
 }
@@ -78,9 +79,10 @@ if (!function_exists('getUtenteSenzaPassword')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0)
+        if (count($result) == 0){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
-
+        }
         return $result;
     }
 }
@@ -165,6 +167,7 @@ if (!function_exists('effettuaAutenticazione')) {
             $codice = inserisciCodiceSecondoFattore($idLogin);
 
             if ($tipoAutenticazione == "EMAIL_PSW_SIX_EMAIL") {
+                //TODO SCOMMENTARE PER ABILITARE
                 //inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
             }
 
@@ -263,8 +266,10 @@ if (!function_exists('verificaEsistenzaMetodoSecondoFattorePerUtente')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
     }
 }
 
@@ -307,9 +312,10 @@ if (!function_exists('getUtenteDecifrato')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0)
+        if (count($result) == 0){
+            incrementaContatoreAlert();
             throw new OtterGuardianException(404, "Utente non trovato");
-
+        }
         return $result;
     }
 }
@@ -339,6 +345,7 @@ if (!function_exists('verificaCodiceBackup')) {
         
 
         if (count($resultUno) != 1) {
+            incrementaContatoreAlert();
             $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_utenti SET tentativiCodiciBackup = tentativiCodiciBackup + 1 WHERE idUtente = :idUtente ");
             $stmt->bindParam(':idUtente', $idUtente);
             $stmt->execute();
@@ -370,9 +377,10 @@ if (!function_exists('getIdTipoLoginByIdLogin')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
-
+        }
         return $result[0]["idTipoLogin"];
     }
 }
@@ -386,8 +394,10 @@ if (!function_exists('getIdUtenteByIdLogin')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
+        }
 
         return $result[0]["idUtente"];
     }
@@ -403,11 +413,15 @@ if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
-        if ($result[0]["idLogin"] != $idLogin)
+        if ($result[0]["idLogin"] != $idLogin){
+            incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Verifica di stare autorizzando il tentativo di accesso più recente");
+        }
     }
 }
 
@@ -420,18 +434,24 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_two_fact SET tentativi = tentativi + 1 WHERE idLogin = :idLogin ");
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
 
-        if ($result[0]["tentativi"] > 5)
+        if ($result[0]["tentativi"] > 5){
+            incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Hai superato il numero massimo di tentativi");
+        }
 
-        if ($result[0]["codice"] != $codice)
+        if ($result[0]["codice"] != $codice){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return $result[0]["idTwoFact"];
     }
@@ -531,8 +551,10 @@ if (!function_exists('recuperaTokenDaIdLogin')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return  $result[0]["token"];
     }
@@ -551,8 +573,9 @@ if (!function_exists('recuperaTokenDaIdQrCode')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return  $result[0]["token"];
     }

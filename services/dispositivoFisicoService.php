@@ -63,8 +63,10 @@ if (!function_exists('getIdUtenteByDispositivo')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return $result[0]["idUtente"];
     }
@@ -102,8 +104,10 @@ if (!function_exists('disabilitaDispositivoFisico')) {
         $idUtenteToken = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
         $idUtenteDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
 
-        if ($idUtenteToken != $idUtenteDispositivo)
+        if ($idUtenteToken != $idUtenteDispositivo){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoException();
+        }
 
         disabilitaDispositivo($idUtenteToken, $idDispositivoFisico);
     }
@@ -191,8 +195,10 @@ if (!function_exists('autorizzaAccesso')) {
         $idUtenteDaDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
         $idUtenteTwoFact = getIdUtenteByIdTwoFact($idTwoFact);
 
-        if ($idUtenteDaDispositivo != $idUtenteTwoFact)
+        if ($idUtenteDaDispositivo != $idUtenteTwoFact){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         $login = getIdLoginByIdTwoFact($idTwoFact);
         aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
@@ -211,8 +217,10 @@ if (!function_exists('getIdUtenteByIdTwoFact')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return $result[0]["idUtente"];
     }
@@ -227,8 +235,10 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return $result[0];
     }
@@ -274,8 +284,10 @@ if (!function_exists('getDatiChiamanteByQrCode')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return $result[0];
     }

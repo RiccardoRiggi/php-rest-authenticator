@@ -17,8 +17,10 @@ if (!function_exists('getUtente')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0)
+        if (count($result) == 0) {
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return $result;
     }
@@ -38,8 +40,10 @@ if (!function_exists('getUtenteSenzaPassword')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0)
+        if (count($result) == 0) {
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return $result;
     }
@@ -124,7 +128,8 @@ if (!function_exists('inviaCodiceSecondoFattoreRecuperoPassowrdViaEmail')) {
         $subject = NOME_APPLICAZIONE . " - Autenticazione a due fattori";
         $messaggio = "Ciao " . $cognome . " " . $nome . ", \n Inserisci il codice di verifica " . $codice . " per completare la procedura di recupero password";
         $headers = "From: noreply@riccardoriggi.it";
-        mail($email, $subject, $messaggio, $headers);
+        //TODO SCOMMENTARE PER ABILITARE
+        //mail($email, $subject, $messaggio, $headers);
         generaLogSuFile("Invio un'email a " . $email . " con il seguente testo: " . $messaggio);
     }
 }
@@ -191,8 +196,10 @@ if (!function_exists('verificaEsistenzaMetodoRecuperoPasswordPerUtente')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1) {
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
     }
 }
 
@@ -211,9 +218,8 @@ if (!function_exists('confermaRecuperoPassword')) {
         aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
 
 
-        cambiaPassword($idUtente,$nuovaPassword);
+        cambiaPassword($idUtente, $nuovaPassword);
         invalidoTokenPrecedenti($idUtente);
-
     }
 }
 
@@ -253,8 +259,10 @@ if (!function_exists('verificaCodiceBackup')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1) {
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
     }
 }
 
@@ -269,8 +277,10 @@ if (!function_exists('getIdUtenteByIdRecPsw')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1) {
+            incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Non sono stati trovati tentativi di recupero password ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di recupero password");
+        }
 
         return $result[0]["idUtente"];
     }
@@ -286,11 +296,15 @@ if (!function_exists('confrontaConUltimoTentativoDiRecPsw')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1) {
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
-        if ($result[0]["idRecPsw"] != $idRecPsw)
+        if ($result[0]["idRecPsw"] != $idRecPsw) {
+            incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Verifica di stare autorizzando il tentativo di recupero password più recente");
+        }
     }
 }
 
@@ -304,15 +318,19 @@ if (!function_exists('verificaCodiceSecondoFattoreRecuperoPassword')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1) {
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_two_fact SET tentativi = tentativi + 1 WHERE idRecPsw = :idRecPsw ");
         $stmt->bindParam(':idRecPsw', $idRecPsw);
         $stmt->execute();
 
-        if ($result[0]["tentativi"] > 5)
+        if ($result[0]["tentativi"] > 5){
+            incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Hai superato il numero massimo di tentativi");
+        }
 
         return $result[0]["idTwoFact"];
     }
@@ -412,8 +430,10 @@ if (!function_exists('recuperaTokenDaIdLogin')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return  $result[0]["token"];
     }
@@ -432,8 +452,10 @@ if (!function_exists('recuperaTokenDaIdQrCode')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1)
+        if (count($result) != 1){
+            incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
+        }
 
         return  $result[0]["token"];
     }

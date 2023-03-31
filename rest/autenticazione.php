@@ -3,6 +3,8 @@
 include './importManager.php';
 include '../services/autenticazioneService.php';
 
+
+
 try {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
@@ -11,6 +13,8 @@ try {
     header('Access-Control-Max-Age: 86400');
     if (strtolower($_SERVER['REQUEST_METHOD']) == 'options')
         exit();
+
+    verificaIndirizzoIp();
 
 
     if (!isset($_GET["nomeMetodo"]))
@@ -117,7 +121,7 @@ try {
         if (!isset($_GET["idQrCode"]))
             throw new OtterGuardianException(400, "Il campo idQrCode è richiesto");
 
-            recuperaTokenDaQrCode($_GET["idQrCode"]);
+        recuperaTokenDaQrCode($_GET["idQrCode"]);
         http_response_code(200);
     } else {
         throw new OtterGuardianException(500, "Metodo non implementato");

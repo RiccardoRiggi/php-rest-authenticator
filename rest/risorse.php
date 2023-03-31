@@ -3,6 +3,7 @@
 include './importManager.php';
 include '../services/risorseService.php';
 
+
 try {
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
@@ -12,6 +13,7 @@ try {
     if (strtolower($_SERVER['REQUEST_METHOD']) == 'options')
         exit();
 
+    verificaIndirizzoIp();
 
     if (!isset($_GET["nomeMetodo"]))
         throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
