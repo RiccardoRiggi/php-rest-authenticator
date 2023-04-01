@@ -48,7 +48,7 @@ if (!function_exists('isDispositivoDaAbilitare')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             throw new AccessoNonAutorizzatoLoginException();
         }
     }
@@ -63,7 +63,7 @@ if (!function_exists('getIdUtenteByDispositivo')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -104,7 +104,7 @@ if (!function_exists('disabilitaDispositivoFisico')) {
         $idUtenteToken = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
         $idUtenteDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
 
-        if ($idUtenteToken != $idUtenteDispositivo){
+        if ($idUtenteToken != $idUtenteDispositivo) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoException();
         }
@@ -134,11 +134,11 @@ if (!function_exists('getDispositiviFisici')) {
         verificaValiditaToken();
         $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
 
-        $paginaDaEstrarre = ($pagina-1)*ELEMENTI_PER_PAGINA;
+        $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ORDER BY dataAbilitazione DESC LIMIT :pagina, ".ELEMENTI_PER_PAGINA);
+        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ORDER BY dataAbilitazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
@@ -156,7 +156,7 @@ if (!function_exists('getRichiesteDiAccessoPendenti')) {
     {
 
         $idUtente = getIdUtenteByDispositivo($idDispositivoFisico);
-        generaLogSuFile("ID UTENTE: ".$idUtente);
+        generaLogSuFile("ID UTENTE: " . $idUtente);
         return getAccessiPendenti($idUtente);
     }
 }
@@ -195,7 +195,7 @@ if (!function_exists('autorizzaAccesso')) {
         $idUtenteDaDispositivo = getIdUtenteByDispositivo($idDispositivoFisico);
         $idUtenteTwoFact = getIdUtenteByIdTwoFact($idTwoFact);
 
-        if ($idUtenteDaDispositivo != $idUtenteTwoFact){
+        if ($idUtenteDaDispositivo != $idUtenteTwoFact) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -217,7 +217,7 @@ if (!function_exists('getIdUtenteByIdTwoFact')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -235,7 +235,7 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -284,7 +284,7 @@ if (!function_exists('getDatiChiamanteByQrCode')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -306,5 +306,53 @@ if (!function_exists('isDispositivoAbilitato')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
         return count($result) == 1;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getDispositiviFisici
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('getListaDispositiviFisici')) {
+    function getListaDispositiviFisici($pagina)
+    {
+        verificaValiditaToken();
+
+        $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
+
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione, nome, cognome, idDispositivoFisico  FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici d JOIN " . PREFISSO_TAVOLA . "_utenti u on u.idUtente = d.idUtente  WHERE u.dataBlocco IS NULL and dataEliminazione IS NULL AND dataAbilitazione IS NOT NULL AND dataDisabilitazione IS NULL ORDER BY dataAbilitazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
+        $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        $array = [];
+        foreach ($result as $value) {
+            $tmp = $value;
+            $tmp["nome"] = decifraStringa($value["nome"]);
+            $tmp["3"] = decifraStringa($value["3"]);
+            $tmp["cognome"] = decifraStringa($value["cognome"]);
+            $tmp["4"] = decifraStringa($value["4"]);
+            array_push($array, $tmp);
+        }
+        return $array;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: rimuoviDispositivoFisico
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('rimuoviDispositivoFisico')) {
+    function rimuoviDispositivoFisico($idDispositivoFisico)
+    {
+
+        verificaValiditaToken();
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_dispositivi_fisici SET dataDisabilitazione = current_timestamp WHERE idDispositivoFisico = :idDispositivoFisico AND dataAbilitazione IS NOT NULL ");
+        $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
+        $stmt->execute();
     }
 }
