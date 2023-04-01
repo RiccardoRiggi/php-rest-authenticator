@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 13, 2023 alle 22:06
+-- Creato il: Apr 01, 2023 alle 23:06
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -59,8 +59,8 @@ CREATE TABLE `au_dispositivi_fisici` (
 
 CREATE TABLE `au_indirizzi_ip` (
   `indirizzoIp` varchar(512) NOT NULL,
-  `tentativiRimanenti` int(10) NOT NULL,
-  `dataBlocco` datetime NOT NULL
+  `contatoreAlert` int(10) NOT NULL DEFAULT 0,
+  `dataBlocco` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -93,6 +93,21 @@ CREATE TABLE `au_login` (
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `indirizzoIp` varchar(512) NOT NULL,
   `userAgent` varchar(512) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `au_log_chiamate`
+--
+
+CREATE TABLE `au_log_chiamate` (
+  `idLogChiamata` int(10) NOT NULL,
+  `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
+  `endpoint` varchar(1024) NOT NULL,
+  `indirizzoIp` varchar(255) NOT NULL,
+  `nomeMetodo` varchar(255) NOT NULL,
+  `token` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -342,6 +357,12 @@ ALTER TABLE `au_login`
   ADD PRIMARY KEY (`idLogin`);
 
 --
+-- Indici per le tabelle `au_log_chiamate`
+--
+ALTER TABLE `au_log_chiamate`
+  ADD PRIMARY KEY (`idLogChiamata`);
+
+--
 -- Indici per le tabelle `au_metodi_login`
 --
 ALTER TABLE `au_metodi_login`
@@ -441,6 +462,12 @@ ALTER TABLE `au_voci_menu`
 --
 ALTER TABLE `au_log`
   MODIFY `idLog` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `au_log_chiamate`
+--
+ALTER TABLE `au_log_chiamate`
+  MODIFY `idLogChiamata` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `au_utenti`

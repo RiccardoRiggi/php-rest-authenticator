@@ -28,6 +28,78 @@ try {
         $response = getStatisticheMetodi();
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroDispositiviFisiciAttivi") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroDispositiviFisiciAttivi();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroIndirizziIp") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroIndirizziIp();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroLogin") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroLogin();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroRisorse") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroRisorse();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroAccessiAttivi") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroAccessiAttivi();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroUtenti") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroUtenti();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroRuoli") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroRuoli();
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNumeroVociMenu") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+
+        $response = getNumeroVociMenu();
+        http_response_code(200);
+        exit(json_encode($response));
     } else {
         throw new OtterGuardianException(500, "Metodo non implementato");
     }
