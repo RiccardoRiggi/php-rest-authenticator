@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 01, 2023 alle 23:06
+-- Creato il: Apr 02, 2023 alle 12:06
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -135,6 +135,20 @@ CREATE TABLE `au_metodi_rec_psw` (
   `idUtente` int(10) NOT NULL,
   `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
   `dataFineValidita` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `au_notifiche`
+--
+
+CREATE TABLE `au_notifiche` (
+  `idNotifica` int(10) NOT NULL,
+  `idUtente` int(11) NOT NULL,
+  `dataInvio` datetime NOT NULL DEFAULT current_timestamp(),
+  `dataLettura` datetime DEFAULT NULL,
+  `dataEliminazione` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -277,6 +291,20 @@ CREATE TABLE `au_t_metodi_rec_psw` (
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `au_t_notifiche`
+--
+
+CREATE TABLE `au_t_notifiche` (
+  `idNotifica` int(10) NOT NULL,
+  `titolo` varchar(1024) NOT NULL,
+  `testo` varchar(1024) NOT NULL,
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
+  `dataEliminazione` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `au_t_ruoli`
 --
 
@@ -375,6 +403,12 @@ ALTER TABLE `au_metodi_rec_psw`
   ADD PRIMARY KEY (`idTipoMetodoRecPsw`,`idUtente`,`dataInizioValidita`);
 
 --
+-- Indici per le tabelle `au_notifiche`
+--
+ALTER TABLE `au_notifiche`
+  ADD PRIMARY KEY (`idNotifica`,`idUtente`);
+
+--
 -- Indici per le tabelle `au_qr_code`
 --
 ALTER TABLE `au_qr_code`
@@ -435,6 +469,12 @@ ALTER TABLE `au_t_metodi_rec_psw`
   ADD PRIMARY KEY (`idTipoMetodoRecPsw`);
 
 --
+-- Indici per le tabelle `au_t_notifiche`
+--
+ALTER TABLE `au_t_notifiche`
+  ADD PRIMARY KEY (`idNotifica`);
+
+--
 -- Indici per le tabelle `au_t_ruoli`
 --
 ALTER TABLE `au_t_ruoli`
@@ -468,6 +508,12 @@ ALTER TABLE `au_log`
 --
 ALTER TABLE `au_log_chiamate`
   MODIFY `idLogChiamata` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `au_t_notifiche`
+--
+ALTER TABLE `au_t_notifiche`
+  MODIFY `idNotifica` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `au_utenti`
