@@ -1,11 +1,11 @@
 <?php
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Funzione: getListaAccessiAttivi
+Funzione: getListaAccessi
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-if (!function_exists('getListaAccessiAttivi')) {
-    function getListaAccessiAttivi($pagina)
+if (!function_exists('getListaAccessi')) {
+    function getListaAccessi($pagina)
     {
         verificaValiditaToken();
 
@@ -13,7 +13,7 @@ if (!function_exists('getListaAccessiAttivi')) {
 
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT token, dataInizioValidita, dataUltimoUtilizzo, nome, cognome, indirizzoIp, userAgent  FROM " . PREFISSO_TAVOLA . "_token d JOIN " . PREFISSO_TAVOLA . "_utenti u on u.idUtente = d.idUtente  WHERE u.dataBlocco IS NULL and dataEliminazione IS NULL AND dataInizioValidita IS NOT NULL AND dataFineValidita IS NULL ORDER BY dataInizioValidita DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
+        $stmt = $conn->prepare("SELECT token, dataInizioValidita, dataUltimoUtilizzo, nome, cognome, indirizzoIp, userAgent, dataFineValidita  FROM " . PREFISSO_TAVOLA . "_token d JOIN " . PREFISSO_TAVOLA . "_utenti u on u.idUtente = d.idUtente  WHERE u.dataBlocco IS NULL and dataEliminazione IS NULL AND dataInizioValidita IS NOT NULL ORDER BY dataInizioValidita DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();

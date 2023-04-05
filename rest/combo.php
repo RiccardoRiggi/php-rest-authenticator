@@ -27,6 +27,14 @@ try {
         $response = getComboVociMenu();
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getComboRuoli") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        $response = getComboRuoli();
+        http_response_code(200);
+        exit(json_encode($response));
     } else {
         throw new ErroreServerException("Metodo non implementato");
     }

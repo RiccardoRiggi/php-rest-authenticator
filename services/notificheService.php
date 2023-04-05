@@ -294,7 +294,7 @@ if (!function_exists('getDestinatariNotifica')) {
         verificaValiditaToken();
         $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
 
-        $sql = "SELECT u.idUtente, nome, cognome, email,idNotifica, dataInvio, dataLettura FROM " . PREFISSO_TAVOLA . "_utenti u LEFT JOIN " . PREFISSO_TAVOLA . "_notifiche n ON ( u.idUtente = n.idUtente OR n.idNotifica IS NULL ) WHERE u.dataEliminazione IS NULL AND n.dataEliminazione IS NULL AND (idNotifica = :idNotifica OR idNotifica IS NULL ) ORDER BY dataInvio DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
+        $sql = "SELECT u.idUtente, nome, cognome, email,idNotifica, dataInvio, dataLettura FROM " . PREFISSO_TAVOLA . "_utenti u LEFT JOIN " . PREFISSO_TAVOLA . "_notifiche n ON ( u.idUtente = n.idUtente AND (idNotifica=:idNotifica OR idNotifica IS NULL) ) WHERE u.dataEliminazione IS NULL AND n.dataEliminazione IS NULL ORDER BY dataInvio DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA;
 
         generaLogSuFile($sql);
 

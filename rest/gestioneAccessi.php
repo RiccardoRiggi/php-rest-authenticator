@@ -19,7 +19,7 @@ try {
         throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
 
 
-    if ($_GET["nomeMetodo"] == "getListaAccessiAttivi") {
+    if ($_GET["nomeMetodo"] == "getListaAccessi") {
 
         if ($_SERVER['REQUEST_METHOD'] != "GET")
             throw new MetodoHttpErratoException();
@@ -28,7 +28,7 @@ try {
             throw new OtterGuardianException(400, "Il campo pagina è richiesto");
 
 
-        $response = getListaAccessiAttivi($_GET["pagina"]);
+        $response = getListaAccessi($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "terminaAccesso") {
