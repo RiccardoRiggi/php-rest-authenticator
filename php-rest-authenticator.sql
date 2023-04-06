@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 02, 2023 alle 12:06
+-- Creato il: Apr 06, 2023 alle 22:01
 -- Versione del server: 10.4.20-MariaDB
 -- Versione PHP: 8.0.9
 
@@ -358,13 +358,15 @@ CREATE TABLE `au_voci_menu` (
 -- Indici per le tabelle `au_codici_backup`
 --
 ALTER TABLE `au_codici_backup`
-  ADD PRIMARY KEY (`idUtente`,`codice`);
+  ADD PRIMARY KEY (`idUtente`,`codice`),
+  ADD KEY `idUtente` (`idUtente`);
 
 --
 -- Indici per le tabelle `au_dispositivi_fisici`
 --
 ALTER TABLE `au_dispositivi_fisici`
-  ADD PRIMARY KEY (`idDispositivoFisico`);
+  ADD PRIMARY KEY (`idDispositivoFisico`),
+  ADD KEY `idUtente` (`idUtente`);
 
 --
 -- Indici per le tabelle `au_indirizzi_ip`
@@ -376,49 +378,58 @@ ALTER TABLE `au_indirizzi_ip`
 -- Indici per le tabelle `au_log`
 --
 ALTER TABLE `au_log`
-  ADD PRIMARY KEY (`idLog`);
+  ADD PRIMARY KEY (`idLog`),
+  ADD KEY `indirizzoIp` (`indirizzoIp`);
 
 --
 -- Indici per le tabelle `au_login`
 --
 ALTER TABLE `au_login`
-  ADD PRIMARY KEY (`idLogin`);
+  ADD PRIMARY KEY (`idLogin`),
+  ADD KEY `idUtente` (`idUtente`),
+  ADD KEY `idUtente_2` (`idUtente`,`idTipoLogin`);
 
 --
 -- Indici per le tabelle `au_log_chiamate`
 --
 ALTER TABLE `au_log_chiamate`
-  ADD PRIMARY KEY (`idLogChiamata`);
+  ADD PRIMARY KEY (`idLogChiamata`),
+  ADD KEY `indirizzoIp` (`indirizzoIp`,`token`);
 
 --
 -- Indici per le tabelle `au_metodi_login`
 --
 ALTER TABLE `au_metodi_login`
-  ADD PRIMARY KEY (`idTipoMetodoLogin`,`idUtente`,`dataInizioValidita`);
+  ADD PRIMARY KEY (`idTipoMetodoLogin`,`idUtente`,`dataInizioValidita`),
+  ADD KEY `idTipoMetodoLogin` (`idTipoMetodoLogin`,`idUtente`);
 
 --
 -- Indici per le tabelle `au_metodi_rec_psw`
 --
 ALTER TABLE `au_metodi_rec_psw`
-  ADD PRIMARY KEY (`idTipoMetodoRecPsw`,`idUtente`,`dataInizioValidita`);
+  ADD PRIMARY KEY (`idTipoMetodoRecPsw`,`idUtente`,`dataInizioValidita`),
+  ADD KEY `idTipoMetodoRecPsw` (`idTipoMetodoRecPsw`,`idUtente`);
 
 --
 -- Indici per le tabelle `au_notifiche`
 --
 ALTER TABLE `au_notifiche`
-  ADD PRIMARY KEY (`idNotifica`,`idUtente`);
+  ADD PRIMARY KEY (`idNotifica`,`idUtente`),
+  ADD KEY `idNotifica` (`idNotifica`,`idUtente`);
 
 --
 -- Indici per le tabelle `au_qr_code`
 --
 ALTER TABLE `au_qr_code`
-  ADD PRIMARY KEY (`idQrCode`);
+  ADD PRIMARY KEY (`idQrCode`),
+  ADD KEY `idUtente` (`idUtente`,`indirizzoIp`);
 
 --
 -- Indici per le tabelle `au_rec_psw`
 --
 ALTER TABLE `au_rec_psw`
-  ADD PRIMARY KEY (`idRecPsw`);
+  ADD PRIMARY KEY (`idRecPsw`),
+  ADD KEY `idTipoRecPsw` (`idTipoRecPsw`,`idUtente`);
 
 --
 -- Indici per le tabelle `au_risorse`
@@ -430,31 +441,39 @@ ALTER TABLE `au_risorse`
 -- Indici per le tabelle `au_ruoli_risorse`
 --
 ALTER TABLE `au_ruoli_risorse`
-  ADD PRIMARY KEY (`idTipoRuolo`,`idRisorsa`);
+  ADD PRIMARY KEY (`idTipoRuolo`,`idRisorsa`),
+  ADD KEY `idTipoRuolo` (`idTipoRuolo`,`idRisorsa`),
+  ADD KEY `idRisorsa` (`idRisorsa`);
 
 --
 -- Indici per le tabelle `au_ruoli_utenti`
 --
 ALTER TABLE `au_ruoli_utenti`
-  ADD PRIMARY KEY (`idTipoRuolo`,`idUtente`);
+  ADD PRIMARY KEY (`idTipoRuolo`,`idUtente`),
+  ADD KEY `idTipoRuolo` (`idTipoRuolo`,`idUtente`);
 
 --
 -- Indici per le tabelle `au_ruoli_voci_menu`
 --
 ALTER TABLE `au_ruoli_voci_menu`
-  ADD PRIMARY KEY (`idTipoRuolo`,`idVoceMenu`);
+  ADD PRIMARY KEY (`idTipoRuolo`,`idVoceMenu`),
+  ADD KEY `idTipoRuolo` (`idTipoRuolo`,`idVoceMenu`);
 
 --
 -- Indici per le tabelle `au_token`
 --
 ALTER TABLE `au_token`
-  ADD PRIMARY KEY (`token`);
+  ADD PRIMARY KEY (`token`),
+  ADD KEY `idLogin` (`idLogin`,`idUtente`),
+  ADD KEY `idUtente` (`idUtente`);
 
 --
 -- Indici per le tabelle `au_two_fact`
 --
 ALTER TABLE `au_two_fact`
-  ADD PRIMARY KEY (`idTwoFact`);
+  ADD PRIMARY KEY (`idTwoFact`),
+  ADD KEY `idLogin` (`idLogin`),
+  ADD KEY `idRecPsw` (`idRecPsw`);
 
 --
 -- Indici per le tabelle `au_t_metodi_login`
@@ -491,7 +510,8 @@ ALTER TABLE `au_utenti`
 -- Indici per le tabelle `au_voci_menu`
 --
 ALTER TABLE `au_voci_menu`
-  ADD PRIMARY KEY (`idVoceMenu`);
+  ADD PRIMARY KEY (`idVoceMenu`),
+  ADD KEY `idVoceMenuPadre` (`idVoceMenuPadre`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
