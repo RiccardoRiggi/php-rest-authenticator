@@ -310,7 +310,7 @@ if (!function_exists('isDispositivoAbilitato')) {
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Funzione: getDispositiviFisici
+Funzione: getListaDispositiviFisici
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 if (!function_exists('getListaDispositiviFisici')) {
@@ -322,7 +322,7 @@ if (!function_exists('getListaDispositiviFisici')) {
 
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione, nome, cognome, idDispositivoFisico  FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici d JOIN " . PREFISSO_TAVOLA . "_utenti u on u.idUtente = d.idUtente  WHERE u.dataBlocco IS NULL and dataEliminazione IS NULL AND dataAbilitazione IS NOT NULL AND dataDisabilitazione IS NULL ORDER BY dataAbilitazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
+        $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione, nome, cognome, idDispositivoFisico  FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici d JOIN " . PREFISSO_TAVOLA . "_utenti u on u.idUtente = d.idUtente  WHERE u.dataBlocco IS NULL and dataEliminazione IS NULL AND dataAbilitazione IS NOT NULL ORDER BY dataDisabilitazione IS NULL DESC, dataDisabilitazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
