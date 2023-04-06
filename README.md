@@ -1,3 +1,5 @@
+# Documentazione BE
+
 # Otter Guardian BE
 
 Questo repository contiene la componente di backend di Otter Guardian sviluppata in PHP nativo, la struttura del database, gli script di configurazione e altre informazioni utili. 
@@ -22,19 +24,9 @@ I seguenti metodi sono richiamabili senza alcun token passato negli headers http
 
 Dato un indirizzo email di un utente registrato restituisce il metodo di autenticazione predefinito
 
-Query param aggiuntivi: 
+Query param aggiuntivi: no
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers: no
 
 Body:
 
@@ -61,19 +53,9 @@ Response
 
 Descrizione: Dato un indirizzo email di un utente registrato restituisce l’elenco delle modalità di autenticazione che sono state configurate
 
-Query param aggiuntivi: 
+Query param aggiuntivi: no
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers: no
 
 Body:
 
@@ -100,19 +82,9 @@ Response
 
 Descrizione: Data l’email, la password e il tipo di autenticazione effettua la pre autorizzazione all’autenticazione
 
-Query param aggiuntivi: 
+Query param aggiuntivi: no
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers: no
 
 Body:
 
@@ -139,19 +111,9 @@ Response
 
 Descrizione: Dato l’idLogin restituito precedentemente e un codice di verifica generato e inoltrato al dispositivo fisico oppure all’indirizzo email, si può completare il processo di autenticazione. Verrà restituito un TOKEN negli headers http. 
 
-Query param aggiuntivi: 
+Query param aggiuntivi: no
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers: no
 
 Body:
 
@@ -180,20 +142,10 @@ Query param aggiuntivi:
 | Nome | Valore |
 | --- | --- |
 | idLogin | 63f8ed8a86ff15……. |
-|  |  |
 
-Headers:
+Headers: no
 
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-
-```
+Body: no
 
 Response (Headers)
 
@@ -207,25 +159,11 @@ TOKEN	63f907cf1a77f9.37723667-63f907cf1a7aa9.47241054-63f907cf1a7c77.48547232-63
 
 Descrizione: Viene generato un idQrCode da scansionare con il dispositivo fisico per entrare all’interno dell’applicazione.
 
-Query param aggiuntivi: 
+Query param aggiuntivi: no
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers: no
 
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-
-```
+Body: no
 
 Response
 
@@ -246,20 +184,10 @@ Query param aggiuntivi:
 | Nome | Valore |
 | --- | --- |
 | idQrCode | 63f8ed8a86ff15……. |
-|  |  |
 
-Headers:
+Headers: no
 
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-
-```
+Body: no
 
 Response (Headers)
 
@@ -280,20 +208,10 @@ Query param aggiuntivi:
 | Nome | Valore |
 | --- | --- |
 | idDispositivoFisico | 63f0aacf536ac2…. |
-|  |  |
 
-Headers:
+Headers: no
 
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-
-```
+Body: no
 
 Response
 
@@ -307,19 +225,9 @@ true
 
 Descrizione: Dato un idDispositivoFisico correttamente configurato e un idQrCode precedentemente generato, abilita quest’ultimo all’accesso
 
-Query param aggiuntivi: 
+Query param aggiuntivi: no
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers: no
 
 Body:
 
@@ -330,13 +238,153 @@ Body:
 }
 ```
 
+Response: no body
+
+---
+
+**getRichiesteDiAccessoPendenti** | **POST**
+
+Descrizione: Dato un idDispositivoFisico correttamente configurato viene restituito un eventuale accesso pre autorizzato da confermare.
+
+Query param aggiuntivi: no
+
+Headers: no
+
+Body:
+
+```json
+{
+	"idDispositivoFisico": "63f0aaf45f4751.89502091-63f0aaf45f4825.15732768-63f0aaf45f4861.95274100-63f0aaf45f4898.16278241-63f0aaf45f48c7.01883347-63f0aaf45f48f9.73176656"
+}
+```
+
 Response
 
 ```json
-
+[
+	{
+		"idTwoFact": "63f8ed8a87fdd0.61206616-63f8ed8a87fe53.08963832-63f8ed8a87fe70.99466661-63f8ed8a87fe98.27412550-63f8ed8a87feb4.53975056-63f8ed8a87fec3.18741416",
+		"idTipoLogin": "EMAIL_SI_NO_APP",
+		"codice": "628859",
+		"dataCreazione": "2023-02-24 18:02:02",
+		"tempoPassato": "0",
+		"indirizzoIp": "127.0.0.1",
+	}
+]
 ```
 
 ---
+
+**autorizzaAccesso** | **POST**
+
+Descrizione: Dato un idDispositivoFisico correttamente configurato e un idTwoFact restituito dal metodo precedente, si autorizza quest’ultimo. L’idTwoFact è collegato all’idLogin. 
+
+Query param aggiuntivi: no
+
+Headers: no
+
+Body:
+
+```json
+{
+	"idDispositivoFisico": "63f0aaf45f4751.89502091-63f0aaf45f4825.15732768-63f0aaf45f4861.95274100-63f0aaf45f4898.16278241-63f0aaf45f48c7.01883347-63f0aaf45f48f9.73176656",
+	"idTwoFact": "63f8ed8a87fdd0.61206616-63f8ed8a87fe53.08963832-63f8ed8a87fe70.99466661-63f8ed8a87fe98.27412550-63f8ed8a87feb4.53975056-63f8ed8a87fec3.18741416"
+}
+```
+
+Response: no body
+
+---
+
+### RecuperoPassword.php
+
+**getMetodiRecuperoPasswordSupportati | POST**
+
+Descrizione: Dato un indirizzo email di un utente registrato restituisce l’elenco delle modalità di recupero password che sono state configurate
+
+Query param aggiuntivi: no
+
+Headers: no
+
+Body:
+
+```json
+{
+"email": "info@riccardoriggi.it"
+}
+```
+
+Response
+
+```json
+[
+	{
+		"codice": "REC_PSW_EMAIL_SIX_APP",
+		"descrizione": "Ricevi il codice di verifica sull'authenticator",
+	}
+]
+```
+
+---
+
+**effettuaRichiestaRecuperoPassword | POST**
+
+Descrizione: Dato un indirizzo email di un utente registrato e un tipo di recupero password viene pre autorizzato il cambio password
+
+Query param aggiuntivi: no
+
+Headers: no
+
+Body:
+
+```json
+{
+	"email": "info@riccardoriggi.it",	
+	"tipoRecuperoPassword":"REC_PSW_EMAIL_SIX_APP"
+}
+```
+
+Response
+
+```json
+{
+	"idRecPsw": "642f23e3992e21.62875171-642f23e3992e91.12275291-642f23e3992ea1.42070120-642f23e3992eb2.07657389-642f23e3992ec7.68146383-642f23e3992ed7.57117115",
+	"descrizione": "Inserisci il codice di verifica e la nuova password"
+}
+```
+
+---
+
+**confermaRecuperoPassword | POST**
+
+Descrizione: Dato l’idRecPsw generato precedentemente, il codice di verifica e la nuova password, si procederà al cambio password effettivo
+
+Query param aggiuntivi: no
+
+Headers: no
+
+Body:
+
+```json
+{
+	"idRecPsw": "63fb713.....7",
+	"codice": "803280",
+	"nuovaPassowrd":"1234567",
+	"confermaNuovaPassowrd":"1234567"
+}
+```
+
+Response: no body
+
+---
+
+I metodi seguenti dovranno essere chiamati passando negli headers http un TOKEN:
+
+```json
+TOKEN	63f907cf1a77f9.37723667-63f907cf1a7aa9.47241054-63f907cf1a7c77.48547232-63f907cf1a7cb9.68996169-63f907cf1a7ce1.39915789-63f907cf1a7d35.59532876
+```
+
+### DispositivoFisico.php
 
 **getRichiesteDiAccessoPendenti** | **POST**
 
@@ -381,153 +429,6 @@ Response
 
 ---
 
-**autorizzaAccesso** | **POST**
+## Bom / Diba
 
-Descrizione: Dato un idDispositivoFisico correttamente configurato e un idTwoFact restituito dal metodo precedente, si autorizza quest’ultimo. L’idTwoFact è collegato all’idLogin. 
-
-Query param aggiuntivi: 
-
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-{
-	"idDispositivoFisico": "63f0aaf45f4751.89502091-63f0aaf45f4825.15732768-63f0aaf45f4861.95274100-63f0aaf45f4898.16278241-63f0aaf45f48c7.01883347-63f0aaf45f48f9.73176656",
-	"idTwoFact": "63f8ed8a87fdd0.61206616-63f8ed8a87fe53.08963832-63f8ed8a87fe70.99466661-63f8ed8a87fe98.27412550-63f8ed8a87feb4.53975056-63f8ed8a87fec3.18741416"
-}
-```
-
-Response
-
-```json
-
-```
-
----
-
-### RecuperoPassword.php
-
-**getMetodiRecuperoPasswordSupportati | POST**
-
-Descrizione: Dato un indirizzo email di un utente registrato restituisce l’elenco delle modalità di recupero password che sono state configurate
-
-Query param aggiuntivi: 
-
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-{
-"email": "info@riccardoriggi.it"
-}
-```
-
-Response
-
-```json
-[
-	{
-		"codice": "REC_PSW_EMAIL_SIX_APP",
-		"descrizione": "Ricevi il codice di verifica sull'authenticator",
-	}
-]
-```
-
----
-
-**effettuaRichiestaRecuperoPassword | POST**
-
-Descrizione: Dato un indirizzo email di un utente registrato e un tipo di recupero password viene pre autorizzato il cambio password
-
-Query param aggiuntivi: 
-
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-{
-	"email": "info@riccardoriggi.it",	
-	"tipoRecuperoPassword":"REC_PSW_EMAIL_SIX_APP"
-}
-```
-
-Response
-
-```json
-{
-	"idRecPsw": "642f23e3992e21.62875171-642f23e3992e91.12275291-642f23e3992ea1.42070120-642f23e3992eb2.07657389-642f23e3992ec7.68146383-642f23e3992ed7.57117115",
-	"descrizione": "Inserisci il codice di verifica e la nuova password"
-}
-```
-
----
-
-**confermaRecuperoPassword | POST**
-
-Descrizione: Dato l’idRecPsw generato precedentemente, il codice di verifica e la nuova password, si procederà al cambio password effettivo
-
-Query param aggiuntivi: 
-
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Body:
-
-```json
-{
-	"idRecPsw": "63fb713.....7",
-	"codice": "803280",
-	"nuovaPassowrd":"1234567",
-	"confermaNuovaPassowrd":"1234567"
-}
-```
-
-Response
-
-```json
-
-```
-
----
+## Licenza
