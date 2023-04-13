@@ -390,19 +390,9 @@ TOKEN	63f907cf1a77f9.37723667-63f907cf1a7aa9.47241054-63f907cf1a7c77.48547232-63
 
 Descrizione: Viene generato un idDispositivoFisico associato all'utente da assegnare.
 
-Query param aggiuntivi: 
+Query param aggiuntivi: nessuno
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers aggiuntivi:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers aggiuntivi: nessuno
 
 Body:
 
@@ -424,19 +414,9 @@ Response
 
 Descrizione: Viene abilitato l'idDispositivoFisico in oggetto.
 
-Query param aggiuntivi: 
+Query param aggiuntivi: nessuno
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers aggiuntivi:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers aggiuntivi: nessuno
 
 Body:
 
@@ -460,19 +440,9 @@ Response
 
 Descrizione: Viene disabilitato l'idDispositivoFisico in oggetto
 
-Query param aggiuntivi: 
+Query param aggiuntivi: nessuno
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers aggiuntivi:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers aggiuntivi: nessuno
 
 Body:
 
@@ -495,19 +465,9 @@ Response
 
 Descrizione: Viene rimosso l'idDispositivoFisico in oggetto
 
-Query param aggiuntivi: 
+Query param aggiuntivi: nessuno
 
-| Nome | Valore |
-| --- | --- |
-|  |  |
-|  |  |
-
-Headers aggiuntivi:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers aggiuntivi: nessuno
 
 Body:
 
@@ -536,12 +496,7 @@ Query param aggiuntivi:
 | --- | --- |
 | pagina | 1 |
 
-Headers aggiuntivi:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers aggiuntivi: nessuno
 
 Body:
 
@@ -573,12 +528,7 @@ Query param aggiuntivi:
 | --- | --- |
 | pagina | 1 |
 
-Headers aggiuntivi:
-
-| Header | Valore |
-| --- | --- |
-|  |  |
-|  |  |
+Headers aggiuntivi: nessuno
 
 Body:
 
@@ -599,6 +549,42 @@ Response
 		"idDispositivoFisico": "6414ebbc198699..."
 	}
 ]
+```
+
+---
+
+### Notifiche.php
+
+**generaIdentificativoDispositivoFisico** | **GET**
+
+Descrizione: Viene generato un idDispositivoFisico associato all'utente da assegnare.
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Headers aggiuntivi:
+
+| Header | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idDispositivoFisico": "6438471..."
+}
 ```
 
 ---
