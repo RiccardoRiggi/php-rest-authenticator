@@ -100,7 +100,7 @@ Response
 
 ```json
 {
-	"idLogin": "642f1c93965fc0.34227908-642f1c93966020.20507271-642f1c93966034.99429615-642f1c93966040.12159849-642f1c93966053.78575796-642f1c93966067.35889901",
+	"idLogin": "642f1c93965f...",
 	"descrizione": "Apri l'authenticator e segui le istruzioni per completare l'autenticazione"
 }
 ```
@@ -128,7 +128,7 @@ Body:
 Response (Headers)
 
 ```json
-TOKEN	63f907cf1a77f9.37723667-63f907cf1a7aa9.47241054-63f907cf1a7c77.48547232-63f907cf1a7cb9.68996169-63f907cf1a7ce1.39915789-63f907cf1a7d35.59532876
+TOKEN	63f...
 ```
 
 ---
@@ -150,7 +150,7 @@ Body: no
 Response (Headers)
 
 ```json
-TOKEN	63f907cf1a77f9.37723667-63f907cf1a7aa9.47241054-63f907cf1a7c77.48547232-63f907cf1a7cb9.68996169-63f907cf1a7ce1.39915789-63f907cf1a7d35.59532876
+TOKEN	63f907....
 ```
 
 ---
@@ -169,7 +169,7 @@ Response
 
 ```json
 {
-	"idQrCode": "642f1ee72c1957.94724209-642f1ee72c19e7.79964696-642f1ee72c19f2.33193355-642f1ee72c1a08.86634566-642f1ee72c1a16.74708134-642f1ee72c1a27.10688353"
+	"idQrCode": "642f1ee7..."
 }
 ```
 
@@ -192,7 +192,7 @@ Body: no
 Response (Headers)
 
 ```json
-TOKEN	63f907cf1a77f9.37723667-63f907cf1a7aa9.47241054-63f907cf1a7c77.48547232-63f907cf1a7cb9.68996169-63f907cf1a7ce1.39915789-63f907cf1a7d35.59532876
+TOKEN	63f907cf1a77f...
 ```
 
 ---
@@ -233,8 +233,8 @@ Body:
 
 ```json
 {
-	"idDispositivoFisico": "63f0aaf45f4751.89502091-63f0aaf45f4825.15732768-63f0aaf45f4861.95274100-63f0aaf45f4898.16278241-63f0aaf45f48c7.01883347-63f0aaf45f48f9.73176656",
-	"idQrCode": "63f8e6e4992894.37765412-63f8e6e4992905.88221546-63f8e6e4992926.57162399-63f8e6e4992946.63347334-63f8e6e4992965.96950008-63f8e6e4992988.71808184"
+	"idDispositivoFisico": "63f0aaf45f4...",
+	"idQrCode": "63f8e6e49928..."
 }
 ```
 
@@ -254,7 +254,7 @@ Body:
 
 ```json
 {
-	"idDispositivoFisico": "63f0aaf45f4751.89502091-63f0aaf45f4825.15732768-63f0aaf45f4861.95274100-63f0aaf45f4898.16278241-63f0aaf45f48c7.01883347-63f0aaf45f48f9.73176656"
+	"idDispositivoFisico": "63f0aaf45f4..."
 }
 ```
 
@@ -263,10 +263,10 @@ Response
 ```json
 [
 	{
-		"idTwoFact": "63f8ed8a87fdd0.61206616-63f8ed8a87fe53.08963832-63f8ed8a87fe70.99466661-63f8ed8a87fe98.27412550-63f8ed8a87feb4.53975056-63f8ed8a87fec3.18741416",
+		"idTwoFact": "63f8ed8a8...",
 		"idTipoLogin": "EMAIL_SI_NO_APP",
 		"codice": "628859",
-		"dataCreazione": "2023-02-24 18:02:02",
+		"dataCreazione": "2000-06-12 00:00:00",
 		"tempoPassato": "0",
 		"indirizzoIp": "127.0.0.1",
 	}
@@ -287,8 +287,8 @@ Body:
 
 ```json
 {
-	"idDispositivoFisico": "63f0aaf45f4751.89502091-63f0aaf45f4825.15732768-63f0aaf45f4861.95274100-63f0aaf45f4898.16278241-63f0aaf45f48c7.01883347-63f0aaf45f48f9.73176656",
-	"idTwoFact": "63f8ed8a87fdd0.61206616-63f8ed8a87fe53.08963832-63f8ed8a87fe70.99466661-63f8ed8a87fe98.27412550-63f8ed8a87feb4.53975056-63f8ed8a87fec3.18741416"
+	"idDispositivoFisico": "63f0aaf45f...",
+	"idTwoFact": "63f8ed8a87f..."
 }
 ```
 
@@ -348,7 +348,7 @@ Response
 
 ```json
 {
-	"idRecPsw": "642f23e3992e21.62875171-642f23e3992e91.12275291-642f23e3992ea1.42070120-642f23e3992eb2.07657389-642f23e3992ec7.68146383-642f23e3992ed7.57117115",
+	"idRecPsw": "642f23e39...",
 	"descrizione": "Inserisci il codice di verifica e la nuova password"
 }
 ```
@@ -386,9 +386,9 @@ TOKEN	63f907cf1a77f9.37723667-63f907cf1a7aa9.47241054-63f907cf1a7c77.48547232-63
 
 ### DispositivoFisico.php
 
-**getRichiesteDiAccessoPendenti** | **POST**
+**generaIdentificativoDispositivoFisico** | **GET**
 
-Descrizione: Dato un idDispositivoFisico correttamente configurato viene restituito un eventuale accesso pre autorizzato da confermare.
+Descrizione: Viene generato un idDispositivoFisico associato all'utente da assegnare.
 
 Query param aggiuntivi: 
 
@@ -397,7 +397,41 @@ Query param aggiuntivi:
 |  |  |
 |  |  |
 
-Headers:
+Headers aggiuntivi:
+
+| Header | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idDispositivoFisico": "6438471..."
+}
+```
+
+---
+
+**abilitaDispositivoFisico** | **PUT**
+
+Descrizione: Viene abilitato l'idDispositivoFisico in oggetto.
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Headers aggiuntivi:
 
 | Header | Valore |
 | --- | --- |
@@ -408,8 +442,111 @@ Body:
 
 ```json
 {
-	"idDispositivoFisico": "63f0aaf45f4751.89502091-63f0aaf45f4825.15732768-63f0aaf45f4861.95274100-63f0aaf45f4898.16278241-63f0aaf45f48c7.01883347-63f0aaf45f48f9.73176656"
+	"idDispositivoFisico":"63fc82856239d...",
+	"nomeDispositivo":"Smartphone"
 }
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**disabilitaDispositivoFisico** | **PUT**
+
+Descrizione: Viene disabilitato l'idDispositivoFisico in oggetto
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Headers aggiuntivi:
+
+| Header | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Body:
+
+```json
+{
+	"idDispositivoFisico":"63fc828562..."
+}
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**rimuoviDispositivoFisico** | **PUT**
+
+Descrizione: Viene rimosso l'idDispositivoFisico in oggetto
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Headers aggiuntivi:
+
+| Header | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Body:
+
+```json
+{
+	"idDispositivoFisico":"63fc82856239d5..."
+}
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getDispositiviFisici** | **GET**
+
+Descrizione: Viene restituita la lista dei dispositivi dell'utente loggato
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+
+Headers aggiuntivi:
+
+| Header | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Body:
+
+```json
+
 ```
 
 Response
@@ -417,12 +554,49 @@ Response
 ```json
 [
 	{
-		"idTwoFact": "63f8ed8a87fdd0.61206616-63f8ed8a87fe53.08963832-63f8ed8a87fe70.99466661-63f8ed8a87fe98.27412550-63f8ed8a87feb4.53975056-63f8ed8a87fec3.18741416",
-		"idTipoLogin": "EMAIL_SI_NO_APP",
-		"codice": "628859",
-		"dataCreazione": "2023-02-24 18:02:02",
-		"tempoPassato": "0",
-		"indirizzoIp": "127.0.0.1",
+		"nomeDispositivo": "Smartphone",
+		"dataAbilitazione": "2000-06-12 00:00:00",
+		"dataDisabilitazione": null
+	}
+]
+```
+
+---
+
+**getListaDispositiviFisici** | **GET**
+
+Descrizione: Viene restituita la lista di tutti i dispositivi degli utenti registrati nel sistema
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+
+Headers aggiuntivi:
+
+| Header | Valore |
+| --- | --- |
+|  |  |
+|  |  |
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"nomeDispositivo": "Smartphone",
+		"dataAbilitazione": "2000-06-12 00:00:00",
+		"dataDisabilitazione": null,
+		"nome": "Riccardo ",
+		"cognome": "Ing Riggi",
+		"idDispositivoFisico": "6414ebbc198699..."
 	}
 ]
 ```
