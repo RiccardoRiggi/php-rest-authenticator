@@ -4,6 +4,8 @@
 
 Questo repository contiene la componente di backend di Otter Guardian sviluppata in PHP nativo, la struttura del database, gli script di configurazione e altre informazioni utili. 
 
+Attenzione! Il progetto non è ancora totalmente ultimato, è in corso la revisione della documentazione, del codice e l'ottimizzazione del database
+
 ## Struttura del progetto
 
 ## Database
@@ -1262,6 +1264,429 @@ Response
 
 ```json
 
+```
+
+---
+
+### Ruoli.php
+
+**getRuoli** | **GET**
+
+Descrizione: Viene mostrata la lista di tutti i ruoli configurati
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idTipoRuolo": "AMM",
+		"descrizione": "Amministratore",
+	}
+]
+```
+
+---
+
+**inserisciRuolo** | **POST**
+
+Descrizione: Metodo per inserire un nuovo ruolo
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"idTipoRuolo":"GUEST",
+	"descrizione":"Ospite"
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**modificaRuolo** | **PUT**
+
+Descrizione: Metodo per modificare un ruolo
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"descrizione":"Ospite"
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**eliminaRuolo** | **DELETE**
+
+Descrizione: Metodo per eliminare un ruolo
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getRuolo** | **GET**
+
+Descrizione: Metodo per ottenere un ruolo
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idTipoRuolo": "AMM",
+	"descrizione": "Amministratore",
+}
+```
+
+---
+
+**associaRuoloUtente** | **PUT**
+
+Descrizione: Metodo per associare un ruolo ad un utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idUtente | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**dissociaRuoloUtente** | **PUT**
+
+Descrizione: Metodo per dissociare un ruolo ad un utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idUtente | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getUtentiPerRuolo** | **GET**
+
+Descrizione: Metodo per ottenere la lista degli utenti dato un ruolo e l'eventuale associazione
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idUtente": "1",
+		"nome": "Riccardo",
+		"cognome": "Riggi",
+		"email": "info@riccardoriggi.it",
+		"dataCreazione": null,
+		"idTipoRuolo": null,
+	}
+]
+```
+
+---
+
+**associaRuoloRisorsa** | **PUT**
+
+Descrizione: Metodo per associare un ruolo ad una risorsa
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idRisorsa | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**dissociaRuoloRisorsa** | **PUT**
+
+Descrizione: Metodo per dissociare un ruolo da una risorsa
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idRisorsa | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getRisorsePerRuolo** | **GET**
+
+Descrizione: Metodo per ottenere la lista delle risorse dato un ruolo e l'eventuale associazione
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+		{
+		"nomeMetodo": "nomeDelMetodo",
+		"descrizione": "Descrizione",
+		"idRisorsa": "NOME_DEL_METODO",
+		"dataCreazione": null,
+		"idTipoRuolo": null,
+	}
+]
+```
+
+---
+
+**associaRuoloVoceMenu** | **PUT**
+
+Descrizione: Metodo per associare un ruolo ad una voce di menu
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idVoceMenu | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**dissociaRuoloVoceMenu** | **PUT**
+
+Descrizione: Metodo per dissociare un ruolo da una voce di menu
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idVoceMenu | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getVociMenuPerRuolo** | **GET**
+
+Descrizione: Metodo per ottenere la lista delle voci di menu dato un ruolo e l'eventuale associazione
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idVoceMenu": "1",
+		"descrizione": "Gestione utenti",
+		"path": "#",
+		"icona": "fa-solid fa-user-group",
+		"dataCreazione": "2023-03-06 20:36:15",
+		"idTipoRuolo": "GUEST"
+	}
+]
 ```
 
 ---
