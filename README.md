@@ -1840,6 +1840,74 @@ Response
 
 ---
 
+### Combo.php
+
+**getComboVociMenu** | **GET**
+
+Descrizione: Servizio per popolare la combo delle voci menu
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idVoceMenu": "10",
+		"descrizione": "Accessi attivi",
+	},
+]
+```
+Esiste anche il servizio getComboRuoli
+
+---
+
+### Log.php
+
+**getLogs** | **GET**
+
+Descrizione: Servizio per recuperare i log
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+| livelloLog | ERROR/WARN/INFO/DEBUG |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"dataEvento": "2000-06-12 00:00:00",
+		"logLevel": "INFO",
+		"testo": "Log di prova",
+		"path": "\/Github-Repository\/php-rest-authenticator\/rest\/autenticazione.php?nomeMetodo=getMedotoAutenticazionePredefinito",
+		"indirizzoIp": "127.0.0.1",
+		"metodoHttp": "POST",
+	}
+]
+```
+---
+
 ## Installazione
 
 ## Bom / Diba
