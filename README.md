@@ -555,23 +555,134 @@ Response
 
 ### Notifiche.php
 
-**generaIdentificativoDispositivoFisico** | **GET**
+**getListaNotifiche** | **GET**
 
-Descrizione: Viene generato un idDispositivoFisico associato all'utente da assegnare.
+Descrizione: Viene mostrata la lista di tutte le notifiche generate
 
 Query param aggiuntivi: 
 
 | Nome | Valore |
 | --- | --- |
-|  |  |
+| pagina | 1 |
 |  |  |
 
-Headers aggiuntivi:
+Headers aggiuntivi: nessuno
 
-| Header | Valore |
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idNotifica": "1",
+		"titolo": "Titolo della notifica",
+		"testo": "Questo è il testo della notifica",
+		"dataCreazione": "2000-06-12 00:00:00",
+	}
+]
+```
+
+---
+
+**inserisciNotifica** | **POST**
+
+Descrizione: Metodo per inserire una nuova notifica
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"titolo": "Titolo della notifica",
+	"testo": "Questo è il testo della notifica",
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**modificaNotifica** | **PUT**
+
+Descrizione: Metodo per modificare una notifica
+
+Query param aggiuntivi:
+
+| Nome | Valore |
 | --- | --- |
+| idNotifica | 1 |
 |  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"titolo": "Nuovo titolo della notifica",
+	"testo": "Questo è il nuovo testo della notifica",
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**eliminaNotifica** | **DELETE**
+
+Descrizione: Metodo per eliminare una notifica
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
 |  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getNotifica** | **GET**
+
+Descrizione: Metodo per ottenere una notifica dato l'identificativo
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
 
 Body:
 
@@ -583,11 +694,249 @@ Response
 
 ```json
 {
-	"idDispositivoFisico": "6438471..."
+	"idNotifica": "1",
+	"titolo": "Titolo della notifica",
+	"testo": "Testo della notifica",
+	"dataCreazione": "2000-06-12 00:00:00",
 }
 ```
 
 ---
+
+**getDestinatariNotifica** | **GET**
+
+Descrizione: Metodo per ottenere la lista dei destinatari di una determinata notifica con lo stato lettura e invio
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idUtente": "1",
+		"nome": "Riccardo",
+		"cognome": "Riggi",
+		"email": "info@riccardoriggi.it",
+		"idNotifica": "1",
+		"dataInvio": "2000-06-12 00:00:00",
+		"dataLettura": null,
+	}
+]
+```
+
+---
+
+**leggiNotificheLatoUtente** | **GET**
+
+Descrizione: Metodo per far marcare all'utente loggato lette tutte le notifiche
+
+Query param aggiuntivi: nessuno
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+---
+
+**eliminaNotificaLatoUtente** | **DELETE**
+
+Descrizione: Metodo per eliminare una notifica lato utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getNotificheLatoUtente** | **GET**
+
+Descrizione: Metodo per ottenere la lista delle notifiche dato l'utente loggato
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idNotifica": "2",
+		"titolo": "TITOLO NOTIFICA",
+		"testo": "TESTO NOTIFICA",
+		"dataCreazione": "2023-04-02 10:32:54",
+	}
+]
+```
+
+---
+
+**getNotificaLatoUtente** | **GET**
+
+Descrizione: Metodo per ottenere una notifica dato l'identificativo e l'utente loggato
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idNotifica": "1",
+	"titolo": "Titolo della notifica",
+	"testo": "Testo della notifica",
+	"dataCreazione": "2000-06-12 00:00:00",
+}
+```
+
+---
+
+**inviaNotificaTutti** | **POST**
+
+Descrizione: Metodo per inviare una notifica a tutti gli utenti
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**inviaNotificaRuolo** | **POST**
+
+Descrizione: Metodo per inviare una notifica a tutti gli utenti che hanno il ruolo associato
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
+| idTipoRuolo | AMM |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**inviaNotificaUtente** | **POST**
+
+Descrizione: Metodo per inviare una notifica ad un determinato utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idNotifica | 1 |
+| idUtente | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
 
 ## Installazione
 
