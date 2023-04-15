@@ -17,7 +17,7 @@ header('Content-Type: application/json; charset=utf-8');
 //$data = json_decode(file_get_contents('php://input'), true);
 //echo "".$data[0]["nome"];
 
-echo cifraStringa("prova@prova.provaA");
+echo cifraStringa("123456");
 
 //echo file_get_contents('php://input');
 

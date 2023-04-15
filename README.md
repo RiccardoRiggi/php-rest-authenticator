@@ -2152,6 +2152,278 @@ Response
 
 ---
 
+### UtenteLoggato.php
+
+**generaCodiciBackup** | **GET**
+
+Descrizione: Servizio per generare una lista di codici di backup
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	"641156305390355513",
+	"901914188645850925",
+	"589616375289285775",
+	"418214464776258682",
+	"374392776320180920"
+]
+```
+
+---
+
+**getUtenteLoggato** | **GET**
+
+Descrizione: Servizio per recuperare le informazioni dell'utente loggato
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idUtente": "1",
+	"nome": "Riccardo",
+	"cognome": "Riggi",
+	"email": "info@riccardoriggi.it",
+	"dataCreazione": "2000-06-12 00:00:00",
+	"dataUltimaModifica": null
+}
+```
+
+---
+
+**getStoricoAccessi** | **GET**
+
+Descrizione: Servizio per recuperare l'elenco degli accessi effettuati
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"dataInizioValidita": "2000-06-12 00:00:00",
+		"dataFineValidita": null,
+		"dataUltimoUtilizzo": "2000-06-12 00:00:00",
+		"indirizzoIp": "127.0.0.1",
+		"userAgent": "Mozilla\/5.0 (Linux; Android 6.0; Nexus 5 Build\/MRA58N) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/111.0.0.0 Mobile Safari\/537.36",
+	}
+]
+```
+
+---
+
+**getMetodiAutenticazionePerUtenteLoggato** | **GET**
+
+Descrizione: Servizio che mostra la configurazione per il secondo fattore d'autenticazione
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idTipoMetodoLogin": "EMAIL_PSW_BACKUP_CODE",
+		"0": "EMAIL_PSW_BACKUP_CODE",
+		"descrizione": "Inserisci la password e un codice di backup  generato precedentemente # Inserisci un codice di backup per completare l'autenticazione",
+		"1": "Inserisci la password e un codice di backup  generato precedentemente # Inserisci un codice di backup per completare l'autenticazione",
+		"idUtente": null,
+		"2": null
+	}
+]
+```
+
+---
+
+**getMetodiRecuperoPasswordPerUtenteLoggato** | **GET**
+
+Descrizione: Servizio che mostra la configurazione per il secondo fattore per il recupero password
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**invalidaToken** | **PUT**
+
+Descrizione: Servizio che invalida il token
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**abilitaTipoMetodoLogin** | **PUT**
+
+Descrizione: Servizio che abilita il metodo di autenticazione all'utente
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| idTipoMetodoLogin | EMAIL_SIX_APP |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**disabilitaTipoMetodoLogin** | **PUT**
+
+Descrizione: Servizio che disabilita il metodo di autenticazione dall'utente
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| idTipoMetodoLogin | EMAIL_SIX_APP |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**abilitaTipoRecuperoPassword** | **PUT**
+
+Descrizione: Servizio che abilita il metodo di recupero password all'utente
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| idTipoMetodoRecPsw | EMAIL_SIX_APP |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**disabilitaTipoMetodoLogin** | **PUT**
+
+Descrizione: Servizio che disabilita il metodo di recupero password dall'utente
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| idTipoMetodoRecPsw | EMAIL_SIX_APP |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
 ## Installazione
 
 ## Bom / Diba
