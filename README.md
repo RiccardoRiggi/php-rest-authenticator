@@ -1057,6 +1057,215 @@ Esistono anche i seguenti servizi: getNumeroRuoli, getNumeroUtenti, getNumeroAcc
 
 ---
 
+### Utenti.php
+
+**getListaUtenti** | **GET**
+
+Descrizione: Viene mostrata la lista di tutti gli utenti registrati
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idUtente": "1",
+		"nome": "Riccardo",
+		"cognome": "Riggi",
+		"email": "info@riccardoriggi.it",
+		"dataBlocco": null,
+	}
+]
+```
+
+---
+
+**inserisciUtente** | **POST**
+
+Descrizione: Metodo per inserire un nuovo utente
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"nome":"Mario",
+	"cognome":"Rossi",
+	"email":"info@ghiroinformatico.net",
+	"password":"123456",
+	"confermaPassword":"123456"
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**modificaUtente** | **PUT**
+
+Descrizione: Metodo per modificare un utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idUtente | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"nome":"Riccardo",
+	"cognome":"Riggi"
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**eliminaUtente** | **DELETE**
+
+Descrizione: Metodo per eliminare un utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idUtente | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getUtente** | **GET**
+
+Descrizione: Metodo per ottenere un utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idUtente | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idUtente": "1",
+	"nome": "Riccardo",
+	"cognome": "Riggi",
+	"email": "info@riccardoriggi.it",
+	"dataBlocco": null,
+}
+```
+
+---
+
+**bloccaUtente** | **PUT**
+
+Descrizione: Metodo per bloccare un utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idUtente | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**sbloccaUtente** | **PUT**
+
+Descrizione: Metodo per sbloccare un utente
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idUtente | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
 ## Installazione
 
 ## Bom / Diba
