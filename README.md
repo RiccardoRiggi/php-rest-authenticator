@@ -2424,6 +2424,113 @@ Response
 
 ---
 
+### IndirizziIp.php
+
+**getIndirizziIp** | **GET**
+
+Descrizione: Servizio che mostra la lista di tutti gli indirizzi ip che hanno contattato l'applicazione
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"indirizzoIp": "127.0.0.1",
+		"contatoreAlert": "0",
+		"dataBlocco": null,
+	}
+]
+```
+
+---
+
+**sbloccaIndirizzoIp** | **PUT**
+
+Descrizione: Servizio che sblocca un indirizzo ip
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"indirizzoIp":"127.0.0.1"
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**bloccaIndirizzoIp** | **PUT**
+
+Descrizione: Servizio che blocca un indirizzo ip
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"indirizzoIp":"127.0.0.1"
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**azzeraContatoreAlert** | **PUT**
+
+Descrizione: Servizio che azzera il numero di alert per un indirizzo ip
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"indirizzoIp":"127.0.0.1"
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
 ## Installazione
 
 ## Bom / Diba
