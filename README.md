@@ -1691,6 +1691,155 @@ Response
 
 ---
 
+### Risorse.php
+
+**getRisorse** | **GET**
+
+Descrizione: Viene mostrata la lista di tutte le risorse/metodi configurati
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idRisorsa": "IDENTIFICATIVO_STRINGA",
+		"nomeMetodo": "identificativoStringa",
+		"descrizione": "Risorsa di prova",
+	}
+]
+```
+
+---
+
+**inserisciRisorsa** | **POST**
+
+Descrizione: Metodo per inserire una nuova risorsa
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"idRisorsa": "IDENTIFICATIVO_STRINGA",
+	"nomeMetodo": "identificativoStringa",
+	"descrizione": "Risorsa di prova",
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**modificaRisorsa** | **PUT**
+
+Descrizione: Metodo per modificare una risorsa
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idRisorsa | IDENTIFICATIVO_STRINGA |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"nomeMetodo": "identificativoStringa",
+	"descrizione": "Risorsa di prova",
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**eliminaRisorsa** | **DELETE**
+
+Descrizione: Metodo per eliminare una risorsa
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idRisorsa | IDENTIFICATIVO_STRINGA |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getRisorsa** | **GET**
+
+Descrizione: Metodo per ottenere una risorsa
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idRisorsa | IDENTIFICATIVO_STRINGA |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idRisorsa": "IDENTIFICATIVO_STRINGA",
+	"nomeMetodo": "identificativoStringa",
+	"descrizione": "Risorsa di prova",
+}
+```
+
+---
+
 ## Installazione
 
 ## Bom / Diba
