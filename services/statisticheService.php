@@ -15,6 +15,7 @@ if (!function_exists('getStatisticheMetodi')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -34,6 +35,7 @@ if (!function_exists('getNumeroDispositiviFisiciAttivi')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }
@@ -53,6 +55,7 @@ if (!function_exists('getNumeroIndirizziIp')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }
@@ -72,6 +75,7 @@ if (!function_exists('getNumeroLogin')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }
@@ -91,6 +95,7 @@ if (!function_exists('getNumeroRisorse')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }
@@ -110,6 +115,7 @@ if (!function_exists('getNumeroAccessiAttivi')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }
@@ -129,6 +135,7 @@ if (!function_exists('getNumeroUtenti')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }
@@ -148,6 +155,7 @@ if (!function_exists('getNumeroRuoli')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }
@@ -167,6 +175,7 @@ if (!function_exists('getNumeroVociMenu')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0];
     }
 }

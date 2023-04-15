@@ -14,6 +14,7 @@ if (!function_exists('getComboVociMenu')) {
         $stmt = $conn->prepare("SELECT idVoceMenu, descrizione FROM " . PREFISSO_TAVOLA . "_voci_menu WHERE dataEliminazione IS NULL ORDER BY descrizione");
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -31,6 +32,7 @@ if (!function_exists('getComboRuoli')) {
         $stmt = $conn->prepare("SELECT idTipoRuolo, descrizione FROM " . PREFISSO_TAVOLA . "_t_ruoli ORDER BY descrizione");
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }

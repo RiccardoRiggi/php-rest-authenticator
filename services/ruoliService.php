@@ -17,6 +17,7 @@ if (!function_exists('getRuoli')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -40,6 +41,7 @@ if (!function_exists('inserisciRuolo')) {
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->bindParam(':descrizione', $descrizione);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Inserimento nuovo ruolo con identificativo " . $idTipoRuolo);
     }
@@ -62,6 +64,7 @@ if (!function_exists('modificaRuolo')) {
         $stmt->bindParam(':descrizione', $descrizione);
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Modifica del ruolo con identificativo " . $idTipoRuolo);
     }
@@ -86,6 +89,7 @@ if (!function_exists('eliminaRuolo')) {
         $stmt->execute();
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             generaLogSuBaseDati("ERROR", "Tentativo di eliminazione di una voce di menu non esistente. Identificativo inserito: " . $idTipoRuolo);
@@ -113,6 +117,7 @@ if (!function_exists('getRuolo')) {
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->execute();
         $result = $stmt->fetch();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -135,6 +140,7 @@ if (!function_exists('associaRuoloUtente')) {
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Associato ruolo " . $idTipoRuolo . " all'utente " . $idUtente);
     }
@@ -160,6 +166,7 @@ if (!function_exists('dissociaRuoloUtente')) {
         $stmt->execute();
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             generaLogSuBaseDati("ERROR", "Dissociato ruolo " . $idTipoRuolo . " dall'utente " . $idUtente);
@@ -194,6 +201,7 @@ if (!function_exists('getUtentiPerRuolo')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         $array = [];
         foreach ($result as $value) {
             $tmp = $value;
@@ -230,6 +238,7 @@ if (!function_exists('associaRuoloRisorsa')) {
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->bindParam(':idRisorsa', $idRisorsa);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Associato ruolo " . $idTipoRuolo . " alla risorsa " . $idRisorsa);
     }
@@ -255,6 +264,7 @@ if (!function_exists('dissociaRuoloRisorsa')) {
         $stmt->execute();
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             throw new OtterGuardianException(500, "Non esiste un record con l'identificativo indicato");
@@ -299,6 +309,7 @@ if (!function_exists('getRisorsePerRuolo')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -321,6 +332,7 @@ if (!function_exists('associaRuoloVoceMenu')) {
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->bindParam(':idVoceMenu', $idVoceMenu);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Associato ruolo " . $idTipoRuolo . " alla voce di menu " . $idVoceMenu);
     }
@@ -344,8 +356,10 @@ if (!function_exists('dissociaRuoloVoceMenu')) {
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->bindParam(':idVoceMenu', $idVoceMenu);
         $stmt->execute();
+        
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             throw new OtterGuardianException(500, "Non esiste un record con l'identificativo indicato");
@@ -380,6 +394,7 @@ if (!function_exists('getVociMenuPerRuolo')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }

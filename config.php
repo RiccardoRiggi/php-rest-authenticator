@@ -40,6 +40,17 @@ Questa variabile serve per abilitare i cors se FE e BE si trovano su host differ
 if (!defined("ABILITA_CORS"))
     define("ABILITA_CORS", true);
 
+/*
+Questa variabile serve per abilitare l'invio delle email
+*/
+if (!defined("ABILITA_INVIO_EMAIL"))
+    define("ABILITA_INVIO_EMAIL", true);
+
+/*
+Questa variabile serve per abilitare anche il log su file
+*/
+if (!defined("ABILITA_LOG_FILE"))
+    define("ABILITA_LOG_FILE", false);
 
 //Informazioni per la cifratura, da non cambiare dopo l'installazione
 if (!defined("CIPHERING_VALUE"))

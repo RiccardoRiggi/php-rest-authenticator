@@ -33,6 +33,8 @@ if (!function_exists('getUtenteDecifrato')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
 
+        chiudiConnessione($conn);
+
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
@@ -55,6 +57,8 @@ if (!function_exists('invalidaTokenSpecifico')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_token SET dataFineValidita = current_timestamp WHERE token = :token ");
         $stmt->bindParam(':token', $_SERVER["HTTP_TOKEN"]);
         $stmt->execute();
+
+        chiudiConnessione($conn);
     }
 }
 
@@ -91,6 +95,9 @@ if (!function_exists('getStoricoAccessi')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+
+        chiudiConnessione($conn);
+
         $array = [];
         foreach ($result as $value) {
             $tmp = $value;
@@ -133,6 +140,7 @@ if (!function_exists('eliminaCodiciBackupPresenti')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_codici_backup SET dataEliminazione = current_timestamp WHERE idUtente = :idUtente AND dataEliminazione IS NULL and dataUtilizzo IS NULL ");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -144,6 +152,7 @@ if (!function_exists('inserisciCodiceBackup')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':codice', $codice);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -168,6 +177,7 @@ if (!function_exists('getMetodiAutenticazionePerUtenteLoggato')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         return $result;
     }
@@ -190,6 +200,7 @@ if (!function_exists('abilitaTipoMetodoLogin')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idTipoMetodoLogin', $idTipoMetodoLogin);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -209,6 +220,7 @@ if (!function_exists('disabilitaTipoMetodoLogin')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idTipoMetodoLogin', $idTipoMetodoLogin);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -232,6 +244,7 @@ if (!function_exists('getMetodiRecuperoPasswordPerUtenteLoggato')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         return $result;
     }
@@ -254,6 +267,7 @@ if (!function_exists('abilitaTipoRecuperoPassword')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idTipoMetodoRecPsw', $idTipoMetodoRecPsw);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -273,5 +287,6 @@ if (!function_exists('disabilitaTipoRecuperoPassword')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idTipoMetodoRecPsw', $idTipoMetodoRecPsw);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }

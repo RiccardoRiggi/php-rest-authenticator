@@ -17,6 +17,7 @@ if (!function_exists('getListaAccessi')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         $array = [];
         foreach ($result as $value) {
@@ -50,5 +51,6 @@ if (!function_exists('terminaAccesso')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':token', $token);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }

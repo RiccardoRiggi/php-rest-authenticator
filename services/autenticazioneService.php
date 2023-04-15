@@ -26,6 +26,10 @@ if (!function_exists('getMedotoAutenticazionePredefinito')) {
             $stmt->bindParam(':idTipoMetodoLogin', $tmp);
             $stmt->execute();
             $result = $stmt->fetchAll();
+            chiudiConnessione($conn);
+
+            incrementaContatoreAlert();
+            generaLogSuBaseDati("INFO", "Inserito un indirizzo email non presente nel sistema");
 
 
             $oggetto = new stdClass();
@@ -53,12 +57,14 @@ if (!function_exists('getUtente')) {
         $stmt->bindParam(':password', $passwordCifrata);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
         if (count($result) == 0){
             incrementaContatoreAlert();
+            generaLogSuBaseDati("INFO", "Inserita coppia email/password errata");
             throw new AccessoNonAutorizzatoLoginException();
         }
         return $result;
@@ -75,12 +81,14 @@ if (!function_exists('getUtenteSenzaPassword')) {
         $stmt->bindParam(':email', $emailCifrata);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
         if (count($result) == 0){
             incrementaContatoreAlert();
+            generaLogSuBaseDati("INFO", "Cercato un utente non registrato senza password e con un tipo autenticazione tra quelli presenti in banca dati");
             throw new AccessoNonAutorizzatoLoginException();
         }
         return $result;
@@ -110,8 +118,11 @@ if (!function_exists('getMetodiAutenticazioneSupportati')) {
             $stmt->bindParam(':idTipoMetodoLogin', $tmp);
             $stmt->execute();
             $result = $stmt->fetchAll();
+            chiudiConnessione($conn);
+            generaLogSuBaseDati("INFO", "Inserito un indirizzo email non presente nel sistema: ".$email);
             return $result;
         } else {
+            chiudiConnessione($conn);
             return $result;
         }
     }
@@ -168,7 +179,7 @@ if (!function_exists('effettuaAutenticazione')) {
 
             if ($tipoAutenticazione == "EMAIL_PSW_SIX_EMAIL") {
                 //TODO SCOMMENTARE PER ABILITARE
-                //inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
+                inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
             }
 
             $descrizione = getIstruzioniSecondoFattore($tipoAutenticazione);
@@ -189,6 +200,7 @@ if (!function_exists('getIstruzioniSecondoFattore')) {
         $stmt->bindParam(':idTipoMetodoLogin', $idTipoMetodoLogin);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result[0]["descrizione"];
     }
 }
@@ -199,8 +211,10 @@ if (!function_exists('inviaCodiceSecondoFattoreViaEmail')) {
         $subject = NOME_APPLICAZIONE . " - Autenticazione a due fattori";
         $messaggio = "Ciao " . $cognome . " " . $nome . ", \n Inserisci il codice di verifica " . $codice . " per completare l'autenticazione";
         $headers = "From: noreply@riccardoriggi.it";
-        mail($email, $subject, $messaggio, $headers);
-        generaLogSuFile("Invio un'email a " . $email . " con il seguente testo: " . $messaggio);
+        if(ABILITA_INVIO_EMAIL){
+            mail($email, $subject, $messaggio, $headers);
+        }
+        
     }
 }
 
@@ -212,6 +226,7 @@ if (!function_exists('getMedotoSecondoFattorePreferito')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) > 1)
             throw new OtterGuardianException(500, "Errore di configurazione, hai selezionato più metodi predefiniti");
@@ -233,6 +248,7 @@ if (!function_exists('inserisciLogin')) {
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
+        chiudiConnessione($conn);
         return $idLogin;
     }
 }
@@ -250,6 +266,7 @@ if (!function_exists('inserisciCodiceSecondoFattore')) {
         $stmt->bindParam(':codice', $codice);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
+        chiudiConnessione($conn);
         return $codice;
     }
 }
@@ -265,8 +282,10 @@ if (!function_exists('verificaEsistenzaMetodoSecondoFattorePerUtente')) {
         $stmt->bindParam(':idTipoMetodoLogin', $idTipoMetodoLogin);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1){
+            generaLogSuBaseDati("INFO", "Tentativo di ricerca di un indirizzo email con metodo di autenticazione");
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -308,6 +327,7 @@ if (!function_exists('getUtenteDecifrato')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
@@ -328,6 +348,7 @@ if (!function_exists('registraUtilizzoCodiceBackup')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':codice', $codice);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -376,6 +397,7 @@ if (!function_exists('getIdTipoLoginByIdLogin')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1){
             incrementaContatoreAlert();
@@ -393,6 +415,7 @@ if (!function_exists('getIdUtenteByIdLogin')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1){
             incrementaContatoreAlert();
@@ -412,6 +435,7 @@ if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1){
             incrementaContatoreAlert();
@@ -433,6 +457,7 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        
 
         if (count($result) != 1){
             incrementaContatoreAlert();
@@ -464,6 +489,7 @@ if (!function_exists('aggiornoDataUtilizzoCodiceSecondoFattore')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_two_fact SET dataUtilizzo = current_timestamp WHERE idTwoFact = :idTwoFact ");
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -474,6 +500,7 @@ if (!function_exists('invalidoTokenPrecedenti')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_token SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente AND dataFineValidita IS NULL");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -491,6 +518,7 @@ if (!function_exists('registraToken')) {
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->bindParam(':userAgent', $userAgent);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         return $token;
     }
@@ -509,6 +537,7 @@ if (!function_exists('registraTokenQrCode')) {
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->bindParam(':userAgent', $userAgent);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         return $token;
     }
@@ -522,6 +551,7 @@ if (!function_exists('aggiornoLoginConToken')) {
         $stmt->bindParam(':token', $token);
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -550,6 +580,7 @@ if (!function_exists('recuperaTokenDaIdLogin')) {
         $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1){
             throw new AccessoNonAutorizzatoLoginException();
@@ -571,6 +602,7 @@ if (!function_exists('recuperaTokenDaIdQrCode')) {
         $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1){
             throw new AccessoNonAutorizzatoLoginException();
@@ -596,6 +628,7 @@ if (!function_exists('generaQrCode')) {
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         return $idQrCode;
     }

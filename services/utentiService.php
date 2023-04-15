@@ -17,6 +17,7 @@ if (!function_exists('getListaUtenti')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         $array = [];
         foreach ($result as $value) {
@@ -64,6 +65,8 @@ if (!function_exists('inserisciUtente')) {
         $stmt->execute();
 
         $idUtenteInserito = $conn->lastInsertId();
+        chiudiConnessione($conn);
+
         associaRuoloUtenteDefault($idUtenteInserito);
         abilitaTipoRecuperoPasswordDefault($idUtenteInserito);
         abilitaTipoMetodoLoginDefault($idUtenteInserito);
@@ -78,6 +81,7 @@ if (!function_exists('abilitaTipoRecuperoPasswordDefault')) {
         $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_metodi_rec_psw (idUtente, idTipoMetodoRecPsw, dataInizioValidita) VALUES (:idUtente, 'REC_PSW_EMAIL_SIX_EMAIL', current_timestamp)");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -93,6 +97,7 @@ if (!function_exists('associaRuoloUtenteDefault')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -104,6 +109,7 @@ if (!function_exists('abilitaTipoMetodoLoginDefault')) {
         $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_metodi_login (idUtente, idTipoMetodoLogin, dataInizioValidita) VALUES (:idUtente, 'EMAIL_PSW_SIX_EMAIL', current_timestamp)");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -123,6 +129,7 @@ if (!function_exists('getUtente')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         $array = [];
         foreach ($result as $value) {
@@ -164,6 +171,7 @@ if (!function_exists('modificaUtente')) {
         $stmt->bindParam(':cognome', $cognome);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -184,6 +192,7 @@ if (!function_exists('eliminaUtente')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
 
     }
 }
@@ -205,6 +214,7 @@ if (!function_exists('bloccaUtente')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
 
     }
 }
@@ -226,6 +236,7 @@ if (!function_exists('sbloccaUtente')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
 
     }
 }

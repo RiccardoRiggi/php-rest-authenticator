@@ -17,6 +17,8 @@ if (!function_exists('getVociMenu')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
+
         return $result;
     }
 }
@@ -31,9 +33,6 @@ if (!function_exists('getVociMenuPerUtente')) {
     function getVociMenuPerUtente()
     {
         verificaValiditaToken();
-
-
-        //AGGIUNGERE IL FILTRO PER RUOLO
 
         $result = getVociMenuRadice();
         return getVociMenuDatoPadre($result);
@@ -54,6 +53,7 @@ if (!function_exists('getVociMenuRadice')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -76,6 +76,8 @@ if (!function_exists('getVociMenuDatoPadre')) {
 
             $stmt->execute();
             $result = $stmt->fetchAll();
+            chiudiConnessione($conn);
+
             $tmp = $value;
             if (count($result) > 0) {
                 $tmp["figli"] = getVociMenuDatoPadre($result);
@@ -110,6 +112,7 @@ if (!function_exists('inserisciVoceMenu')) {
         $stmt->bindParam(':ordine', $ordine);
         $stmt->execute();
         $id = $conn->lastInsertId();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Inserimento nuova voce di menu con identificativo " . $id);
         return $id;
@@ -137,6 +140,7 @@ if (!function_exists('modificaVoceMenu')) {
         $stmt->bindParam(':ordine', $ordine);
         $stmt->bindParam(':idVoceMenu', $idVoceMenu);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Modifica della voce di menu con identificativo " . $idVoceMenu);
     }
@@ -161,6 +165,7 @@ if (!function_exists('eliminaVoceMenu')) {
         $stmt->execute();
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             generaLogSuBaseDati("ERROR", "Tentativo di eliminazione di una voce di menu non esistente. Identificativo inserito: " . $idVoceMenu);
@@ -189,6 +194,7 @@ if (!function_exists('getVoceMenu')) {
         $stmt->bindParam(':idVoceMenu', $idVoceMenu);
         $stmt->execute();
         $result = $stmt->fetch();
+        chiudiConnessione($conn);
         return $result;
     }
 }

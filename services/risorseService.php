@@ -18,6 +18,7 @@ if (!function_exists('getRisorse')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -42,6 +43,7 @@ if (!function_exists('inserisciRisorsa')) {
         $stmt->bindParam(':nomeMetodo', $nomeMetodo);
         $stmt->bindParam(':descrizione', $descrizione);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Inserimento nuova risorsa con identificativo " . $idRisorsa);
     }
@@ -65,6 +67,7 @@ if (!function_exists('modificaRisorsa')) {
         $stmt->bindParam(':descrizione', $descrizione);
         $stmt->bindParam(':idRisorsa', $idRisorsa);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         generaLogSuBaseDati("DEBUG", "Modifica della risorsa con identificativo " . $idRisorsa);
     }
@@ -89,6 +92,7 @@ if (!function_exists('eliminaRisorsa')) {
         $stmt->execute();
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             generaLogSuBaseDati("ERROR", "Tentativo di eliminazione di una voce di menu non esistente. Identificativo inserito: " . $idRisorsa);
@@ -117,6 +121,7 @@ if (!function_exists('getRisorsa')) {
         $stmt->bindParam(':idRisorsa', $idRisorsa);
         $stmt->execute();
         $result = $stmt->fetch();
+        chiudiConnessione($conn);
         return $result;
     }
 }

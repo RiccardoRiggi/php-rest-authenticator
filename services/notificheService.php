@@ -18,6 +18,7 @@ if (!function_exists('getListaNotifiche')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -38,6 +39,7 @@ if (!function_exists('inserisciNotifica')) {
         $stmt->bindParam(':titolo', $titolo);
         $stmt->bindParam(':testo', $testo);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -56,6 +58,7 @@ if (!function_exists('modificaNotifica')) {
         $stmt->bindParam(':idNotifica', $idNotifica);
         $stmt->execute();
         $result = $stmt->fetch();
+        chiudiConnessione($conn);
 
         if ($result != null) {
             throw new OtterGuardianException(500, "Non puoi modificare una notifica che è già stata inviata");
@@ -92,6 +95,7 @@ if (!function_exists('eliminaNotifica')) {
         $stmt->execute();
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             generaLogSuBaseDati("ERROR", "Tentativo di eliminazione di una notifica non esistente. Identificativo inserito: " . $idNotifica);
@@ -115,6 +119,7 @@ if (!function_exists('getNotifica')) {
         $stmt->bindParam(':idNotifica', $idNotifica);
         $stmt->execute();
         $result = $stmt->fetch();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -135,6 +140,7 @@ if (!function_exists('inviaNotificaUtente')) {
         $stmt->bindParam(':idNotifica', $idNotifica);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -156,6 +162,7 @@ if (!function_exists('inviaNotificaRuolo')) {
         $stmt->bindParam(':idTipoRuolo', $idTipoRuolo);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         foreach ($result as $value) {
             try {
                 inviaNotificaUtente($idNotifica, $value["idUtente"]);
@@ -181,6 +188,7 @@ if (!function_exists('inviaNotificaTutti')) {
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         foreach ($result as $value) {
             try {
                 inviaNotificaUtente($idNotifica, $value["idUtente"]);
@@ -208,6 +216,7 @@ if (!function_exists('getNotificaLatoUtente')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetch();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -232,6 +241,7 @@ if (!function_exists('getNotificheLatoUtente')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -258,6 +268,7 @@ if (!function_exists('eliminaNotificaLatoUtente')) {
         $stmt->execute();
 
         $numeroRecordModificati = $stmt->rowCount();
+        chiudiConnessione($conn);
 
         if ($numeroRecordModificati != 1) {
             generaLogSuBaseDati("ERROR", "Tentativo di eliminazione di una notifica non esistente. Identificativo inserito: " . $idNotifica);
@@ -281,6 +292,7 @@ if (!function_exists('leggiNotificheLatoUtente')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -304,6 +316,7 @@ if (!function_exists('getDestinatariNotifica')) {
         $stmt->bindParam(':idNotifica', $idNotifica);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         $array = [];
         foreach ($result as $value) {

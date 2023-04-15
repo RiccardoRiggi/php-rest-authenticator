@@ -18,6 +18,7 @@ if (!function_exists('generaIdentificativoDispositivoFisico')) {
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
 
         $oggetto = new stdClass();
         $oggetto->idDispositivoFisico = $idDispositivoFisico;
@@ -47,6 +48,7 @@ if (!function_exists('isDispositivoDaAbilitare')) {
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1) {
             throw new AccessoNonAutorizzatoLoginException();
@@ -62,6 +64,7 @@ if (!function_exists('getIdUtenteByDispositivo')) {
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1) {
             incrementaContatoreAlert();
@@ -79,6 +82,7 @@ if (!function_exists('disabilitaDispositivi')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_dispositivi_fisici SET dataDisabilitazione = current_timestamp WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -90,6 +94,7 @@ if (!function_exists('abilitaDispositivo')) {
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->bindParam(':nomeDispositivo', $nomeDispositivo);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -121,6 +126,7 @@ if (!function_exists('disabilitaDispositivo')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -143,6 +149,7 @@ if (!function_exists('getDispositiviFisici')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return $result;
     }
 }
@@ -173,6 +180,7 @@ if (!function_exists('getAccessiPendenti')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         $array = [];
         foreach ($result as $value) {
             $tmp = $value;
@@ -216,6 +224,7 @@ if (!function_exists('getIdUtenteByIdTwoFact')) {
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1) {
             incrementaContatoreAlert();
@@ -234,6 +243,7 @@ if (!function_exists('getIdLoginByIdTwoFact')) {
         $stmt->bindParam(':idTwoFact', $idTwoFact);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1) {
             incrementaContatoreAlert();
@@ -269,6 +279,7 @@ if (!function_exists('inserisciLoginDaQrCode')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->bindParam(':token', $token);
         $stmt->execute();
+        chiudiConnessione($conn);
         return $idLogin;
     }
 }
@@ -283,6 +294,7 @@ if (!function_exists('getDatiChiamanteByQrCode')) {
         $stmt->bindParam(':idQrCode', $idQrCode);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1) {
             incrementaContatoreAlert();
@@ -305,6 +317,7 @@ if (!function_exists('isDispositivoAbilitato')) {
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         return count($result) == 1;
     }
 }
@@ -326,6 +339,7 @@ if (!function_exists('getListaDispositiviFisici')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         $array = [];
         foreach ($result as $value) {
@@ -354,5 +368,6 @@ if (!function_exists('rimuoviDispositivoFisico')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_dispositivi_fisici SET dataDisabilitazione = current_timestamp WHERE idDispositivoFisico = :idDispositivoFisico AND dataAbilitazione IS NOT NULL ");
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }

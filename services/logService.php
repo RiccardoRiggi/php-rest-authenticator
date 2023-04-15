@@ -29,6 +29,7 @@ if (!function_exists('getLogs')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         $array = [];
         foreach ($result as $value) {

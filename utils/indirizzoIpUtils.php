@@ -30,6 +30,8 @@ if (!function_exists('inserisciIndirizzoIp')) {
             $stmt->bindParam(':indirizzoIp', $indirizzoIp);
 
             $stmt->execute();
+            chiudiConnessione($conn);
+
         } catch (Exception $e) {
             generaLogSuFile("Errore nella funzione generaLogSuBaseDati: " . $e->getMessage());
         }
@@ -46,6 +48,7 @@ if (!function_exists('bloccaIndirizzoIp')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -59,6 +62,7 @@ if (!function_exists('verificaIndirizzoIp')) {
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) < 1) {
             inserisciIndirizzoIp();
@@ -84,6 +88,7 @@ if (!function_exists('bloccaIndirizzoIp')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -97,6 +102,7 @@ if (!function_exists('incrementaContatoreAlert')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 

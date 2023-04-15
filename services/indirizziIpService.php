@@ -18,6 +18,7 @@ if (!function_exists('getIndirizziIp')) {
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
         $array = [];
         foreach ($result as $value) {
             $tmp = $value;
@@ -47,6 +48,7 @@ if (!function_exists('sbloccaIndirizzoIp')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -68,6 +70,7 @@ if (!function_exists('bloccaIndirizzoIpLista')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -89,5 +92,6 @@ if (!function_exists('azzeraContatoreAlert')) {
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':indirizzoIp', $indirizzoIp);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }

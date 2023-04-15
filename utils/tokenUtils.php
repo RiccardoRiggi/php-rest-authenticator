@@ -36,6 +36,7 @@ if (!function_exists('getIdUtenteDaToken')) {
         $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) != 1)
             throw new AccessoNonAutorizzatoLoginException();
@@ -51,6 +52,7 @@ if (!function_exists('invalidaToken')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_token SET dataFineValidita = current_timestamp WHERE idUtente = :idUtente ");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -65,6 +67,7 @@ if (!function_exists('verificaValiditaUtente')) {
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) == 0)
             throw new AccessoNonAutorizzatoLoginException();
@@ -80,6 +83,7 @@ if (!function_exists('aggiornaDataUltimoUtilizzo')) {
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_token SET dataUltimoUtilizzo = current_timestamp WHERE token = :token ");
         $stmt->bindParam(':token', $token);
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }
 
@@ -93,6 +97,7 @@ if (!function_exists('verificaAbilitazioneRisorsa')) {
         $stmt->bindParam(':nomeMetodo', $_GET["nomeMetodo"]);
         $stmt->execute();
         $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
         if (count($result) < 1) {
             throw new OtterGuardianException(403, "L'utente non è abilitato alla risorsa richiesta");
@@ -116,5 +121,6 @@ if (!function_exists('registraInvocazioneRisorsa')) {
 
 
         $stmt->execute();
+        chiudiConnessione($conn);
     }
 }

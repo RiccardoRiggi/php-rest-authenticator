@@ -22,7 +22,7 @@ if (!function_exists('getIndirizzoIp')) {
 if (!function_exists('generaLogSuFile')) {
     function generaLogSuFile($contenuto)
     {
-        if (true)
+        if (ABILITA_LOG_FILE)
             file_put_contents("svil.log", date("d/m/Y H:i:s") . " - " . $contenuto . "\n", FILE_APPEND);
     }
 }
@@ -43,6 +43,7 @@ if (!function_exists('generaLogSuBaseDati')) {
             $stmt->bindParam(':metodoHttp', $_SERVER['REQUEST_METHOD']);
 
             $stmt->execute();
+            chiudiConnessione($conn);
         } catch (Exception $e) {
             generaLogSuFile( "Errore nella funzione generaLogSuBaseDati: " . $e->getMessage());
         }
