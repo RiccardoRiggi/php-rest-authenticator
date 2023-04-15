@@ -44,7 +44,7 @@ if (!defined("ABILITA_CORS"))
 Questa variabile serve per abilitare l'invio delle email
 */
 if (!defined("ABILITA_INVIO_EMAIL"))
-    define("ABILITA_INVIO_EMAIL", true);
+    define("ABILITA_INVIO_EMAIL", false);
 
 /*
 Questa variabile serve per abilitare anche il log su file
