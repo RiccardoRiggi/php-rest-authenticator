@@ -1908,6 +1908,250 @@ Response
 ```
 ---
 
+### VociMenu.php
+
+**getVociMenu** | **GET**
+
+Descrizione: Servizio per recuperare la lista di tutte le voci di menu
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idVoceMenu": "1",
+		"idVoceMenuPadre": null,
+		"descrizione": "Gestione utenti",
+		"descrizionePadre": null,
+		"path": "#",
+		"icona": "fa-solid fa-user-group",
+		"ordine": "1",
+	}
+]
+```
+
+---
+
+**inserisciVoceMenu** | **POST**
+
+Descrizione: Metodo per inserire una nuova voce di menu
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"idVoceMenuPadre":null,
+	"descrizione":"Voce di prova",
+	"path":"inserisci-prova",
+	"icona":"fa-solid fa-users",
+	"ordine":1
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**modificaVoceMenu** | **PUT**
+
+Descrizione: Metodo per modificare una voce di menu
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idVoceMenu | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"idVoceMenuPadre":null,
+	"descrizione":"Voce di prova",
+	"path":"inserisci-prova",
+	"icona":"fa-solid fa-users",
+	"ordine":1,
+	"visibile":1
+}
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**eliminaVoceMenu** | **DELETE**
+
+Descrizione: Metodo per eliminare una voce di menu
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idVoceMenu | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+
+```
+
+---
+
+**getVoceMenu** | **GET**
+
+Descrizione: Metodo per ottenere una voce di menu
+
+Query param aggiuntivi:
+
+| Nome | Valore |
+| --- | --- |
+| idTipoRuolo | GUEST |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+{
+	"idTipoRuolo": "AMM",
+	"descrizione": "Amministratore",
+}
+```
+
+---
+
+**getVociMenuPerUtente** | **GET**
+
+Descrizione: Servizio per recuperare il menu da mostrare nella Sidebar
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"idVoceMenu": "1",
+		"0": "1",
+		"idVoceMenuPadre": null,
+		"1": null,
+		"descrizione": "Voci di menu",
+		"2": "Voci di menu",
+		"path": "#",
+		"3": "#",
+		"icona": "fa-solid fa-bars",
+		"4": "fa-solid fa-bars",
+		"ordine": "1",
+		"5": "1",
+		"figli": [
+			{
+				"idVoceMenu": "2",
+				"0": "2",
+				"idVoceMenuPadre": "1",
+				"1": "1",
+				"descrizione": "Inserisci voce di menu",
+				"2": "Inserisci voce di menu",
+				"path": "inserisci-voce-menu",
+				"3": "inserisci-voce-menu",
+				"icona": "fa-solid fa-plus",
+				"4": "fa-solid fa-plus",
+				"ordine": "1",
+				"5": "1",
+				"figli": [
+					{
+						"idVoceMenu": "3",
+						"0": "3",
+						"idVoceMenuPadre": "2",
+						"1": "2",
+						"descrizione": "Voce nipote",
+						"2": "Voce nipote",
+						"path": "nipote-path",
+						"3": "nipote-path",
+						"icona": "fa-solid fa-otter",
+						"4": "fa-solid fa-otter",
+						"ordine": "1",
+						"5": "1",
+						"figli": [
+							{
+								"idVoceMenu": "4",
+								"0": "4",
+								"idVoceMenuPadre": "3",
+								"1": "3",
+								"descrizione": "Voce pro nipote",
+								"2": "Voce pro nipote",
+								"path": "pronoipote-path",
+								"3": "pronoipote-path",
+								"icona": "aaa",
+								"4": "aaa",
+								"ordine": "1",
+								"5": "1",
+								"figli": []
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]
+```
+
+---
+
 ## Installazione
 
 ## Bom / Diba
