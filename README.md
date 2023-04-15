@@ -937,6 +937,125 @@ Response
 
 ---
 
+### GestioneAccessi.php
+
+**getListaAccessi** | **GET**
+
+Descrizione: Metodo per ottenere la lista di tutti gli accessi effettuati dagli utenti
+
+Query param aggiuntivi: 
+
+| Nome | Valore |
+| --- | --- |
+| pagina | 1 |
+|  |  |
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"token": "6427d313aa82...",
+		"dataInizioValidita": "2000-06-12 00:00:00",
+		"dataUltimoUtilizzo": "2000-06-12 00:00:01",
+		"nome": "Riccardo",
+		"cognome": "Riggi",
+		"indirizzoIp": "127.0.0.1",
+		"userAgent": "Mozilla\/5.0 ...",
+	}
+]
+```
+
+---
+
+**terminaAccesso** | **GET**
+
+Descrizione: Metodo per disconnettere forzatamente un utente
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+{
+	"token":"6444fdfsf...."
+} 
+```
+
+Response
+
+```json
+
+```
+
+---
+
+### Statistiche.php
+
+**getStatisticheMetodi** | **GET**
+
+Descrizione: Metodo che restituisce l'elenco delle risorse con il numero di invocazioni
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"chiamate": "143",
+		"nomeMetodo": "verificaAutenticazione",
+	}
+]
+```
+
+---
+
+**getNumeroVociMenu** | **GET**
+
+Descrizione: Metodo che restituisce il numero di voci di menu configurate
+
+Query param aggiuntivi: nessuno
+
+Headers aggiuntivi: nessuno
+
+Body:
+
+```json
+
+```
+
+Response
+
+```json
+[
+	{
+		"numero": "24"
+	}
+]
+```
+
+Esistono anche i seguenti servizi: getNumeroRuoli, getNumeroUtenti, getNumeroAccessiAttivi, getNumeroRisorse, getNumeroLogin, getNumeroIndirizziIp, getNumeroDispositiviFisiciAttivi
+
+---
 
 ## Installazione
 
