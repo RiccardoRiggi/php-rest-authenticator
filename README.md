@@ -1,6 +1,4 @@
-# Documentazione BE
-
-# Otter Guardian BE
+# Otter Guardian BE (ex php-rest-authenticator)
 
 Questo repository contiene la componente di backend di Otter Guardian sviluppata in PHP nativo, la struttura del database, gli script di configurazione e altre informazioni utili. 
 
@@ -9,6 +7,8 @@ Attenzione! Il progetto non è ancora totalmente ultimato, è in corso la revisi
 ## Struttura del progetto
 
 ## Database
+
+All'interno della cartella configurazioneDatabase è presente il file php-rest-authenticator.sql che contiene la struttura del database. 
 
 ## API Rest
 
@@ -2533,6 +2533,39 @@ Response
 
 ## Installazione
 
+0. Ricordati di modificare il file config.php a tuo piacimento
+1. Importa la struttura del database dal file php-rest-authenticator.sql
+2. Lancia le INSERT dalla cartella configurazioniDaImportare
+3. Apri il file utentiService.php e commenda la linea di codice come nell'esempio
+
+```php
+
+if (!function_exists('inserisciUtente')) {
+    function inserisciUtente($nomeInChiaro, $cognomeInChiaro, $emailInChiaro, $passwordInChiaro)
+    {
+        //verificaValiditaToken();
+
+        $nome = cifraStringa($nomeInChiaro);
+        $cognome = cifraStringa($cognomeInChiaro);
+        $email = cifraStringa($emailInChiaro);
+        $password = md5(md5($passwordInChiaro));
+
+```
+
+Poi segui le istruzioni per inserire un nuovo utente, ricordati di togliere il commento dalla linea di codice.
+
+4. Esegui una INSERT manualmente dentro la tavola PREFISSO_RUOLI_UTENTI con idTipoRuolo AMM e idUtente uguale a quello generato
+5. Entra nell'applicativo per utilizzare tutte le funzionalità come utente amministratore
+
+
 ## Bom / Diba
 
+Il codice è scritto in php nativo, non sono stati utilizzati framework. 
+
 ## Licenza
+Il codice sorgente viene rilasciato con licenza [MIT](https://github.com/RiccardoRiggi/php-rest-authenticator/blob/main/LICENSE). Le varie esensioni di php utilizzate mantengono le loro relative licenze.
+  
+
+## Garanzia limitata ed esclusioni di responsabilità
+
+Il software viene fornito "così com'è", senza garanzie. Riccardo Riggi non concede alcuna garanzia per il software e la relativa documentazione in termini di correttezza, accuratezza, affidabilità o altro. L'utente si assume totalmente il rischio utilizzando questo applicativo.

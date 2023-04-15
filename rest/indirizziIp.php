@@ -5,13 +5,16 @@ include '../services/indirizziIpService.php';
 
 
 try {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: *');
-    header('Access-Control-Expose-Headers: *');
-    header('Access-Control-Max-Age: 86400');
-    if (strtolower($_SERVER['REQUEST_METHOD']) == 'options')
-        exit();
+  
+    if (ABILITA_CORS) {
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: *');
+        header('Access-Control-Expose-Headers: *');
+        header('Access-Control-Max-Age: 86400');
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'options')
+            exit();
+    }
 
     verificaIndirizzoIp();
 

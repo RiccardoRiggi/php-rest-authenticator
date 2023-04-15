@@ -1,4 +1,6 @@
 <?php
+
+//Informazioni per collegare il db
 if (!defined("HOST_DATABASE"))
     define("HOST_DATABASE", "localhost");
 if (!defined("NOME_DATABASE"))
@@ -7,22 +9,39 @@ if (!defined("USERNAME_DATABASE"))
     define("USERNAME_DATABASE", "root");
 if (!defined("PASSWORD_DATABASE"))
     define("PASSWORD_DATABASE", "");
+
+/*
+Prefisso delle tavole, in questo modo è possibile avere più installazioni su un unico db. 
+Dovrai cambiare i prefissi dalle tavole manualmente, il default è "au"
+*/
 if (!defined("PREFISSO_TAVOLA"))
     define("PREFISSO_TAVOLA", "au");
 
 if (!defined("NOME_APPLICAZIONE"))
     define("NOME_APPLICAZIONE", "PHP Rest Authenticator");
 
+/*
+Questa variabile contiene il numero di elementi che verranno restituiti per ogni pagina nelle liste in cui è implementata
+la paginazione
+*/
 if (!defined("ELEMENTI_PER_PAGINA"))
     define("ELEMENTI_PER_PAGINA", 10);
 
+/*
+Questa variabile di configurazione abilita la verifica del token e degli eventuali permessi per accedere a determinate risorse.
+Non impostarlo a false per nessun motivo se stai utilizzando il software su rete pubblica
+*/
 if (!defined("ABILITA_VERIFICA_TOKEN"))
     define("ABILITA_VERIFICA_TOKEN", true);
 
+/*
+Questa variabile serve per abilitare i cors se FE e BE si trovano su host differenti
+*/
+if (!defined("ABILITA_CORS"))
+    define("ABILITA_CORS", true);
 
 
-
-//Informazioni per la cifratura
+//Informazioni per la cifratura, da non cambiare dopo l'installazione
 if (!defined("CIPHERING_VALUE"))
     define("CIPHERING_VALUE", "AES-128-CTR");
 if (!defined("CIPHERING_OPTIONS"))
