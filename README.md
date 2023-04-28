@@ -2,7 +2,7 @@
 
 Questo repository contiene la componente di backend di Otter Guardian sviluppata in PHP nativo, la struttura del database, gli script di configurazione e altre informazioni utili. 
 
-Attenzione! Il progetto non è ancora totalmente ultimato, è in corso la revisione della documentazione, del codice e l'ottimizzazione del database
+<u>Attenzione! Il progetto non è ancora totalmente ultimato, è in corso la revisione della documentazione, del codice e l'ottimizzazione del database</u>
 
 ## Struttura del progetto
 
