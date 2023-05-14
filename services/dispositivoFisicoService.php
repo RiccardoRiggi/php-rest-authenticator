@@ -79,7 +79,7 @@ if (!function_exists('disabilitaDispositivi')) {
     function disabilitaDispositivi($idUtente)
     {
         $conn = apriConnessione();
-        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_dispositivi_fisici SET dataDisabilitazione = current_timestamp WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ");
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_dispositivi_fisici SET dataDisabilitazione = current_timestamp WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL AND dataDisabilitazione IS NULL");
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->execute();
         chiudiConnessione($conn);
