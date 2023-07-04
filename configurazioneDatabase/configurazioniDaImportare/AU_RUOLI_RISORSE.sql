@@ -81,3 +81,12 @@ INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VAL
 INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('USER', 'USER_LEGGI_NOTIFICHE', '2000-06-12 00:00:00');
 INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('USER', 'USER_LISTA_DISPOSITIVI_FISICI', '2000-06-12 00:00:00');
 INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('USER', 'USER_VERIFICA_AUTENTICAZIONE', '2000-06-12 00:00:00');
+
+-- Versione 1.1.0
+INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('USER', 'USER_GENERA_ID_TELEGRAM', '2000-06-12 00:00:00');
+INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('USER', 'USER_LISTA_DISPOSITIVI_FISICI_TELEGRAM', '2000-06-12 00:00:00');
+INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('AMM', 'AMM_GET_LISTA_DISPOSITIVI_FISICI_TELEGRAM', '2000-06-12 00:00:00');
+INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('AMM', 'AMM_RIMUOVI_DISPOSITIVO_FISICO_TELEGRAM', '2000-06-12 00:00:00');
+INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('AMM', 'AMM_LOG_TELEGRAM', '2000-06-12 00:00:00');
+INSERT INTO `au_ruoli_risorse` (`idTipoRuolo`, `idRisorsa`, `dataCreazione`) VALUES('AMM', 'AMM_NOTIFICHE_TELEGRAM', '2000-06-12 00:00:00');
+

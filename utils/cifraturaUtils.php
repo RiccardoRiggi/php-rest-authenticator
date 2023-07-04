@@ -21,7 +21,7 @@ if (!function_exists('decifraStringa')) {
 
 if(!function_exists("generaUUID")){
     function generaUUID(){
-        return uniqid("",true)."-".uniqid("",true)."-".uniqid("",true)."-".uniqid("",true)."-".uniqid("",true)."-".uniqid("",true);
+        return uniqid("",true)."-".uniqid("",true);
     }
 }
 

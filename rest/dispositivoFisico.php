@@ -31,6 +31,14 @@ try {
         $response = generaIdentificativoDispositivoFisico();
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "generaIdentificativoTelegram") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        $response = generaIdentificativoTelegram();
+        http_response_code(200);
+        exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "isDispositivoAbilitato") {
 
         if ($_SERVER['REQUEST_METHOD'] != "GET")
@@ -40,6 +48,17 @@ try {
             throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
 
         $response = isDispositivoAbilitato($_GET["idDispositivoFisico"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "isDispositivoTelegramAbilitato") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["idDispositivoFisico"]))
+            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+
+        $response = isDispositivoTelegramAbilitato($_GET["idDispositivoFisico"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "abilitaDispositivoFisico") {
@@ -80,6 +99,17 @@ try {
             throw new OtterGuardianException(400, "Il campo pagina è richiesto");
 
         $response = getDispositiviFisici($_GET["pagina"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getDispositiviFisiciTelegram") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["pagina"]))
+            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+
+        $response = getDispositiviFisiciTelegram($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getRichiesteDiAccessoPendenti") {
@@ -136,6 +166,17 @@ try {
         $response = getListaDispositiviFisici($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getListaDispositiviFisiciTelegram") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["pagina"]))
+            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+
+        $response = getListaDispositiviFisiciTelegram($_GET["pagina"]);
+        http_response_code(200);
+        exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "rimuoviDispositivoFisico") {
 
         if ($_SERVER['REQUEST_METHOD'] != "PUT")
@@ -147,6 +188,19 @@ try {
             throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
 
         $response = rimuoviDispositivoFisico($jsonBody["idDispositivoFisico"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "rimuoviDispositivoFisicoTelegram") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "PUT")
+            throw new MetodoHttpErratoException();
+
+        $jsonBody = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($jsonBody["idDispositivoFisico"]))
+            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+
+        $response = rimuoviDispositivoFisicoTelegram($jsonBody["idDispositivoFisico"]);
         http_response_code(200);
         exit(json_encode($response));
     } else {

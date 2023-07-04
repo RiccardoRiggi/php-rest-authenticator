@@ -3,6 +3,9 @@
 include './importManager.php';
 include '../services/autenticazioneService.php';
 
+include '../services/webHookTelegramService.php';
+
+
 
 
 try {

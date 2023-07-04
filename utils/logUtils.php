@@ -50,3 +50,20 @@ if (!function_exists('generaLogSuBaseDati')) {
     }
 }
 
+if (!function_exists('generaLogTelegram')) {
+    function generaLogTelegram($idTelegram,$jsonBody)
+    {
+       
+
+        try {
+            $conn = apriConnessione();
+            $stmt = $conn->prepare("INSERT INTO ".PREFISSO_TAVOLA."_log_telegram (idTelegram, jsonBody) VALUES (:idTelegram, :jsonBody)");
+            $stmt->bindParam(':idTelegram', $idTelegram);
+            $stmt->bindParam(':jsonBody', $jsonBody);
+            $stmt->execute();
+            chiudiConnessione($conn);
+        } catch (Exception $e) {
+            generaLogSuFile( "Errore nella funzione generaLogTelegram: " . $e->getMessage());
+        }
+    }
+}

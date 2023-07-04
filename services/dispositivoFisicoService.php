@@ -27,6 +27,40 @@ if (!function_exists('generaIdentificativoDispositivoFisico')) {
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: generaIdentificativoTelegram
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+if (!function_exists('generaIdentificativoTelegram')) {
+    function generaIdentificativoTelegram()
+    {
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+        $idTelegramProvvisorio = generaUUID();
+        $codiceAssociazione = "T-".generaCodiceSeiCifre();
+
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("INSERT INTO " . PREFISSO_TAVOLA . "_telegram (idTelegram, idUtente, codiceAssociazione,idDispositivoFisico) VALUES (:idTelegram, :idUtente, :codiceAssociazione, :idDispositivoFisico)");
+        $stmt->bindParam(':idTelegram', $idTelegramProvvisorio);
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':codiceAssociazione', $codiceAssociazione);
+        $stmt->bindParam(':idDispositivoFisico', $idTelegramProvvisorio);
+
+
+        $stmt->execute();
+        chiudiConnessione($conn);
+
+        $oggetto = new stdClass();
+        $oggetto->codiceAssociazione = $codiceAssociazione;
+        $oggetto->idDispositivoFisico = $idTelegramProvvisorio;
+        $oggetto->nomeBotTelegram = NOME_BOT_TELEGRAM;
+        return $oggetto;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Funzione: abilitaDispositivoFisico
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -145,6 +179,30 @@ if (!function_exists('getDispositiviFisici')) {
 
         $conn = apriConnessione();
         $stmt = $conn->prepare("SELECT nomeDispositivo, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_dispositivi_fisici WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL ORDER BY dataAbilitazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
+        return $result;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getDispositiviFisiciTelegram
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('getDispositiviFisiciTelegram')) {
+    function getDispositiviFisiciTelegram($pagina)
+    {
+        verificaValiditaToken();
+        $idUtente = getIdUtenteDaToken($_SERVER["HTTP_TOKEN"]);
+
+        $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
+
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT usernameTelegram, dataAbilitazione, dataDisabilitazione FROM " . PREFISSO_TAVOLA . "_telegram WHERE idUtente = :idUtente AND dataAbilitazione IS NOT NULL AND dataBlocco IS NULL ORDER BY dataAbilitazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
         $stmt->bindParam(':idUtente', $idUtente);
         $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
         $stmt->execute();
@@ -323,6 +381,23 @@ if (!function_exists('isDispositivoAbilitato')) {
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: isDispositivoTelegramAbilitato
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('isDispositivoTelegramAbilitato')) {
+    function isDispositivoTelegramAbilitato($idDispositivoFisico)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idDispositivoFisico FROM " . PREFISSO_TAVOLA . "_telegram WHERE idDispositivoFisico = :idDispositivoFisico AND dataAbilitazione IS NOT NULL and dataDisabilitazione IS NULL AND dataBlocco IS NULL ORDER BY dataAbilitazione DESC");
+        $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
+        return count($result) == 1;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Funzione: getListaDispositiviFisici
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -355,6 +430,38 @@ if (!function_exists('getListaDispositiviFisici')) {
 }
 
 /*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getListaDispositiviFisiciTelegram
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('getListaDispositiviFisiciTelegram')) {
+    function getListaDispositiviFisiciTelegram($pagina)
+    {
+        verificaValiditaToken();
+
+        $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
+
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT usernameTelegram, dataAbilitazione, dataDisabilitazione, nome, cognome, idDispositivoFisico  FROM " . PREFISSO_TAVOLA . "_telegram d JOIN " . PREFISSO_TAVOLA . "_utenti u on u.idUtente = d.idUtente  WHERE u.dataBlocco IS NULL and dataEliminazione IS NULL AND dataAbilitazione IS NOT NULL AND d.dataBlocco IS NULL ORDER BY dataDisabilitazione IS NULL DESC, dataDisabilitazione DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
+        $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
+
+        $array = [];
+        foreach ($result as $value) {
+            $tmp = $value;
+            $tmp["nome"] = decifraStringa($value["nome"]);
+            $tmp["3"] = decifraStringa($value["3"]);
+            $tmp["cognome"] = decifraStringa($value["cognome"]);
+            $tmp["4"] = decifraStringa($value["4"]);
+            array_push($array, $tmp);
+        }
+        return $array;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Funzione: rimuoviDispositivoFisico
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -366,6 +473,24 @@ if (!function_exists('rimuoviDispositivoFisico')) {
 
         $conn = apriConnessione();
         $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_dispositivi_fisici SET dataDisabilitazione = current_timestamp WHERE idDispositivoFisico = :idDispositivoFisico AND dataAbilitazione IS NOT NULL ");
+        $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
+        $stmt->execute();
+        chiudiConnessione($conn);
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: rimuoviDispositivoFisicoTelegram
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('rimuoviDispositivoFisicoTelegram')) {
+    function rimuoviDispositivoFisicoTelegram($idDispositivoFisico)
+    {
+
+        verificaValiditaToken();
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("UPDATE " . PREFISSO_TAVOLA . "_telegram SET dataDisabilitazione = current_timestamp WHERE idDispositivoFisico = :idDispositivoFisico AND dataAbilitazione IS NOT NULL ");
         $stmt->bindParam(':idDispositivoFisico', $idDispositivoFisico);
         $stmt->execute();
         chiudiConnessione($conn);

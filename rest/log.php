@@ -36,6 +36,28 @@ try {
         $response = getLogs($_GET["pagina"], $_GET["livelloLog"]);
         http_response_code(200);
         exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getLogsTelegram") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["pagina"]))
+            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+
+        $response = getLogsTelegram($_GET["pagina"]);
+        http_response_code(200);
+        exit(json_encode($response));
+    } else if ($_GET["nomeMetodo"] == "getNotificheTelegram") {
+
+        if ($_SERVER['REQUEST_METHOD'] != "GET")
+            throw new MetodoHttpErratoException();
+
+        if (!isset($_GET["pagina"]))
+            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+
+        $response = getNotificheTelegram($_GET["pagina"]);
+        http_response_code(200);
+        exit(json_encode($response));
     } else {
         throw new ErroreServerException("Metodo non implementato");
     }

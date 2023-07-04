@@ -21,3 +21,6 @@ INSERT INTO `au_voci_menu` (`idVoceMenu`, `idVoceMenuPadre`, `descrizione`, `pat
 INSERT INTO `au_voci_menu` (`idVoceMenu`, `idVoceMenuPadre`, `descrizione`, `path`, `icona`, `ordine`, `visibile`, `dataCreazione`, `dataEliminazione`) VALUES(29, NULL, 'Gestione accessi', 'lista-accessi', 'fa-solid fa-circle-nodes', 7, 1, '2000-06-12 00:00:00', NULL);
 INSERT INTO `au_voci_menu` (`idVoceMenu`, `idVoceMenuPadre`, `descrizione`, `path`, `icona`, `ordine`, `visibile`, `dataCreazione`, `dataEliminazione`) VALUES(30, 27, 'Nuova notifica', 'scheda-notifica', 'fa-solid fa-plus', 1, 1, '2000-06-12 00:00:00', NULL);
 INSERT INTO `au_voci_menu` (`idVoceMenu`, `idVoceMenuPadre`, `descrizione`, `path`, `icona`, `ordine`, `visibile`, `dataCreazione`, `dataEliminazione`) VALUES(31, 27, 'Lista notifiche', 'lista-notifiche', 'fa-solid fa-list', 2, 1, '2000-06-12 00:00:00', NULL);
+
+-- Versione 1.1.0
+INSERT INTO `au_voci_menu` (`idVoceMenu`, `idVoceMenuPadre`, `descrizione`, `path`, `icona`, `ordine`, `visibile`, `dataCreazione`, `dataEliminazione`) VALUES(32, NULL, 'Lista account telegram', 'lista-account-telegram', 'fa-brands fa-telegram', 8, 1, '2000-06-12 00:00:00', NULL);

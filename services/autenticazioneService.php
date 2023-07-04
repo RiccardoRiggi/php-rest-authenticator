@@ -62,7 +62,7 @@ if (!function_exists('getUtente')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0){
+        if (count($result) == 0) {
             incrementaContatoreAlert();
             generaLogSuBaseDati("INFO", "Inserita coppia email/password errata");
             throw new AccessoNonAutorizzatoLoginException();
@@ -86,7 +86,7 @@ if (!function_exists('getUtenteSenzaPassword')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0){
+        if (count($result) == 0) {
             incrementaContatoreAlert();
             generaLogSuBaseDati("INFO", "Cercato un utente non registrato senza password e con un tipo autenticazione tra quelli presenti in banca dati");
             throw new AccessoNonAutorizzatoLoginException();
@@ -119,7 +119,7 @@ if (!function_exists('getMetodiAutenticazioneSupportati')) {
             $stmt->execute();
             $result = $stmt->fetchAll();
             chiudiConnessione($conn);
-            generaLogSuBaseDati("INFO", "Inserito un indirizzo email non presente nel sistema: ".$email);
+            generaLogSuBaseDati("INFO", "Inserito un indirizzo email non presente nel sistema: " . $email);
             return $result;
         } else {
             chiudiConnessione($conn);
@@ -154,7 +154,19 @@ if (!function_exists('effettuaAutenticazione')) {
                 inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
             }
 
+            if ($tipoAutenticazione == "EMAIL_SIX_TELEGRAM") {
+                $idTelegram = getIdTelegramByIdUtente($idUtente);
+                inviaNotificaTelegram($idTelegram,"Ciao ".$nome.", usa il codice <b>".$codice."</b> per completare l'autenticazione");
+            }
+
+            if ($tipoAutenticazione == "EMAIL_SI_NO_TELEGRAM") {
+                $idTelegram = getIdTelegramByIdUtente($idUtente);
+                inviaNotificaAccessoTelegram($idTelegram,"Ciao ".$nome.", hai ricevuto una nuova richiesta di autenticazione!",$idLogin);
+            }
+
             $descrizione = getIstruzioniSecondoFattore($idTipoLogin);
+
+           
 
             $oggetto = new stdClass();
             $oggetto->idLogin = $idLogin;
@@ -182,6 +194,16 @@ if (!function_exists('effettuaAutenticazione')) {
                 inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
             }
 
+            if ($tipoAutenticazione == "EMAIL_SIX_TELEGRAM") {
+                $idTelegram = getIdTelegramByIdUtente($idUtente);
+                inviaNotificaTelegram($idTelegram,"Ciao ".$nome.", usa il codice <b>".$codice."</b> per completare l'autenticazione");
+            }
+
+            if ($tipoAutenticazione == "EMAIL_SI_NO_TELEGRAM") {
+                $idTelegram = getIdTelegramByIdUtente($idUtente);
+                inviaNotificaAccessoTelegram($idTelegram,"Ciao ".$nome.", hai ricevuto una nuova richiesta di autenticazione!",$idLogin);
+            }
+
             $descrizione = getIstruzioniSecondoFattore($tipoAutenticazione);
 
             $oggetto = new stdClass();
@@ -189,6 +211,24 @@ if (!function_exists('effettuaAutenticazione')) {
             $oggetto->descrizione = substr($descrizione, strpos($descrizione, "#") + 2);
             return $oggetto;
         }
+    }
+}
+
+if (!function_exists('getIdTelegramByIdUtente')) {
+    function getIdTelegramByIdUtente($idUtente)
+    {
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idTelegram FROM " . PREFISSO_TAVOLA . "_telegram WHERE idUtente = :idUtente AND dataDisabilitazione IS NULL AND dataAbilitazione IS NOT NULL AND dataBlocco IS NULL");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
+
+        if (count($result) != 1) {
+            throw new AccessoNonAutorizzatoLoginException();
+        }
+
+        return $result[0]["idTelegram"];
     }
 }
 
@@ -211,10 +251,9 @@ if (!function_exists('inviaCodiceSecondoFattoreViaEmail')) {
         $subject = NOME_APPLICAZIONE . " - Autenticazione a due fattori";
         $messaggio = "Ciao " . $cognome . " " . $nome . ", \n Inserisci il codice di verifica " . $codice . " per completare l'autenticazione";
         $headers = "From: noreply@riccardoriggi.it";
-        if(ABILITA_INVIO_EMAIL){
+        if (ABILITA_INVIO_EMAIL) {
             mail($email, $subject, $messaggio, $headers);
         }
-        
     }
 }
 
@@ -284,7 +323,7 @@ if (!function_exists('verificaEsistenzaMetodoSecondoFattorePerUtente')) {
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             generaLogSuBaseDati("INFO", "Tentativo di ricerca di un indirizzo email con metodo di autenticazione");
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
@@ -332,7 +371,7 @@ if (!function_exists('getUtenteDecifrato')) {
         if (count($result) > 1)
             throw new ErroreServerException("Errore durante il processo di autenticazione");
 
-        if (count($result) == 0){
+        if (count($result) == 0) {
             incrementaContatoreAlert();
             throw new OtterGuardianException(404, "Utente non trovato");
         }
@@ -363,7 +402,7 @@ if (!function_exists('verificaCodiceBackup')) {
         $stmt->bindParam(':codice', $codice);
         $stmt->execute();
         $resultUno = $stmt->fetchAll();
-        
+
 
         if (count($resultUno) != 1) {
             incrementaContatoreAlert();
@@ -399,7 +438,7 @@ if (!function_exists('getIdTipoLoginByIdLogin')) {
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
         }
@@ -417,7 +456,7 @@ if (!function_exists('getIdUtenteByIdLogin')) {
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Non sono stati trovati tentativi di accesso ancora in corso di validità, probabilmente hai superato il tempo limite, effettua nuovamente la procedura di autenticazione");
         }
@@ -437,12 +476,12 @@ if (!function_exists('confrontaConUltimoTentativoDiLogin')) {
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
 
-        if ($result[0]["idLogin"] != $idLogin){
+        if ($result[0]["idLogin"] != $idLogin) {
             incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Verifica di stare autorizzando il tentativo di accesso più recente");
         }
@@ -457,9 +496,9 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
         $result = $stmt->fetchAll();
-        
 
-        if (count($result) != 1){
+
+        if (count($result) != 1) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -468,12 +507,12 @@ if (!function_exists('verificaCodiceSecondoFattore')) {
         $stmt->bindParam(':idLogin', $idLogin);
         $stmt->execute();
 
-        if ($result[0]["tentativi"] > 5){
+        if ($result[0]["tentativi"] > 5) {
             incrementaContatoreAlert();
             throw new OtterGuardianException(401, "Hai superato il numero massimo di tentativi");
         }
 
-        if ($result[0]["codice"] != $codice){
+        if ($result[0]["codice"] != $codice) {
             incrementaContatoreAlert();
             throw new AccessoNonAutorizzatoLoginException();
         }
@@ -503,6 +542,7 @@ if (!function_exists('invalidoTokenPrecedenti')) {
         chiudiConnessione($conn);
     }
 }
+
 
 if (!function_exists('registraToken')) {
     function registraToken($idLogin, $idUtente, $userAgent)
@@ -582,7 +622,7 @@ if (!function_exists('recuperaTokenDaIdLogin')) {
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             throw new AccessoNonAutorizzatoLoginException();
         }
 
@@ -604,7 +644,7 @@ if (!function_exists('recuperaTokenDaIdQrCode')) {
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
 
-        if (count($result) != 1){
+        if (count($result) != 1) {
             throw new AccessoNonAutorizzatoLoginException();
         }
 

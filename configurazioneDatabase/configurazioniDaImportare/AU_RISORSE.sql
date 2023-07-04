@@ -82,3 +82,13 @@ INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazio
 INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('USER_LEGGI_NOTIFICHE', 'leggiNotificheLatoUtente', 'a', '2000-06-12 00:00:00', NULL);
 INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('USER_LISTA_DISPOSITIVI_FISICI', 'getDispositiviFisici', 'getDispositiviFisici', '2000-06-12 00:00:00', NULL);
 INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('USER_VERIFICA_AUTENTICAZIONE', 'verificaAutenticazione', 'Verifica autenticazione utente', '2000-06-12 00:00:00', NULL);
+
+-- Versione 1.1.0
+INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('USER_GENERA_ID_TELEGRAM', 'generaIdentificativoTelegram', 'generaIdentificativoTelegram', '2000-06-12 00:00:00', NULL);
+INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('USER_LISTA_DISPOSITIVI_FISICI_TELEGRAM', 'getDispositiviFisiciTelegram', 'getDispositiviFisiciTelegram', '2000-06-12 00:00:00', NULL);
+INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('AMM_GET_LISTA_DISPOSITIVI_FISICI_TELEGRAM', 'getListaDispositiviFisiciTelegram', 'getListaDispositiviFisiciTelegram', '2000-06-12 00:00:00', NULL);
+INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('AMM_RIMUOVI_DISPOSITIVO_FISICO_TELEGRAM', 'rimuoviDispositivoFisicoTelegram', 'rimuoviDispositivoFisicoTelegram', '2000-06-12 00:00:00', NULL);
+INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('AMM_LOG_TELEGRAM', 'getLogsTelegram', 'getLogsTelegram', '2000-06-12 00:00:00', NULL);
+INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('AMM_NOTIFICHE_TELEGRAM', 'getNotificheTelegram', 'getNotificheTelegram', '2000-06-12 00:00:00', NULL);
+
+

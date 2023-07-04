@@ -61,3 +61,11 @@ if (!defined("ENCRYPTION_IV_VALUE"))
     define("ENCRYPTION_IV_VALUE", "4484848594125156");
 if (!defined("ENCRYPTION_KEY"))
     define("ENCRYPTION_KEY", "OAC8gRxkG0BVfWstcuRHiGfFN5LKROlwsh9tn3GLweqZF3NoQFRQrI");
+
+/*
+Variabili per la gestione del BOT Telegram
+*/
+if (!defined("NOME_BOT_TELEGRAM"))
+    define("NOME_BOT_TELEGRAM", "");
+if (!defined("TOKEN_TELEGRAM"))
+    define("TOKEN_TELEGRAM", "");

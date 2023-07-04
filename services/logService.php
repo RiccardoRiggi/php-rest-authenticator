@@ -41,3 +41,49 @@ if (!function_exists('getLogs')) {
         return $array;
     }
 }
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getLogsTelegram
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('getLogsTelegram')) {
+    function getLogsTelegram($pagina)
+    {
+        verificaValiditaToken();
+
+       
+        
+        $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT dataEvento, jsonBody FROM " . PREFISSO_TAVOLA . "_log_telegram ORDER BY dataEvento DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
+        $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
+        return $result;
+    }
+}
+
+/*-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funzione: getNotificheTelegram
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+if (!function_exists('getNotificheTelegram')) {
+    function getNotificheTelegram($pagina)
+    {
+        verificaValiditaToken();
+
+       
+        
+        $paginaDaEstrarre = ($pagina - 1) * ELEMENTI_PER_PAGINA;
+
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT dataInvio, testo FROM " . PREFISSO_TAVOLA . "_notifiche_telegram ORDER BY dataInvio DESC LIMIT :pagina, " . ELEMENTI_PER_PAGINA);
+        $stmt->bindParam(':pagina', $paginaDaEstrarre, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
+        return $result;
+    }
+}
