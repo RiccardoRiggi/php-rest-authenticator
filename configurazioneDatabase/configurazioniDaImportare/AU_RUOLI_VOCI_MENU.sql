@@ -25,5 +25,5 @@ INSERT INTO `au_ruoli_voci_menu` (`idTipoRuolo`, `idVoceMenu`, `dataCreazione`) 
 INSERT INTO `au_ruoli_voci_menu` (`idTipoRuolo`, `idVoceMenu`, `dataCreazione`) VALUES('AMM', 30, '2000-06-12 00:00:00');
 INSERT INTO `au_ruoli_voci_menu` (`idTipoRuolo`, `idVoceMenu`, `dataCreazione`) VALUES('AMM', 31, '2000-06-12 00:00:00');
 
---Versione 1.1.0
+-- Versione 1.1.0
 INSERT INTO `au_ruoli_voci_menu` (`idTipoRuolo`, `idVoceMenu`, `dataCreazione`) VALUES('AMM', 32, '2000-06-12 00:00:00');

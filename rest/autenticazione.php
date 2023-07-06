@@ -66,7 +66,7 @@ try {
             throw new OtterGuardianException(400, "Il campo email è richiesto");
 
         if (!isset($jsonBody["password"])) {
-            if (!isset($jsonBody["tipoAutenticazione"]) || str_contains($jsonBody["tipoAutenticazione"], "PSW",)) {
+            if (!isset($jsonBody["tipoAutenticazione"]) || str_contains($jsonBody["tipoAutenticazione"], "PSW")) {
                 throw new OtterGuardianException(400, "Il campo password è richiesto");
             }
         }

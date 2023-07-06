@@ -44,7 +44,7 @@ class OtterGuardianException extends Exception
     public $message = "";
     public $status = 500;
 
-    public function __construct($status,$message)
+    public function __construct($status, $message)
     {
         $this->message = $message;
         $this->status = $status;
@@ -58,5 +58,19 @@ class OtterGuardianException extends Exception
     public function getStatus()
     {
         return $this->status;
+    }
+}
+
+if (!function_exists('str_contains')) {
+    function str_contains($stringaIntera, $stringaParziale)
+    {
+        return strpos($stringaIntera, $stringaParziale) === "";
+    }
+}
+
+if (!function_exists('str_starts_with')) {
+    function str_starts_with($stringaIntera, $stringaParziale)
+    {
+        return substr($stringaIntera, 0, strlen($stringaParziale)) === $stringaParziale;
     }
 }

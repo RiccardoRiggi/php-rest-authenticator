@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Apr 06, 2023 alle 22:01
--- Versione del server: 10.4.20-MariaDB
--- Versione PHP: 8.0.9
+-- Creato il: Lug 05, 2023 alle 07:46
+-- Versione del server: 10.4.28-MariaDB
+-- Versione PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `php-rest-authenticator`
 --
-CREATE DATABASE IF NOT EXISTS `php-rest-authenticator` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `php-rest-authenticator`;
 
 -- --------------------------------------------------------
 
@@ -31,11 +29,11 @@ USE `php-rest-authenticator`;
 
 CREATE TABLE `au_codici_backup` (
   `idUtente` int(10) NOT NULL,
-  `codice` varchar(255) NOT NULL,
+  `codice` varchar(128) NOT NULL,
   `dataGenerazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataUtilizzo` datetime DEFAULT NULL,
   `dataEliminazione` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -44,12 +42,12 @@ CREATE TABLE `au_codici_backup` (
 --
 
 CREATE TABLE `au_dispositivi_fisici` (
-  `idDispositivoFisico` varchar(512) NOT NULL,
+  `idDispositivoFisico` varchar(128) NOT NULL,
   `idUtente` int(10) NOT NULL,
-  `nomeDispositivo` varchar(512) DEFAULT NULL,
+  `nomeDispositivo` varchar(128) DEFAULT NULL,
   `dataAbilitazione` datetime DEFAULT current_timestamp(),
   `dataDisabilitazione` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -58,10 +56,10 @@ CREATE TABLE `au_dispositivi_fisici` (
 --
 
 CREATE TABLE `au_indirizzi_ip` (
-  `indirizzoIp` varchar(512) NOT NULL,
+  `indirizzoIp` varchar(128) NOT NULL,
   `contatoreAlert` int(10) NOT NULL DEFAULT 0,
   `dataBlocco` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -75,9 +73,9 @@ CREATE TABLE `au_log` (
   `logLevel` varchar(32) NOT NULL,
   `testo` varchar(1024) NOT NULL,
   `path` varchar(1024) NOT NULL,
-  `indirizzoIp` varchar(512) NOT NULL,
-  `metodoHttp` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `indirizzoIp` varchar(128) NOT NULL,
+  `metodoHttp` varchar(128) NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -86,29 +84,42 @@ CREATE TABLE `au_log` (
 --
 
 CREATE TABLE `au_login` (
-  `idLogin` varchar(512) NOT NULL,
+  `idLogin` varchar(128) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `idTipoLogin` varchar(32) NOT NULL,
-  `token` varchar(512) DEFAULT NULL,
+  `token` varchar(128) DEFAULT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `indirizzoIp` varchar(512) NOT NULL,
-  `userAgent` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `indirizzoIp` varchar(128) NOT NULL,
+  `userAgent` varchar(128) NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_log_chiamate`
+-- Struttura della tabella `au_lau_chiamate`
 --
 
-CREATE TABLE `au_log_chiamate` (
+CREATE TABLE `au_lau_chiamate` (
   `idLogChiamata` int(10) NOT NULL,
   `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
   `endpoint` varchar(1024) NOT NULL,
-  `indirizzoIp` varchar(255) NOT NULL,
-  `nomeMetodo` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `indirizzoIp` varchar(128) NOT NULL,
+  `nomeMetodo` varchar(128) NOT NULL,
+  `token` varchar(128) NOT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `au_lau_telegram`
+--
+
+CREATE TABLE `au_lau_telegram` (
+  `idLogTelegram` int(10) NOT NULL,
+  `idTelegram` varchar(128) NOT NULL,
+  `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
+  `jsonBody` varchar(4096) NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -122,7 +133,7 @@ CREATE TABLE `au_metodi_login` (
   `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
   `dataFineValidita` datetime DEFAULT NULL,
   `isPredefinito` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -135,7 +146,7 @@ CREATE TABLE `au_metodi_rec_psw` (
   `idUtente` int(10) NOT NULL,
   `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
   `dataFineValidita` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -149,7 +160,20 @@ CREATE TABLE `au_notifiche` (
   `dataInvio` datetime NOT NULL DEFAULT current_timestamp(),
   `dataLettura` datetime DEFAULT NULL,
   `dataEliminazione` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `au_notifiche_telegram`
+--
+
+CREATE TABLE `au_notifiche_telegram` (
+  `idNotificaTelegram` int(10) NOT NULL,
+  `idTelegram` varchar(128) NOT NULL,
+  `dataInvio` datetime NOT NULL DEFAULT current_timestamp(),
+  `testo` varchar(4096) NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -158,13 +182,13 @@ CREATE TABLE `au_notifiche` (
 --
 
 CREATE TABLE `au_qr_code` (
-  `idQrCode` varchar(512) NOT NULL,
+  `idQrCode` varchar(128) NOT NULL,
   `dataInizioValidita` datetime NOT NULL DEFAULT current_timestamp(),
   `dataFineValidita` datetime DEFAULT NULL,
   `idUtente` int(10) DEFAULT NULL,
-  `indirizzoIp` varchar(512) NOT NULL,
-  `userAgent` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `indirizzoIp` varchar(128) NOT NULL,
+  `userAgent` varchar(128) NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -173,13 +197,13 @@ CREATE TABLE `au_qr_code` (
 --
 
 CREATE TABLE `au_rec_psw` (
-  `idRecPsw` varchar(512) NOT NULL,
-  `idTipoRecPsw` varchar(512) NOT NULL,
+  `idRecPsw` varchar(128) NOT NULL,
+  `idTipoRecPsw` varchar(128) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
-  `indirizzoIp` varchar(512) NOT NULL,
-  `userAgent` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `indirizzoIp` varchar(128) NOT NULL,
+  `userAgent` varchar(128) NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -188,12 +212,12 @@ CREATE TABLE `au_rec_psw` (
 --
 
 CREATE TABLE `au_risorse` (
-  `idRisorsa` varchar(255) NOT NULL,
-  `nomeMetodo` varchar(255) NOT NULL,
+  `idRisorsa` varchar(128) NOT NULL,
+  `nomeMetodo` varchar(128) NOT NULL,
   `descrizione` varchar(1024) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataEliminazione` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -203,9 +227,9 @@ CREATE TABLE `au_risorse` (
 
 CREATE TABLE `au_ruoli_risorse` (
   `idTipoRuolo` varchar(32) NOT NULL,
-  `idRisorsa` varchar(255) NOT NULL,
+  `idRisorsa` varchar(128) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -217,7 +241,7 @@ CREATE TABLE `au_ruoli_utenti` (
   `idTipoRuolo` varchar(32) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -229,7 +253,27 @@ CREATE TABLE `au_ruoli_voci_menu` (
   `idTipoRuolo` varchar(32) NOT NULL,
   `idVoceMenu` int(10) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `au_telegram`
+--
+
+CREATE TABLE `au_telegram` (
+  `idTelegram` varchar(128) NOT NULL,
+  `idUtente` int(10) DEFAULT NULL,
+  `nazione` varchar(128) DEFAULT NULL,
+  `usernameTelegram` varchar(128) DEFAULT NULL,
+  `dataAbilitazione` datetime DEFAULT NULL,
+  `dataDisabilitazione` datetime DEFAULT NULL,
+  `dataBlocco` datetime DEFAULT NULL,
+  `contatoreAlert` int(10) NOT NULL DEFAULT 0,
+  `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
+  `codiceAssociazione` varchar(128) NOT NULL,
+  `idDispositivoFisico` varchar(128) DEFAULT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -238,16 +282,16 @@ CREATE TABLE `au_ruoli_voci_menu` (
 --
 
 CREATE TABLE `au_token` (
-  `token` varchar(512) NOT NULL,
-  `idLogin` varchar(512) NOT NULL,
+  `token` varchar(128) NOT NULL,
+  `idLogin` varchar(128) NOT NULL,
   `idUtente` int(10) NOT NULL,
   `dataGenerazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataInizioValidita` datetime DEFAULT NULL,
   `dataFineValidita` datetime DEFAULT NULL,
-  `indirizzoIp` varchar(512) NOT NULL,
-  `userAgent` varchar(512) NOT NULL,
+  `indirizzoIp` varchar(128) NOT NULL,
+  `userAgent` varchar(128) NOT NULL,
   `dataUltimoUtilizzo` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -256,15 +300,15 @@ CREATE TABLE `au_token` (
 --
 
 CREATE TABLE `au_two_fact` (
-  `idTwoFact` varchar(512) NOT NULL,
-  `idLogin` varchar(512) NOT NULL,
-  `idRecPsw` varchar(512) NOT NULL,
+  `idTwoFact` varchar(128) NOT NULL,
+  `idLogin` varchar(128) NOT NULL,
+  `idRecPsw` varchar(128) NOT NULL,
   `codice` varchar(32) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataUtilizzo` datetime DEFAULT NULL,
   `tentativi` int(11) NOT NULL,
-  `indirizzoIp` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `indirizzoIp` varchar(128) NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -275,7 +319,7 @@ CREATE TABLE `au_two_fact` (
 CREATE TABLE `au_t_metodi_login` (
   `idTipoMetodoLogin` varchar(32) NOT NULL,
   `descrizione` varchar(1024) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -286,7 +330,7 @@ CREATE TABLE `au_t_metodi_login` (
 CREATE TABLE `au_t_metodi_rec_psw` (
   `idTipoMetodoRecPsw` varchar(32) NOT NULL,
   `descrizione` varchar(1024) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -300,7 +344,7 @@ CREATE TABLE `au_t_notifiche` (
   `testo` varchar(1024) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataEliminazione` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -311,7 +355,7 @@ CREATE TABLE `au_t_notifiche` (
 CREATE TABLE `au_t_ruoli` (
   `idTipoRuolo` varchar(32) NOT NULL,
   `descrizione` varchar(1024) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -323,14 +367,14 @@ CREATE TABLE `au_utenti` (
   `idUtente` int(10) NOT NULL,
   `nome` varchar(1024) NOT NULL,
   `cognome` varchar(1024) NOT NULL,
-  `email` varchar(1024) NOT NULL,
+  `email` varchar(128) NOT NULL,
   `password` varchar(1024) NOT NULL,
   `dataCreazione` datetime NOT NULL DEFAULT current_timestamp(),
   `dataUltimaModifica` datetime DEFAULT NULL,
   `dataEliminazione` datetime DEFAULT NULL,
   `dataBlocco` datetime DEFAULT NULL,
   `tentativiCodiciBackup` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 -- --------------------------------------------------------
 
@@ -348,7 +392,7 @@ CREATE TABLE `au_voci_menu` (
   `visibile` tinyint(4) NOT NULL,
   `dataCreazione` datetime NOT NULL,
   `dataEliminazione` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ;
 
 --
 -- Indici per le tabelle scaricate
@@ -390,11 +434,17 @@ ALTER TABLE `au_login`
   ADD KEY `idUtente_2` (`idUtente`,`idTipoLogin`);
 
 --
--- Indici per le tabelle `au_log_chiamate`
+-- Indici per le tabelle `au_lau_chiamate`
 --
-ALTER TABLE `au_log_chiamate`
+ALTER TABLE `au_lau_chiamate`
   ADD PRIMARY KEY (`idLogChiamata`),
   ADD KEY `indirizzoIp` (`indirizzoIp`,`token`);
+
+--
+-- Indici per le tabelle `au_lau_telegram`
+--
+ALTER TABLE `au_lau_telegram`
+  ADD PRIMARY KEY (`idLogTelegram`);
 
 --
 -- Indici per le tabelle `au_metodi_login`
@@ -416,6 +466,12 @@ ALTER TABLE `au_metodi_rec_psw`
 ALTER TABLE `au_notifiche`
   ADD PRIMARY KEY (`idNotifica`,`idUtente`),
   ADD KEY `idNotifica` (`idNotifica`,`idUtente`);
+
+--
+-- Indici per le tabelle `au_notifiche_telegram`
+--
+ALTER TABLE `au_notifiche_telegram`
+  ADD PRIMARY KEY (`idNotificaTelegram`);
 
 --
 -- Indici per le tabelle `au_qr_code`
@@ -456,8 +512,14 @@ ALTER TABLE `au_ruoli_utenti`
 -- Indici per le tabelle `au_ruoli_voci_menu`
 --
 ALTER TABLE `au_ruoli_voci_menu`
-  ADD PRIMARY KEY (`idTipoRuolo`,`idVoceMenu`),
+  ADD PRIMARY KEY (`idTipoRuolo`,`idVoceMenu`)
   ADD KEY `idTipoRuolo` (`idTipoRuolo`,`idVoceMenu`);
+
+--
+-- Indici per le tabelle `au_telegram`
+--
+ALTER TABLE `au_telegram`
+  ADD PRIMARY KEY (`idTelegram`);
 
 --
 -- Indici per le tabelle `au_token`
@@ -524,10 +586,22 @@ ALTER TABLE `au_log`
   MODIFY `idLog` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT per la tabella `au_log_chiamate`
+-- AUTO_INCREMENT per la tabella `au_lau_chiamate`
 --
-ALTER TABLE `au_log_chiamate`
+ALTER TABLE `au_lau_chiamate`
   MODIFY `idLogChiamata` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `au_lau_telegram`
+--
+ALTER TABLE `au_lau_telegram`
+  MODIFY `idLogTelegram` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `au_notifiche_telegram`
+--
+ALTER TABLE `au_notifiche_telegram`
+  MODIFY `idNotificaTelegram` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT per la tabella `au_t_notifiche`

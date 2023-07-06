@@ -251,26 +251,7 @@ if (!function_exists('aggiornoLoginConToken')) {
     }
 }
 
-if (!function_exists('autorizzaAccessoTelegram')) {
-    function autorizzaAccessoTelegram($idTelegram, $idTwoFact)
-    {
 
-        $idUtenteDaTelegram = getIdUtenteByTelegram($idTelegram);
-        $idUtenteTwoFact = getIdUtenteByIdLogin($idTwoFact);
-
-        echo $idUtenteDaTelegram != $idUtenteTwoFact;
-
-        if ($idUtenteDaTelegram != $idUtenteTwoFact) {
-            throw new AccessoNonAutorizzatoLoginException();
-        }
-
-        $login = getIdLoginByIdTwoFact($idTwoFact);
-        aggiornoDataUtilizzoCodiceSecondoFattore($idTwoFact);
-        invalidoTokenPrecedenti($idUtenteDaTelegram);
-        $token = registraTokenQrCode($login["idLogin"], $idUtenteDaTelegram, $login["userAgent"], $login["indirizzoIp"]);
-        aggiornoLoginConToken($login["idLogin"], $token);
-    }
-}
 
 
 if (!function_exists('inviaNotificaTelegram')) {
@@ -306,7 +287,7 @@ if (!function_exists('inviaNotificaAccessoTelegram')) {
                 [
                     [
                         "text" => "Approva richiesta",
-                        "callback_data" => "{$idLogin}"
+                        "callback_data" => "AUTORIZZA-{$idLogin}"
                     ]
                 ]
             ]
