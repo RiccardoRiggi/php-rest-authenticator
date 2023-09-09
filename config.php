@@ -35,6 +35,18 @@ if (!defined("ABILITA_VERIFICA_TOKEN"))
     define("ABILITA_VERIFICA_TOKEN", true);
 
 /*
+Questa variabile di configurazione abilita il controllo dello stesso indirizzo ip con il quale è stato generato il token    
+*/
+if (!defined("ABILITA_VERIFICA_STESSO_INDIRIZZO_IP"))
+    define("ABILITA_VERIFICA_STESSO_INDIRIZZO_IP", true);
+
+/*
+Questa variabile di configurazione abilita il controllo dello stesso User Agent con il quale è stato generato il token    
+*/
+if (!defined("ABILITA_VERIFICA_STESSO_USER_AGENT"))
+    define("ABILITA_VERIFICA_STESSO_USER_AGENT", true);
+
+/*
 Questa variabile serve per abilitare i cors se FE e BE si trovano su host differenti
 */
 if (!defined("ABILITA_CORS"))

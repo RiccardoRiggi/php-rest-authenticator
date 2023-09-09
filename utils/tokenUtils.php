@@ -30,10 +30,28 @@ if (!function_exists('getIdUtenteDaToken')) {
         $indirizzoIp = cifraStringa(getIndirizzoIp());
 
         $conn = apriConnessione();
-        $stmt = $conn->prepare("SELECT idUtente FROM " . PREFISSO_TAVOLA . "_token WHERE token = :token AND dataFineValidita IS NULL and indirizzoIp = :indirizzoIp AND userAgent = :userAgent ");
+
+        $sql = "SELECT idUtente FROM " . PREFISSO_TAVOLA . "_token WHERE token = :token AND dataFineValidita IS NULL ";
+
+        if (ABILITA_VERIFICA_STESSO_INDIRIZZO_IP) {
+            $sql = $sql . " AND indirizzoIp = :indirizzoIp ";
+        }
+
+        if (ABILITA_VERIFICA_STESSO_USER_AGENT) {
+            $sql = $sql . " AND userAgent = :userAgent ";
+        }
+
+        $stmt = $conn->prepare($sql);
         $stmt->bindParam(':token', $token);
-        $stmt->bindParam(':indirizzoIp', $indirizzoIp);
-        $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
+
+        if (ABILITA_VERIFICA_STESSO_INDIRIZZO_IP) {
+            $stmt->bindParam(':indirizzoIp', $indirizzoIp);
+        }
+
+        if (ABILITA_VERIFICA_STESSO_USER_AGENT) {
+            $stmt->bindParam(':userAgent', $_SERVER["HTTP_USER_AGENT"]);
+        }
+
         $stmt->execute();
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
