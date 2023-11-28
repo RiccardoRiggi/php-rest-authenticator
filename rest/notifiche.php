@@ -2,10 +2,11 @@
 
 include './importManager.php';
 include '../services/notificheService.php';
+include '../services/webHookTelegramService.php';
 
 
 try {
-   
+
     if (ABILITA_CORS) {
         header('Access-Control-Allow-Origin: *');
         header('Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS');
@@ -114,7 +115,7 @@ try {
             throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
 
 
-        $response = inviaNotificaTutti($_GET["idNotifica"]);
+        $response = inviaNotificaTutti($_GET["idNotifica"], isset($_GET["invioViaTelegram"]));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inviaNotificaRuolo") {
@@ -129,7 +130,7 @@ try {
             throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
 
 
-        $response = inviaNotificaRuolo($_GET["idNotifica"], $_GET["idTipoRuolo"]);
+        $response = inviaNotificaRuolo($_GET["idNotifica"], $_GET["idTipoRuolo"], isset($_GET["invioViaTelegram"]));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inviaNotificaUtente") {
@@ -144,7 +145,7 @@ try {
             throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
 
 
-        $response = inviaNotificaUtente($_GET["idNotifica"], $_GET["idUtente"]);
+        $response = inviaNotificaUtente($_GET["idNotifica"], $_GET["idUtente"], isset($_GET["invioViaTelegram"]));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNotificaLatoUtente") {

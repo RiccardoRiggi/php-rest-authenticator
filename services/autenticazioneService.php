@@ -159,10 +159,7 @@ if (!function_exists('effettuaAutenticazione')) {
                 inviaNotificaTelegram($idTelegram,"Ciao ".$nome.", usa il codice <b>".$codice."</b> per completare l'autenticazione");
             }
 
-            if ($tipoAutenticazione == "EMAIL_SI_NO_TELEGRAM") {
-                $idTelegram = getIdTelegramByIdUtente($idUtente);
-                inviaNotificaAccessoTelegram($idTelegram,"Ciao ".$nome.", hai ricevuto una nuova richiesta di autenticazione!",$idLogin);
-            }
+            
 
             $descrizione = getIstruzioniSecondoFattore($idTipoLogin);
 
@@ -190,7 +187,6 @@ if (!function_exists('effettuaAutenticazione')) {
             $codice = inserisciCodiceSecondoFattore($idLogin);
 
             if ($tipoAutenticazione == "EMAIL_PSW_SIX_EMAIL") {
-                //TODO SCOMMENTARE PER ABILITARE
                 inviaCodiceSecondoFattoreViaEmail($email, $codice, $nome, $cognome);
             }
 
@@ -199,10 +195,7 @@ if (!function_exists('effettuaAutenticazione')) {
                 inviaNotificaTelegram($idTelegram,"Ciao ".$nome.", usa il codice <b>".$codice."</b> per completare l'autenticazione");
             }
 
-            if ($tipoAutenticazione == "EMAIL_SI_NO_TELEGRAM") {
-                $idTelegram = getIdTelegramByIdUtente($idUtente);
-                inviaNotificaAccessoTelegram($idTelegram,"Ciao ".$nome.", hai ricevuto una nuova richiesta di autenticazione!",$idLogin);
-            }
+        
 
             $descrizione = getIstruzioniSecondoFattore($tipoAutenticazione);
 

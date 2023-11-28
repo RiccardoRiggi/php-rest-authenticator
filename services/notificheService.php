@@ -19,7 +19,7 @@ if (!function_exists('getListaNotifiche')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
-        return $result;
+        return restituisciOggettoFiltrato($result, array("idNotifica", "titolo", "testo", "dataCreazione"));
     }
 }
 
@@ -129,10 +129,18 @@ Funzione: inviaNotificaUtente
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 if (!function_exists('inviaNotificaUtente')) {
-    function inviaNotificaUtente($idNotifica, $idUtente)
+    function inviaNotificaUtente($idNotifica, $idUtente, $invioViaTelegram)
     {
 
         verificaValiditaToken();
+
+        if ($invioViaTelegram) {
+            $notifica = getNotifica($idNotifica);
+            $titolo = $notifica["titolo"];
+            $testo = $notifica["testo"];
+            $idTelegram = getIdTelegramByIdUtente($idUtente);
+            inviaNotificaTelegram($idTelegram, $titolo . " - " . $testo);
+        }
 
         $sql = "INSERT INTO " . PREFISSO_TAVOLA . "_notifiche (idNotifica, idUtente) VALUES (:idNotifica, :idUtente )";
         $conn = apriConnessione();
@@ -149,7 +157,7 @@ Funzione: inviaNotificaRuolo
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 if (!function_exists('inviaNotificaRuolo')) {
-    function inviaNotificaRuolo($idNotifica, $idTipoRuolo)
+    function inviaNotificaRuolo($idNotifica, $idTipoRuolo, $invioViaTelegram)
     {
 
         verificaValiditaToken();
@@ -163,9 +171,10 @@ if (!function_exists('inviaNotificaRuolo')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
+
         foreach ($result as $value) {
             try {
-                inviaNotificaUtente($idNotifica, $value["idUtente"]);
+                inviaNotificaUtente($idNotifica, $value["idUtente"], $invioViaTelegram);
             } catch (Exception $e) {
                 generaLogSuFile("Errore durante l'invio delle notifiche: " . $e->getMessage());
             }
@@ -178,7 +187,7 @@ Funzione: inviaNotificaTutti
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 if (!function_exists('inviaNotificaTutti')) {
-    function inviaNotificaTutti($idNotifica)
+    function inviaNotificaTutti($idNotifica, $invioViaTelegram)
     {
 
         verificaValiditaToken();
@@ -189,9 +198,10 @@ if (!function_exists('inviaNotificaTutti')) {
         $stmt->execute();
         $result = $stmt->fetchAll();
         chiudiConnessione($conn);
+
         foreach ($result as $value) {
             try {
-                inviaNotificaUtente($idNotifica, $value["idUtente"]);
+                inviaNotificaUtente($idNotifica, $value["idUtente"], $invioViaTelegram);
             } catch (Exception $e) {
                 generaLogSuFile("Errore durante l'invio delle notifiche: " . $e->getMessage());
             }

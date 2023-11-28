@@ -1,5 +1,11 @@
 <?php
 
+/*
+Abilita modalità per eseguire l'import delle configurazioni di default del db
+*/
+if (!defined("ABILITA_MODALITA_IMPORT_DB"))
+    define("ABILITA_MODALITA_IMPORT_DB", true);
+
 //Informazioni per collegare il db
 if (!defined("HOST_DATABASE"))
     define("HOST_DATABASE", "localhost");
@@ -32,19 +38,19 @@ Questa variabile di configurazione abilita la verifica del token e degli eventua
 Non impostarlo a false per nessun motivo se stai utilizzando il software su rete pubblica
 */
 if (!defined("ABILITA_VERIFICA_TOKEN"))
-    define("ABILITA_VERIFICA_TOKEN", true);
+    define("ABILITA_VERIFICA_TOKEN", false);
 
 /*
 Questa variabile di configurazione abilita il controllo dello stesso indirizzo ip con il quale è stato generato il token    
 */
 if (!defined("ABILITA_VERIFICA_STESSO_INDIRIZZO_IP"))
-    define("ABILITA_VERIFICA_STESSO_INDIRIZZO_IP", true);
+    define("ABILITA_VERIFICA_STESSO_INDIRIZZO_IP", false);
 
 /*
 Questa variabile di configurazione abilita il controllo dello stesso User Agent con il quale è stato generato il token    
 */
 if (!defined("ABILITA_VERIFICA_STESSO_USER_AGENT"))
-    define("ABILITA_VERIFICA_STESSO_USER_AGENT", true);
+    define("ABILITA_VERIFICA_STESSO_USER_AGENT", false);
 
 /*
 Questa variabile serve per abilitare i cors se FE e BE si trovano su host differenti
@@ -62,7 +68,7 @@ if (!defined("ABILITA_INVIO_EMAIL"))
 Questa variabile serve per abilitare anche il log su file
 */
 if (!defined("ABILITA_LOG_FILE"))
-    define("ABILITA_LOG_FILE", false);
+    define("ABILITA_LOG_FILE", true);
 
 //Informazioni per la cifratura, da non cambiare dopo l'installazione
 if (!defined("CIPHERING_VALUE"))

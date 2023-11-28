@@ -1,4 +1,3 @@
-
 INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('AMM_ASSOCIA_RUOLO_RISORSA', 'associaRuoloRisorsa', 'Descrizione', '2000-06-12 00:00:00', NULL);
 INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('AMM_ASSOCIA_RUOLO_UTENTE', 'associaRuoloUtente', 'Associa un ruolo ad un utente', '2000-06-12 00:00:00', NULL);
 INSERT INTO `au_risorse` (`idRisorsa`, `nomeMetodo`, `descrizione`, `dataCreazione`, `dataEliminazione`) VALUES('AMM_ASSOCIA_RUOLO_VOCE_MENU', 'associaRuoloVoceMenu', 'Descrizione', '2000-06-12 00:00:00', NULL);

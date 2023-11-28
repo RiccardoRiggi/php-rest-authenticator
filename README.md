@@ -10,6 +10,10 @@ Questo repository contiene la componente di backend di Otter Guardian sviluppata
 
 All'interno della cartella configurazioneDatabase è presente il file php-rest-authenticator.sql che contiene la struttura del database. 
 
+## Importazione delle configurazioni
+
+Per semplificare le procedure di importazione è stato creato uno script php importDb.php e un file import.sql. Aprendo la pagina via browser dopo aver abilitato l'opportuna variabile di configurazione sarà possibile eseguire l'import di tutto con un click. Bisogna ricordarsi di cancellare il file e lo script dopo aver completato l'operazione
+
 ## API Rest
 
 Il progetto è suddiviso in macro aree / moduli. Per ogni modulo è presente un file che contiene tutti i servizi esposti. Per richiamare ciascun metodo è necessario invocare il servizio utilizzando la seguente struttura:

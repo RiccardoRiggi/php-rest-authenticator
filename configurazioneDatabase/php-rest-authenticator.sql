@@ -96,10 +96,10 @@ CREATE TABLE `au_login` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_lau_chiamate`
+-- Struttura della tabella `au_log_chiamate`
 --
 
-CREATE TABLE `au_lau_chiamate` (
+CREATE TABLE `au_log_chiamate` (
   `idLogChiamata` int(10) NOT NULL,
   `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
   `endpoint` varchar(1024) NOT NULL,
@@ -111,10 +111,10 @@ CREATE TABLE `au_lau_chiamate` (
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `au_lau_telegram`
+-- Struttura della tabella `au_log_telegram`
 --
 
-CREATE TABLE `au_lau_telegram` (
+CREATE TABLE `au_log_telegram` (
   `idLogTelegram` int(10) NOT NULL,
   `idTelegram` varchar(128) NOT NULL,
   `dataEvento` datetime NOT NULL DEFAULT current_timestamp(),
@@ -434,16 +434,16 @@ ALTER TABLE `au_login`
   ADD KEY `idUtente_2` (`idUtente`,`idTipoLogin`);
 
 --
--- Indici per le tabelle `au_lau_chiamate`
+-- Indici per le tabelle `au_log_chiamate`
 --
-ALTER TABLE `au_lau_chiamate`
+ALTER TABLE `au_log_chiamate`
   ADD PRIMARY KEY (`idLogChiamata`),
   ADD KEY `indirizzoIp` (`indirizzoIp`,`token`);
 
 --
--- Indici per le tabelle `au_lau_telegram`
+-- Indici per le tabelle `au_log_telegram`
 --
-ALTER TABLE `au_lau_telegram`
+ALTER TABLE `au_log_telegram`
   ADD PRIMARY KEY (`idLogTelegram`);
 
 --
@@ -586,15 +586,15 @@ ALTER TABLE `au_log`
   MODIFY `idLog` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT per la tabella `au_lau_chiamate`
+-- AUTO_INCREMENT per la tabella `au_log_chiamate`
 --
-ALTER TABLE `au_lau_chiamate`
+ALTER TABLE `au_log_chiamate`
   MODIFY `idLogChiamata` int(10) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT per la tabella `au_lau_telegram`
+-- AUTO_INCREMENT per la tabella `au_log_telegram`
 --
-ALTER TABLE `au_lau_telegram`
+ALTER TABLE `au_log_telegram`
   MODIFY `idLogTelegram` int(10) NOT NULL AUTO_INCREMENT;
 
 --

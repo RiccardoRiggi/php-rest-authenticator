@@ -279,24 +279,20 @@ if (!function_exists('inserisciLogNotificaTelegram')) {
     }
 }
 
-if (!function_exists('inviaNotificaAccessoTelegram')) {
-    function inviaNotificaAccessoTelegram($idTelegram, $testo, $idLogin)
+if (!function_exists('getIdTelegramByIdUtente')) {
+    function getIdTelegramByIdUtente($idUtente)
     {
-        $keyboard = json_encode([
-            "inline_keyboard" => [
-                [
-                    [
-                        "text" => "Approva richiesta",
-                        "callback_data" => "AUTORIZZA-{$idLogin}"
-                    ]
-                ]
-            ]
-        ]);
-        $url = "https://api.telegram.org/bot" . TOKEN_TELEGRAM . "/sendMessage?chat_id=" . $idTelegram . "&parse_mode=HTML&text=" . urlencode($testo) . "&reply_markup=" . $keyboard;
-        generaLogSuBaseDati("DEBUG", $keyboard);
+        $conn = apriConnessione();
+        $stmt = $conn->prepare("SELECT idTelegram FROM " . PREFISSO_TAVOLA . "_telegram WHERE idUtente = :idUtente AND dataDisabilitazione IS NULL AND dataAbilitazione IS NOT NULL AND dataBlocco IS NULL");
+        $stmt->bindParam(':idUtente', $idUtente);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        chiudiConnessione($conn);
 
-        @file_get_contents($url);
+        if (count($result) != 1) {
+            throw new AccessoNonAutorizzatoLoginException();
+        }
 
-        inserisciLogNotificaTelegram($idTelegram,$url);
+        return $result[0]["idTelegram"];
     }
 }
