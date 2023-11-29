@@ -19,74 +19,56 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getListaNotifiche") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
-
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
-
+        verificaMetodoHttp("GET");
+        verificaParametroGet("pagina");
 
         $response = getListaNotifiche($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inserisciNotifica") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
+        verificaParametroJsonBody("titolo");
+        verificaParametroJsonBody("testo");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
 
-        if (!isset($jsonBody["titolo"]))
-            throw new OtterGuardianException(400, "Il campo titolo è richiesto");
 
-        if (!isset($jsonBody["testo"]))
-            throw new OtterGuardianException(400, "Il campo testo è richiesto");
-
-        inserisciNotifica($jsonBody["titolo"], $jsonBody["testo"]);
+        inserisciNotifica(getParametroJsonBody("titolo"), getParametroJsonBody("testo"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "modificaNotifica") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
-
-        if (!isset($jsonBody["titolo"]))
-            throw new OtterGuardianException(400, "Il campo titolo è richiesto");
-
-        if (!isset($jsonBody["testo"]))
-            throw new OtterGuardianException(400, "Il campo testo è richiesto");
 
 
-        $response = modificaNotifica($jsonBody["titolo"], $jsonBody["testo"], $_GET["idNotifica"]);
+        verificaParametroJsonBody("titolo");
+        verificaParametroJsonBody("testo");
+
+
+
+        $response = modificaNotifica(getParametroJsonBody("titolo"), getParametroJsonBody("testo"), $_GET["idNotifica"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaNotifica") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "DELETE")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("DELETE");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
         eliminaNotifica($_GET["idNotifica"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getNotifica") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
 
         $response = getNotifica($_GET["idNotifica"]);
@@ -94,25 +76,20 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getDestinatariNotifica") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
         $response = getDestinatariNotifica($_GET["pagina"], $_GET["idNotifica"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inviaNotificaTutti") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
 
         $response = inviaNotificaTutti($_GET["idNotifica"], isset($_GET["invioViaTelegram"]));
@@ -120,14 +97,11 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inviaNotificaRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
 
         $response = inviaNotificaRuolo($_GET["idNotifica"], $_GET["idTipoRuolo"], isset($_GET["invioViaTelegram"]));
@@ -135,14 +109,11 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inviaNotificaUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
 
         $response = inviaNotificaUtente($_GET["idNotifica"], $_GET["idUtente"], isset($_GET["invioViaTelegram"]));
@@ -150,11 +121,9 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNotificaLatoUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
 
         $response = getNotificaLatoUtente($_GET["idNotifica"]);
@@ -162,11 +131,9 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNotificheLatoUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getNotificheLatoUtente($_GET["pagina"]);
@@ -174,18 +141,15 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "eliminaNotificaLatoUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "DELETE")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("DELETE");
 
-        if (!isset($_GET["idNotifica"]))
-            throw new OtterGuardianException(400, "Il campo idNotifica è richiesto");
+        verificaParametroGet("idNotifica");
 
         eliminaNotificaLatoUtente($_GET["idNotifica"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "leggiNotificheLatoUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
         leggiNotificheLatoUtente();
         http_response_code(200);

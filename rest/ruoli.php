@@ -18,17 +18,14 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getRuoli") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getRuoli($_GET["pagina"]);
@@ -36,40 +33,34 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inserisciRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroJsonBody("idTipoRuolo");
 
-        if (!isset($jsonBody["descrizione"]))
-            throw new OtterGuardianException(400, "Il campo descrizione è richiesto");
+        verificaParametroJsonBody("descrizione");
 
-        if (str_starts_with($jsonBody["idTipoRuolo"], "AMM")) {
+        if (str_starts_with(getParametroJsonBody("idTipoRuolo"), "AMM")) {
             throw new OtterGuardianException(400, "Non puoi inserire il ruolo AMM");
         }
 
-        if (str_starts_with($jsonBody["idTipoRuolo"], "USER")) {
+        if (str_starts_with(getParametroJsonBody("idTipoRuolo"), "USER")) {
             throw new OtterGuardianException(400, "Non puoi inserire il ruolo USER");
         }
 
-        inserisciRuolo($jsonBody["idTipoRuolo"], $jsonBody["descrizione"]);
+        inserisciRuolo(getParametroJsonBody("idTipoRuolo"), getParametroJsonBody("descrizione"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "modificaRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["descrizione"]))
-            throw new OtterGuardianException(400, "Il campo descrizione è richiesto");
+        verificaParametroJsonBody("descrizione");
 
 
 
@@ -82,15 +73,13 @@ try {
         }
 
 
-        $response = modificaRuolo($jsonBody["descrizione"], $_GET["idTipoRuolo"]);
+        $response = modificaRuolo(getParametroJsonBody("descrizione"), $_GET["idTipoRuolo"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "DELETE")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("DELETE");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
         if (str_starts_with($_GET["idTipoRuolo"], "AMM")) {
             throw new OtterGuardianException(400, "Non puoi eliminare il ruolo AMM");
@@ -104,11 +93,9 @@ try {
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
 
         $response = getRuolo($_GET["idTipoRuolo"]);
@@ -116,42 +103,33 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "associaRuoloUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
 
         associaRuoloUtente($_GET["idTipoRuolo"], $_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "dissociaRuoloUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
 
         dissociaRuoloUtente($_GET["idTipoRuolo"], $_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getUtentiPerRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getUtentiPerRuolo($_GET["idTipoRuolo"], $_GET["pagina"]);
@@ -159,42 +137,33 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "associaRuoloRisorsa") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["idRisorsa"]))
-            throw new OtterGuardianException(400, "Il campo idRisorsa è richiesto");
+        verificaParametroGet("idRisorsa");
 
 
         associaRuoloRisorsa($_GET["idTipoRuolo"], $_GET["idRisorsa"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "dissociaRuoloRisorsa") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["idRisorsa"]))
-            throw new OtterGuardianException(400, "Il campo idRisorsa è richiesto");
+        verificaParametroGet("idRisorsa");
 
 
         dissociaRuoloRisorsa($_GET["idTipoRuolo"], $_GET["idRisorsa"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getRisorsePerRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getRisorsePerRuolo($_GET["idTipoRuolo"], $_GET["pagina"]);
@@ -202,42 +171,33 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "associaRuoloVoceMenu") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["idVoceMenu"]))
-            throw new OtterGuardianException(400, "Il campo idVoceMenu è richiesto");
+        verificaParametroGet("idVoceMenu");
 
 
         associaRuoloVoceMenu($_GET["idTipoRuolo"], $_GET["idVoceMenu"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "dissociaRuoloVoceMenu") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["idVoceMenu"]))
-            throw new OtterGuardianException(400, "Il campo idVoceMenu è richiesto");
+        verificaParametroGet("idVoceMenu");
 
 
         dissociaRuoloVoceMenu($_GET["idTipoRuolo"], $_GET["idVoceMenu"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getVociMenuPerRuolo") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idTipoRuolo"]))
-            throw new OtterGuardianException(400, "Il campo idTipoRuolo è richiesto");
+        verificaParametroGet("idTipoRuolo");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getVociMenuPerRuolo($_GET["idTipoRuolo"], $_GET["pagina"]);

@@ -6,6 +6,7 @@ include '../utils/httpResponseCodeUtils.php';
 include '../utils/logUtils.php';
 include '../utils/indirizzoIpUtils.php';
 
+include '../utils/validatorsUtils.php';
 include '../utils/tokenUtils.php';
 include '../database/database.php';
 

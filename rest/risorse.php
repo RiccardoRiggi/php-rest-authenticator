@@ -18,17 +18,14 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getRisorse") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getRisorse($_GET["pagina"]);
@@ -36,47 +33,39 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inserisciRisorsa") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idRisorsa"]))
-            throw new OtterGuardianException(400, "Il campo idRisorsa è richiesto");
+        verificaParametroJsonBody("idRisorsa");
 
-        if (!isset($jsonBody["descrizione"]))
-            throw new OtterGuardianException(400, "Il campo descrizione è richiesto");
+        verificaParametroJsonBody("descrizione");
 
-        if (!isset($jsonBody["nomeMetodo"]))
-            throw new OtterGuardianException(400, "Il campo nomeMetodo è richiesto");
+        verificaParametroJsonBody("nomeMetodo");
 
-        if (str_starts_with($jsonBody["idRisorsa"], "AMM_")) {
+        if (str_starts_with(getParametroJsonBody("idRisorsa"), "AMM_")) {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la creazione di nuove risorse");
         }
 
-        if (str_starts_with($jsonBody["idRisorsa"], "USER_")) {
+        if (str_starts_with(getParametroJsonBody("idRisorsa"), "USER_")) {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la creazione di nuove risorse");
         }
 
 
-        inserisciRisorsa($jsonBody["idRisorsa"], $jsonBody["nomeMetodo"], $jsonBody["descrizione"]);
+        inserisciRisorsa(getParametroJsonBody("idRisorsa"), getParametroJsonBody("nomeMetodo"), getParametroJsonBody("descrizione"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "modificaRisorsa") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idRisorsa"]))
-            throw new OtterGuardianException(400, "Il campo idRisorsa è richiesto");
+        verificaParametroGet("idRisorsa");
 
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["descrizione"]))
-            throw new OtterGuardianException(400, "Il campo descrizione è richiesto");
+        verificaParametroJsonBody("descrizione");
 
-        if (!isset($jsonBody["nomeMetodo"]))
-            throw new OtterGuardianException(400, "Il campo nomeMetodo è richiesto");
+        verificaParametroJsonBody("nomeMetodo");
 
         if (str_starts_with($_GET["idRisorsa"], "AMM_")) {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la modifica di una risorsa");
@@ -87,15 +76,13 @@ try {
         }
 
 
-        $response = modificaRisorsa($jsonBody["nomeMetodo"], $jsonBody["descrizione"], $_GET["idRisorsa"]);
+        $response = modificaRisorsa(getParametroJsonBody("nomeMetodo"), getParametroJsonBody("descrizione"), $_GET["idRisorsa"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaRisorsa") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "DELETE")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("DELETE");
 
-        if (!isset($_GET["idRisorsa"]))
-            throw new OtterGuardianException(400, "Il campo idRisorsa è richiesto");
+        verificaParametroGet("idRisorsa");
 
         if (str_starts_with($_GET["idRisorsa"], "AMM_")) {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per l'eliminazione di una risorsa");
@@ -110,11 +97,9 @@ try {
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getRisorsa") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idRisorsa"]))
-            throw new OtterGuardianException(400, "Il campo idRisorsa è richiesto");
+        verificaParametroGet("idRisorsa");
 
 
         $response = getRisorsa($_GET["idRisorsa"]);

@@ -18,17 +18,14 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getListaAccessi") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getListaAccessi($_GET["pagina"]);
@@ -36,15 +33,13 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "terminaAccesso") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["token"]))
-            throw new OtterGuardianException(400, "Il campo token è richiesto");
+        verificaParametroJsonBody("token");
 
-        $response = terminaAccesso($jsonBody["token"]);
+        $response = terminaAccesso(getParametroJsonBody("token"));
         http_response_code(200);
     } else {
         throw new OtterGuardianException(500, "Metodo non implementato");

@@ -19,188 +19,156 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "generaIdentificativoDispositivoFisico") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
         $response = generaIdentificativoDispositivoFisico();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "generaIdentificativoTelegram") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
         $response = generaIdentificativoTelegram();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "isDispositivoAbilitato") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroGet("idDispositivoFisico");
 
         $response = isDispositivoAbilitato($_GET["idDispositivoFisico"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "isDispositivoTelegramAbilitato") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroGet("idDispositivoFisico");
 
         $response = isDispositivoTelegramAbilitato($_GET["idDispositivoFisico"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "abilitaDispositivoFisico") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroJsonBody("idDispositivoFisico");
 
-        if (!isset($jsonBody["nomeDispositivo"]))
-            throw new OtterGuardianException(400, "Il campo nomeDispositivo è richiesto");
+        verificaParametroJsonBody("nomeDispositivo");
 
-        $response = abilitaDispositivoFisico($jsonBody["idDispositivoFisico"], $jsonBody["nomeDispositivo"]);
+        $response = abilitaDispositivoFisico(getParametroJsonBody("idDispositivoFisico"), getParametroJsonBody("nomeDispositivo"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "disabilitaDispositivoFisico") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroJsonBody("idDispositivoFisico");
 
-        $response = disabilitaDispositivoFisico($jsonBody["idDispositivoFisico"]);
+        $response = disabilitaDispositivoFisico(getParametroJsonBody("idDispositivoFisico"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getDispositiviFisici") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
         $response = getDispositiviFisici($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getDispositiviFisiciTelegram") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
         $response = getDispositiviFisiciTelegram($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getRichiesteDiAccessoPendenti") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroJsonBody("idDispositivoFisico");
 
-        $response = getRichiesteDiAccessoPendenti($jsonBody["idDispositivoFisico"]);
+        $response = getRichiesteDiAccessoPendenti(getParametroJsonBody("idDispositivoFisico"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "autorizzaAccesso") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroJsonBody("idDispositivoFisico");
 
-        if (!isset($jsonBody["idTwoFact"]))
-            throw new OtterGuardianException(400, "Il campo idTwoFact è richiesto");
+        verificaParametroJsonBody("idTwoFact");
 
-        autorizzaAccesso($jsonBody["idDispositivoFisico"], $jsonBody["idTwoFact"]);
+        autorizzaAccesso(getParametroJsonBody("idDispositivoFisico"), getParametroJsonBody("idTwoFact"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "autorizzaQrCode") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroJsonBody("idDispositivoFisico");
 
-        if (!isset($jsonBody["idQrCode"]))
-            throw new OtterGuardianException(400, "Il campo idQrCode è richiesto");
+        verificaParametroJsonBody("idQrCode");
 
-        autorizzaQrCode($jsonBody["idDispositivoFisico"], $jsonBody["idQrCode"]);
+        autorizzaQrCode(getParametroJsonBody("idDispositivoFisico"), getParametroJsonBody("idQrCode"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getListaDispositiviFisici") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
         $response = getListaDispositiviFisici($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getListaDispositiviFisiciTelegram") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
         $response = getListaDispositiviFisiciTelegram($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "rimuoviDispositivoFisico") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroJsonBody("idDispositivoFisico");
 
-        $response = rimuoviDispositivoFisico($jsonBody["idDispositivoFisico"]);
+        $response = rimuoviDispositivoFisico(getParametroJsonBody("idDispositivoFisico"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "rimuoviDispositivoFisicoTelegram") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idDispositivoFisico"]))
-            throw new OtterGuardianException(400, "Il campo idDispositivoFisico è richiesto");
+        verificaParametroJsonBody("idDispositivoFisico");
 
-        $response = rimuoviDispositivoFisicoTelegram($jsonBody["idDispositivoFisico"]);
+        $response = rimuoviDispositivoFisicoTelegram(getParametroJsonBody("idDispositivoFisico"));
         http_response_code(200);
         exit(json_encode($response));
     } else {

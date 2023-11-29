@@ -18,17 +18,14 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getListaUtenti") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
 
         $response = getListaUtenti($_GET["pagina"]);
@@ -36,59 +33,47 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inserisciUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["nome"]))
-            throw new OtterGuardianException(400, "Il campo nome è richiesto");
+        verificaParametroJsonBody("nome");
 
-        if (!isset($jsonBody["cognome"]))
-            throw new OtterGuardianException(400, "Il campo cognome è richiesto");
+        verificaParametroJsonBody("cognome");
 
-        if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400, "Il campo email è richiesto");
+        verificaParametroJsonBody("email");
 
-        if (!isset($jsonBody["password"]))
-            throw new OtterGuardianException(400, "Il campo password è richiesto");
+        verificaParametroJsonBody("password");
 
-        if (!isset($jsonBody["confermaPassword"]))
-            throw new OtterGuardianException(400, "Il campo confermaPassword è richiesto");
+        verificaParametroJsonBody("confermaPassword");
 
-        if ($jsonBody["confermaPassword"] !== $jsonBody["password"]) {
+        if (getParametroJsonBody("confermaPassword") !== getParametroJsonBody("password")) {
             throw new OtterGuardianException(400, "Il campo password deve essere uguale al campo confermaPassword");
         }
 
-        inserisciUtente($jsonBody["nome"], $jsonBody["cognome"], $jsonBody["email"], $jsonBody["password"]);
+        inserisciUtente(getParametroJsonBody("nome"), getParametroJsonBody("cognome"), getParametroJsonBody("email"), getParametroJsonBody("password"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "modificaUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["nome"]))
-            throw new OtterGuardianException(400, "Il campo nome è richiesto");
+        verificaParametroJsonBody("nome");
 
-        if (!isset($jsonBody["cognome"]))
-            throw new OtterGuardianException(400, "Il campo cognome è richiesto");
+        verificaParametroJsonBody("cognome");
 
 
-        $response = modificaUtente($jsonBody["nome"], $jsonBody["cognome"], $_GET["idUtente"]);
+        $response = modificaUtente(getParametroJsonBody("nome"), getParametroJsonBody("cognome"), $_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "DELETE")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("DELETE");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
 
 
@@ -96,11 +81,9 @@ try {
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
 
         $response = getUtente($_GET["idUtente"]);
@@ -108,22 +91,18 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "bloccaUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
 
         bloccaUtente($_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "sbloccaUtente") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "PUT")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("PUT");
 
-        if (!isset($_GET["idUtente"]))
-            throw new OtterGuardianException(400, "Il campo idUtente è richiesto");
+        verificaParametroGet("idUtente");
 
         sbloccaUtente($_GET["idUtente"]);
         http_response_code(200);

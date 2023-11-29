@@ -20,50 +20,31 @@ try {
     }
 
     verificaIndirizzoIp();
-
-
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
-
+    verificaPresenzaNomeMetodo();
 
     if ($_GET["nomeMetodo"] == "getMedotoAutenticazionePredefinito") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
+        verificaParametroJsonBody("email");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
-
-        if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400, "Il campo email è richiesto");
-
-        $response = getMedotoAutenticazionePredefinito($jsonBody["email"]);
+        $response = getMedotoAutenticazionePredefinito(getParametroJsonBody("email"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getMetodiAutenticazioneSupportati") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
+        verificaParametroJsonBody("email");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
-
-        if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400, "Il campo email è richiesto");
-
-        $response = getMetodiAutenticazioneSupportati($jsonBody["email"]);
+        $response = getMetodiAutenticazioneSupportati(getParametroJsonBody("email"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "effettuaAutenticazione") {
 
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
-
-
+        verificaMetodoHttp("POST");
+        verificaParametroJsonBody("email");
 
         $jsonBody = json_decode(file_get_contents('php://input'), true);
-
-        if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400, "Il campo email è richiesto");
 
         if (!isset($jsonBody["password"])) {
             if (!isset($jsonBody["tipoAutenticazione"]) || str_contains($jsonBody["tipoAutenticazione"], "PSW")) {
@@ -71,46 +52,28 @@ try {
             }
         }
 
-        $response = effettuaAutenticazione($jsonBody["email"], isset($jsonBody["password"]) ? $jsonBody["password"] : null, isset($jsonBody["tipoAutenticazione"]) ? $jsonBody["tipoAutenticazione"] : null);
+        $response = effettuaAutenticazione(getParametroJsonBody("email"), isset($jsonBody["password"]) ? $jsonBody["password"] : null, isset($jsonBody["tipoAutenticazione"]) ? $jsonBody["tipoAutenticazione"] : null);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "confermaAutenticazione") {
 
+        verificaMetodoHttp("POST");
+        verificaParametroJsonBody("idLogin");
+        verificaParametroJsonBody("codice");
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
-
-
-
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
-
-        if (!isset($jsonBody["idLogin"]))
-            throw new OtterGuardianException(400, "Il campo idLogin è richiesto");
-
-        if (!isset($jsonBody["codice"]))
-            throw new OtterGuardianException(400, "Il campo codice è richiesto");
-
-
-        confermaAutenticazione($jsonBody["idLogin"], $jsonBody["codice"]);
+        confermaAutenticazione(getParametroJsonBody("idLogin"), getParametroJsonBody("codice"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "recuperaTokenDaLogin") {
 
-
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
-
-        if (!isset($_GET["idLogin"]))
-            throw new OtterGuardianException(400, "Il campo idLogin è richiesto");
-
-
+        verificaMetodoHttp("GET");
+        verificaParametroGet("idLogin");
 
         recuperaTokenDaLogin($_GET["idLogin"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "generaQrCode") {
 
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
         $response = generaQrCode();
         http_response_code(200);
@@ -119,12 +82,8 @@ try {
         exit(json_encode($oggetto));
     } else if ($_GET["nomeMetodo"] == "recuperaTokenDaQrCode") {
 
-
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
-
-        if (!isset($_GET["idQrCode"]))
-            throw new OtterGuardianException(400, "Il campo idQrCode è richiesto");
+        verificaMetodoHttp("GET");
+        verificaParametroGet("idQrCode");
 
         recuperaTokenDaQrCode($_GET["idQrCode"]);
         http_response_code(200);

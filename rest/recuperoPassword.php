@@ -21,73 +21,63 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getMetodiRecuperoPasswordSupportati") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400, "Il campo email è richiesto");
+        verificaParametroJsonBody("email");
 
-        $response = getMetodiRecuperoPasswordSupportati($jsonBody["email"]);
+        $response = getMetodiRecuperoPasswordSupportati(getParametroJsonBody("email"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "effettuaRichiestaRecuperoPassword") {
 
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
 
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["email"]))
-            throw new OtterGuardianException(400, "Il campo email è richiesto");
+        verificaParametroJsonBody("email");
+        
 
-        if (!isset($jsonBody["tipoRecuperoPassword"]))
-            throw new OtterGuardianException(400, "Il campo tipoRecuperoPassword è richiesto");
-
+        verificaParametroJsonBody("tipoRecuperoPassword");
 
 
-        $response = effettuaRichiestaRecuperoPassword($jsonBody["email"], $jsonBody["tipoRecuperoPassword"]);
+
+        $response = effettuaRichiestaRecuperoPassword(getParametroJsonBody("email"), getParametroJsonBody("tipoRecuperoPassword"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "confermaRecuperoPassword") {
 
 
-        if ($_SERVER['REQUEST_METHOD'] != "POST")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("POST");
 
 
 
-        $jsonBody = json_decode(file_get_contents('php://input'), true);
+        
 
-        if (!isset($jsonBody["idRecPsw"]))
-            throw new OtterGuardianException(400, "Il campo idRecPsw è richiesto");
+        verificaParametroJsonBody("idRecPsw");
 
-        if (!isset($jsonBody["codice"]))
-            throw new OtterGuardianException(400, "Il campo codice è richiesto");
+        verificaParametroJsonBody("codice");
 
-        if (!isset($jsonBody["nuovaPassowrd"]))
-            throw new OtterGuardianException(400, "Il campo nuovaPassowrd è richiesto");
+        verificaParametroJsonBody("nuovaPassowrd");
 
-        if (!isset($jsonBody["confermaNuovaPassword"]))
-            throw new OtterGuardianException(400, "Il campo confermaNuovaPassword è richiesto");
+        verificaParametroJsonBody("confermaNuovaPassword");
 
-        if ($jsonBody["nuovaPassowrd"] != $jsonBody["confermaNuovaPassword"])
+        if (getParametroJsonBody("nuovaPassowrd") != getParametroJsonBody("confermaNuovaPassword"))
             throw new OtterGuardianException(400, "Le password non corrispondono");
 
 
 
 
-        confermaRecuperoPassword($jsonBody["idRecPsw"], $jsonBody["codice"], $jsonBody["nuovaPassowrd"]);
+        confermaRecuperoPassword(getParametroJsonBody("idRecPsw"), getParametroJsonBody("codice"), getParametroJsonBody("nuovaPassowrd"));
         http_response_code(200);
     } else {
         throw new OtterGuardianException(500, "Metodo non implementato");

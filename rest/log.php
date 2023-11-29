@@ -18,42 +18,36 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getLogs") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
+        verificaParametroGet("livelloLog");
 
-        if (!isset($_GET["livelloLog"]))
-            throw new OtterGuardianException(400, "Il campo livelloLog è richiesto");
+
+        
 
         $response = getLogs($_GET["pagina"], $_GET["livelloLog"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getLogsTelegram") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
         $response = getLogsTelegram($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNotificheTelegram") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
-        if (!isset($_GET["pagina"]))
-            throw new OtterGuardianException(400, "Il campo pagina è richiesto");
+        verificaParametroGet("pagina");
 
         $response = getNotificheTelegram($_GET["pagina"]);
         http_response_code(200);

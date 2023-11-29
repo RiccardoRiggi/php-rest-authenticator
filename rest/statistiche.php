@@ -18,14 +18,12 @@ try {
 
     verificaIndirizzoIp();
 
-    if (!isset($_GET["nomeMetodo"]))
-        throw new ErroreServerException("Non è stato fornito il riferimento del metodo da invocare");
+    verificaPresenzaNomeMetodo();
 
 
     if ($_GET["nomeMetodo"] == "getStatisticheMetodi") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getStatisticheMetodi();
@@ -33,8 +31,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroDispositiviFisiciAttivi") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroDispositiviFisiciAttivi();
@@ -42,8 +39,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroIndirizziIp") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroIndirizziIp();
@@ -51,8 +47,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroLogin") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroLogin();
@@ -60,8 +55,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroRisorse") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroRisorse();
@@ -69,8 +63,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroAccessiAttivi") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroAccessiAttivi();
@@ -78,8 +71,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroUtenti") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroUtenti();
@@ -87,8 +79,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroRuoli") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroRuoli();
@@ -96,8 +87,7 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroVociMenu") {
 
-        if ($_SERVER['REQUEST_METHOD'] != "GET")
-            throw new MetodoHttpErratoException();
+        verificaMetodoHttp("GET");
 
 
         $response = getNumeroVociMenu();
