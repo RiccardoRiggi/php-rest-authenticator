@@ -17,16 +17,12 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getIndirizziIp") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
-
 
         $response = getIndirizziIp($_GET["pagina"]);
         http_response_code(200);
@@ -34,9 +30,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "sbloccaIndirizzoIp") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("indirizzoIp");
 
         $response = sbloccaIndirizzoIp(getParametroJsonBody("indirizzoIp"));
@@ -44,9 +37,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "bloccaIndirizzoIp") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("indirizzoIp");
 
         $response = bloccaIndirizzoIpLista(getParametroJsonBody("indirizzoIp"));
@@ -54,9 +44,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "azzeraContatoreAlert") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("indirizzoIp");
 
         $response = azzeraContatoreAlert(getParametroJsonBody("indirizzoIp"));

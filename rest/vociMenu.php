@@ -24,9 +24,7 @@ try {
     if ($_GET["nomeMetodo"] == "getVociMenu") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
-
 
         $response = getVociMenu($_GET["pagina"]);
         http_response_code(200);
@@ -34,17 +32,10 @@ try {
     } else if ($_GET["nomeMetodo"] == "inserisciVoceMenu") {
 
         verificaMetodoHttp("POST");
-
-        
-
         verificaParametroJsonBody("descrizione");
-
         verificaParametroJsonBody("path");
-
         verificaParametroJsonBody("icona");
-
         verificaParametroJsonBody("ordine");
-
 
         $response = inserisciVoceMenu(getParametroJsonBody("idVoceMenuPadre"), getParametroJsonBody("descrizione"), getParametroJsonBody("path"), getParametroJsonBody("icona"), getParametroJsonBody("ordine"));
         http_response_code(200);
@@ -52,29 +43,18 @@ try {
     } else if ($_GET["nomeMetodo"] == "modificaVoceMenu") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idVoceMenu");
-
-
-        
-
         verificaParametroJsonBody("descrizione");
-
         verificaParametroJsonBody("path");
-
         verificaParametroJsonBody("icona");
-
         verificaParametroJsonBody("ordine");
-
 
         $response = modificaVoceMenu(getParametroJsonBody("idVoceMenuPadre"), getParametroJsonBody("descrizione"), getParametroJsonBody("path"), getParametroJsonBody("icona"), getParametroJsonBody("ordine"), $_GET["idVoceMenu"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaVoceMenu") {
 
         verificaMetodoHttp("DELETE");
-
         verificaParametroGet("idVoceMenu");
-
 
         $response = eliminaVoceMenu($_GET["idVoceMenu"]);
         http_response_code(200);
@@ -82,16 +62,13 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = getVociMenuPerUtente();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getVoceMenu") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idVoceMenu");
-
 
         $response = getVoceMenu($_GET["idVoceMenu"]);
         http_response_code(200);

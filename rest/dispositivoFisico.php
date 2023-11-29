@@ -18,9 +18,7 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "generaIdentificativoDispositivoFisico") {
 
@@ -39,7 +37,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "isDispositivoAbilitato") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idDispositivoFisico");
 
         $response = isDispositivoAbilitato($_GET["idDispositivoFisico"]);
@@ -48,7 +45,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "isDispositivoTelegramAbilitato") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idDispositivoFisico");
 
         $response = isDispositivoTelegramAbilitato($_GET["idDispositivoFisico"]);
@@ -57,11 +53,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "abilitaDispositivoFisico") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("idDispositivoFisico");
-
         verificaParametroJsonBody("nomeDispositivo");
 
         $response = abilitaDispositivoFisico(getParametroJsonBody("idDispositivoFisico"), getParametroJsonBody("nomeDispositivo"));
@@ -70,9 +62,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "disabilitaDispositivoFisico") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("idDispositivoFisico");
 
         $response = disabilitaDispositivoFisico(getParametroJsonBody("idDispositivoFisico"));
@@ -81,7 +70,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "getDispositiviFisici") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
 
         $response = getDispositiviFisici($_GET["pagina"]);
@@ -90,7 +78,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "getDispositiviFisiciTelegram") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
 
         $response = getDispositiviFisiciTelegram($_GET["pagina"]);
@@ -99,9 +86,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "getRichiesteDiAccessoPendenti") {
 
         verificaMetodoHttp("POST");
-
-        
-
         verificaParametroJsonBody("idDispositivoFisico");
 
         $response = getRichiesteDiAccessoPendenti(getParametroJsonBody("idDispositivoFisico"));
@@ -110,11 +94,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "autorizzaAccesso") {
 
         verificaMetodoHttp("POST");
-
-        
-
         verificaParametroJsonBody("idDispositivoFisico");
-
         verificaParametroJsonBody("idTwoFact");
 
         autorizzaAccesso(getParametroJsonBody("idDispositivoFisico"), getParametroJsonBody("idTwoFact"));
@@ -122,11 +102,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "autorizzaQrCode") {
 
         verificaMetodoHttp("POST");
-
-        
-
         verificaParametroJsonBody("idDispositivoFisico");
-
         verificaParametroJsonBody("idQrCode");
 
         autorizzaQrCode(getParametroJsonBody("idDispositivoFisico"), getParametroJsonBody("idQrCode"));
@@ -134,7 +110,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "getListaDispositiviFisici") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
 
         $response = getListaDispositiviFisici($_GET["pagina"]);
@@ -143,7 +118,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "getListaDispositiviFisiciTelegram") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
 
         $response = getListaDispositiviFisiciTelegram($_GET["pagina"]);
@@ -152,9 +126,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "rimuoviDispositivoFisico") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("idDispositivoFisico");
 
         $response = rimuoviDispositivoFisico(getParametroJsonBody("idDispositivoFisico"));
@@ -163,9 +134,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "rimuoviDispositivoFisicoTelegram") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("idDispositivoFisico");
 
         $response = rimuoviDispositivoFisicoTelegram(getParametroJsonBody("idDispositivoFisico"));

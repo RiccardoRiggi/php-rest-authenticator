@@ -17,16 +17,12 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getListaAccessi") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
-
 
         $response = getListaAccessi($_GET["pagina"]);
         http_response_code(200);
@@ -34,9 +30,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "terminaAccesso") {
 
         verificaMetodoHttp("PUT");
-
-        
-
         verificaParametroJsonBody("token");
 
         $response = terminaAccesso(getParametroJsonBody("token"));

@@ -17,14 +17,11 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getUtenteLoggato") {
 
         verificaMetodoHttp("GET");
-
 
         $response = getUtenteLoggato();
         http_response_code(200);
@@ -33,7 +30,6 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = generaCodiciBackup();
         http_response_code(200);
         exit(json_encode($response));
@@ -41,13 +37,11 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         verificaAutenticazione();
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "invalidaToken") {
 
         verificaMetodoHttp("PUT");
-
 
         invalidaTokenSpecifico();
         http_response_code(200);
@@ -55,7 +49,6 @@ try {
     } elseif ($_GET["nomeMetodo"] == "getStoricoAccessi") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
 
         $response = getStoricoAccessi($_GET["pagina"]);
@@ -65,16 +58,13 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = getMetodiAutenticazionePerUtenteLoggato();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "abilitaTipoMetodoLogin") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoMetodoLogin");
-
 
         $response = abilitaTipoMetodoLogin($_GET["idTipoMetodoLogin"]);
         http_response_code(200);
@@ -82,9 +72,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "disabilitaTipoMetodoLogin") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoMetodoLogin");
-
 
         $response = disabilitaTipoMetodoLogin($_GET["idTipoMetodoLogin"]);
         http_response_code(200);
@@ -93,16 +81,13 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = getMetodiRecuperoPasswordPerUtenteLoggato();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "abilitaTipoRecuperoPassword") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoMetodoRecPsw ");
-
 
         $response = abilitaTipoRecuperoPassword($_GET["idTipoMetodoRecPsw"]);
         http_response_code(200);
@@ -110,9 +95,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "disabilitaTipoRecuperoPassword") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoMetodoRecPsw ");
-
 
         $response = disabilitaTipoRecuperoPassword($_GET["idTipoMetodoRecPsw"]);
         http_response_code(200);

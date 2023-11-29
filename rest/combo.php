@@ -16,9 +16,7 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getComboVociMenu") {
 

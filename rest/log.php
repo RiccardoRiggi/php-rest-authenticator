@@ -17,19 +17,13 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getLogs") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
         verificaParametroGet("livelloLog");
-
-
-        
 
         $response = getLogs($_GET["pagina"], $_GET["livelloLog"]);
         http_response_code(200);
@@ -37,7 +31,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "getLogsTelegram") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
 
         $response = getLogsTelegram($_GET["pagina"]);
@@ -46,7 +39,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "getNotificheTelegram") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
 
         $response = getNotificheTelegram($_GET["pagina"]);

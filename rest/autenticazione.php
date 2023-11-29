@@ -40,7 +40,6 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "effettuaAutenticazione") {
 
-
         verificaMetodoHttp("POST");
         verificaParametroJsonBody("email");
 
@@ -71,7 +70,6 @@ try {
         recuperaTokenDaLogin($_GET["idLogin"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "generaQrCode") {
-
 
         verificaMetodoHttp("GET");
 

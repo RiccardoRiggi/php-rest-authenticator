@@ -18,9 +18,7 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getListaNotifiche") {
 
@@ -36,30 +34,20 @@ try {
         verificaParametroJsonBody("titolo");
         verificaParametroJsonBody("testo");
 
-
-
         inserisciNotifica(getParametroJsonBody("titolo"), getParametroJsonBody("testo"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "modificaNotifica") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idNotifica");
-
-
-
-
         verificaParametroJsonBody("titolo");
         verificaParametroJsonBody("testo");
-
-
 
         $response = modificaNotifica(getParametroJsonBody("titolo"), getParametroJsonBody("testo"), $_GET["idNotifica"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaNotifica") {
 
         verificaMetodoHttp("DELETE");
-
         verificaParametroGet("idNotifica");
 
         eliminaNotifica($_GET["idNotifica"]);
@@ -67,9 +55,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "getNotifica") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idNotifica");
-
 
         $response = getNotifica($_GET["idNotifica"]);
         http_response_code(200);
@@ -77,9 +63,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "getDestinatariNotifica") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idNotifica");
-
         verificaParametroGet("pagina");
 
         $response = getDestinatariNotifica($_GET["pagina"], $_GET["idNotifica"]);
@@ -88,9 +72,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "inviaNotificaTutti") {
 
         verificaMetodoHttp("POST");
-
         verificaParametroGet("idNotifica");
-
 
         $response = inviaNotificaTutti($_GET["idNotifica"], isset($_GET["invioViaTelegram"]));
         http_response_code(200);
@@ -98,11 +80,8 @@ try {
     } else if ($_GET["nomeMetodo"] == "inviaNotificaRuolo") {
 
         verificaMetodoHttp("POST");
-
         verificaParametroGet("idNotifica");
-
         verificaParametroGet("idTipoRuolo");
-
 
         $response = inviaNotificaRuolo($_GET["idNotifica"], $_GET["idTipoRuolo"], isset($_GET["invioViaTelegram"]));
         http_response_code(200);
@@ -110,11 +89,8 @@ try {
     } else if ($_GET["nomeMetodo"] == "inviaNotificaUtente") {
 
         verificaMetodoHttp("POST");
-
         verificaParametroGet("idNotifica");
-
         verificaParametroGet("idUtente");
-
 
         $response = inviaNotificaUtente($_GET["idNotifica"], $_GET["idUtente"], isset($_GET["invioViaTelegram"]));
         http_response_code(200);
@@ -122,9 +98,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "getNotificaLatoUtente") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idNotifica");
-
 
         $response = getNotificaLatoUtente($_GET["idNotifica"]);
         http_response_code(200);
@@ -132,9 +106,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "getNotificheLatoUtente") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
-
 
         $response = getNotificheLatoUtente($_GET["pagina"]);
         http_response_code(200);
@@ -142,7 +114,6 @@ try {
     } else if ($_GET["nomeMetodo"] == "eliminaNotificaLatoUtente") {
 
         verificaMetodoHttp("DELETE");
-
         verificaParametroGet("idNotifica");
 
         eliminaNotificaLatoUtente($_GET["idNotifica"]);

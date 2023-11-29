@@ -20,16 +20,11 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getMetodiRecuperoPasswordSupportati") {
 
-        verificaMetodoHttp("POST");
-
-        
-
+        verificaMetodoHttp("POST");     
         verificaParametroJsonBody("email");
 
         $response = getMetodiRecuperoPasswordSupportati(getParametroJsonBody("email"));
@@ -37,45 +32,23 @@ try {
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "effettuaRichiestaRecuperoPassword") {
 
-
-        verificaMetodoHttp("POST");
-
-
-
-        
-
+        verificaMetodoHttp("POST");  
         verificaParametroJsonBody("email");
-        
-
         verificaParametroJsonBody("tipoRecuperoPassword");
-
-
 
         $response = effettuaRichiestaRecuperoPassword(getParametroJsonBody("email"), getParametroJsonBody("tipoRecuperoPassword"));
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "confermaRecuperoPassword") {
 
-
         verificaMetodoHttp("POST");
-
-
-
-        
-
         verificaParametroJsonBody("idRecPsw");
-
         verificaParametroJsonBody("codice");
-
         verificaParametroJsonBody("nuovaPassowrd");
-
         verificaParametroJsonBody("confermaNuovaPassword");
 
         if (getParametroJsonBody("nuovaPassowrd") != getParametroJsonBody("confermaNuovaPassword"))
             throw new OtterGuardianException(400, "Le password non corrispondono");
-
-
-
 
         confermaRecuperoPassword(getParametroJsonBody("idRecPsw"), getParametroJsonBody("codice"), getParametroJsonBody("nuovaPassowrd"));
         http_response_code(200);

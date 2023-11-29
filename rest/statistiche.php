@@ -17,14 +17,11 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getStatisticheMetodi") {
 
         verificaMetodoHttp("GET");
-
 
         $response = getStatisticheMetodi();
         http_response_code(200);
@@ -33,14 +30,12 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = getNumeroDispositiviFisiciAttivi();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroIndirizziIp") {
 
         verificaMetodoHttp("GET");
-
 
         $response = getNumeroIndirizziIp();
         http_response_code(200);
@@ -49,14 +44,12 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = getNumeroLogin();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroRisorse") {
 
         verificaMetodoHttp("GET");
-
 
         $response = getNumeroRisorse();
         http_response_code(200);
@@ -65,14 +58,12 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = getNumeroAccessiAttivi();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroUtenti") {
 
         verificaMetodoHttp("GET");
-
 
         $response = getNumeroUtenti();
         http_response_code(200);
@@ -81,14 +72,12 @@ try {
 
         verificaMetodoHttp("GET");
 
-
         $response = getNumeroRuoli();
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "getNumeroVociMenu") {
 
         verificaMetodoHttp("GET");
-
 
         $response = getNumeroVociMenu();
         http_response_code(200);

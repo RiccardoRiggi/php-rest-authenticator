@@ -17,16 +17,12 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getRisorse") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
-
 
         $response = getRisorse($_GET["pagina"]);
         http_response_code(200);
@@ -34,13 +30,8 @@ try {
     } else if ($_GET["nomeMetodo"] == "inserisciRisorsa") {
 
         verificaMetodoHttp("POST");
-
-        
-
         verificaParametroJsonBody("idRisorsa");
-
         verificaParametroJsonBody("descrizione");
-
         verificaParametroJsonBody("nomeMetodo");
 
         if (str_starts_with(getParametroJsonBody("idRisorsa"), "AMM_")) {
@@ -51,20 +42,13 @@ try {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la creazione di nuove risorse");
         }
 
-
         inserisciRisorsa(getParametroJsonBody("idRisorsa"), getParametroJsonBody("nomeMetodo"), getParametroJsonBody("descrizione"));
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "modificaRisorsa") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idRisorsa");
-
-
-        
-
         verificaParametroJsonBody("descrizione");
-
         verificaParametroJsonBody("nomeMetodo");
 
         if (str_starts_with($_GET["idRisorsa"], "AMM_")) {
@@ -75,13 +59,11 @@ try {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per la modifica di una risorsa");
         }
 
-
         $response = modificaRisorsa(getParametroJsonBody("nomeMetodo"), getParametroJsonBody("descrizione"), $_GET["idRisorsa"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaRisorsa") {
 
         verificaMetodoHttp("DELETE");
-
         verificaParametroGet("idRisorsa");
 
         if (str_starts_with($_GET["idRisorsa"], "AMM_")) {
@@ -92,15 +74,12 @@ try {
             throw new OtterGuardianException(400, "Il prefisso dell'id risorsa non è utilizzabile per l'eliminazione di una risorsa");
         }
 
-
         eliminaRisorsa($_GET["idRisorsa"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getRisorsa") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idRisorsa");
-
 
         $response = getRisorsa($_GET["idRisorsa"]);
         http_response_code(200);

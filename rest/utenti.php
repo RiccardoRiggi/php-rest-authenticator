@@ -17,34 +17,23 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getListaUtenti") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
-
 
         $response = getListaUtenti($_GET["pagina"]);
         http_response_code(200);
         exit(json_encode($response));
     } else if ($_GET["nomeMetodo"] == "inserisciUtente") {
 
-        verificaMetodoHttp("POST");
-
-        
-
+        verificaMetodoHttp("POST");    
         verificaParametroJsonBody("nome");
-
         verificaParametroJsonBody("cognome");
-
         verificaParametroJsonBody("email");
-
         verificaParametroJsonBody("password");
-
         verificaParametroJsonBody("confermaPassword");
 
         if (getParametroJsonBody("confermaPassword") !== getParametroJsonBody("password")) {
@@ -56,35 +45,23 @@ try {
     } else if ($_GET["nomeMetodo"] == "modificaUtente") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idUtente");
-
-
-        
-
         verificaParametroJsonBody("nome");
-
         verificaParametroJsonBody("cognome");
-
 
         $response = modificaUtente(getParametroJsonBody("nome"), getParametroJsonBody("cognome"), $_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaUtente") {
 
         verificaMetodoHttp("DELETE");
-
         verificaParametroGet("idUtente");
-
-
 
         eliminaUtente($_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getUtente") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idUtente");
-
 
         $response = getUtente($_GET["idUtente"]);
         http_response_code(200);
@@ -92,16 +69,13 @@ try {
     } else if ($_GET["nomeMetodo"] == "bloccaUtente") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idUtente");
-
 
         bloccaUtente($_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "sbloccaUtente") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idUtente");
 
         sbloccaUtente($_GET["idUtente"]);

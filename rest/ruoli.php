@@ -17,16 +17,12 @@ try {
     }
 
     verificaIndirizzoIp();
-
     verificaPresenzaNomeMetodo();
-
 
     if ($_GET["nomeMetodo"] == "getRuoli") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("pagina");
-
 
         $response = getRuoli($_GET["pagina"]);
         http_response_code(200);
@@ -34,11 +30,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "inserisciRuolo") {
 
         verificaMetodoHttp("POST");
-
-        
-
         verificaParametroJsonBody("idTipoRuolo");
-
         verificaParametroJsonBody("descrizione");
 
         if (str_starts_with(getParametroJsonBody("idTipoRuolo"), "AMM")) {
@@ -54,15 +46,8 @@ try {
     } else if ($_GET["nomeMetodo"] == "modificaRuolo") {
 
         verificaMetodoHttp("PUT");
-
-        verificaParametroGet("idTipoRuolo");
-
-
-        
-
+        verificaParametroGet("idTipoRuolo");   
         verificaParametroJsonBody("descrizione");
-
-
 
         if (str_starts_with($_GET["idTipoRuolo"], "AMM")) {
             throw new OtterGuardianException(400, "Non puoi modificare il ruolo AMM");
@@ -72,13 +57,11 @@ try {
             throw new OtterGuardianException(400, "Non puoi modificare il ruolo USER");
         }
 
-
         $response = modificaRuolo(getParametroJsonBody("descrizione"), $_GET["idTipoRuolo"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "eliminaRuolo") {
 
         verificaMetodoHttp("DELETE");
-
         verificaParametroGet("idTipoRuolo");
 
         if (str_starts_with($_GET["idTipoRuolo"], "AMM")) {
@@ -94,9 +77,7 @@ try {
     } else if ($_GET["nomeMetodo"] == "getRuolo") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idTipoRuolo");
-
 
         $response = getRuolo($_GET["idTipoRuolo"]);
         http_response_code(200);
@@ -104,33 +85,24 @@ try {
     } else if ($_GET["nomeMetodo"] == "associaRuoloUtente") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("idUtente");
-
 
         associaRuoloUtente($_GET["idTipoRuolo"], $_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "dissociaRuoloUtente") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("idUtente");
-
 
         dissociaRuoloUtente($_GET["idTipoRuolo"], $_GET["idUtente"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getUtentiPerRuolo") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("pagina");
-
 
         $response = getUtentiPerRuolo($_GET["idTipoRuolo"], $_GET["pagina"]);
         http_response_code(200);
@@ -138,33 +110,24 @@ try {
     } else if ($_GET["nomeMetodo"] == "associaRuoloRisorsa") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("idRisorsa");
-
 
         associaRuoloRisorsa($_GET["idTipoRuolo"], $_GET["idRisorsa"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "dissociaRuoloRisorsa") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("idRisorsa");
-
 
         dissociaRuoloRisorsa($_GET["idTipoRuolo"], $_GET["idRisorsa"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getRisorsePerRuolo") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("pagina");
-
 
         $response = getRisorsePerRuolo($_GET["idTipoRuolo"], $_GET["pagina"]);
         http_response_code(200);
@@ -172,33 +135,24 @@ try {
     } else if ($_GET["nomeMetodo"] == "associaRuoloVoceMenu") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("idVoceMenu");
-
 
         associaRuoloVoceMenu($_GET["idTipoRuolo"], $_GET["idVoceMenu"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "dissociaRuoloVoceMenu") {
 
         verificaMetodoHttp("PUT");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("idVoceMenu");
-
 
         dissociaRuoloVoceMenu($_GET["idTipoRuolo"], $_GET["idVoceMenu"]);
         http_response_code(200);
     } else if ($_GET["nomeMetodo"] == "getVociMenuPerRuolo") {
 
         verificaMetodoHttp("GET");
-
         verificaParametroGet("idTipoRuolo");
-
         verificaParametroGet("pagina");
-
 
         $response = getVociMenuPerRuolo($_GET["idTipoRuolo"], $_GET["pagina"]);
         http_response_code(200);
