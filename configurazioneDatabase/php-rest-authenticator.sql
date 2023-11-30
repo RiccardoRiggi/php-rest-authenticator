@@ -512,7 +512,7 @@ ALTER TABLE `au_ruoli_utenti`
 -- Indici per le tabelle `au_ruoli_voci_menu`
 --
 ALTER TABLE `au_ruoli_voci_menu`
-  ADD PRIMARY KEY (`idTipoRuolo`,`idVoceMenu`)
+  ADD PRIMARY KEY (`idTipoRuolo`,`idVoceMenu`),
   ADD KEY `idTipoRuolo` (`idTipoRuolo`,`idVoceMenu`);
 
 --
